@@ -58,50 +58,6 @@ extern int errno;
    _c_;						\
  })
 
-#define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
-
-#define EMIT_DIR(Tok) emit_indented_cpp (yyout, (Tok), yytext, in_file)
-
-enum eic_type
-{
-  EIC_IF,
-  EIC_IFDEF,
-  EIC_IFNDEF,
-  EIC_ELSE,
-  EIC_ELIF,
-  EIC_ENDIF,
-  EIC_OTHER
-};
-
-static char const *const directive[] =
-{
-  [EIC_IF]	"if",
-  [EIC_IFDEF]	"ifdef",
-  [EIC_IFNDEF]	"ifndef",
-  [EIC_ELSE]	"else",
-  [EIC_ELIF]	"elif",
-  [EIC_ENDIF]	"endif",
-  [EIC_OTHER]	""
-};
-
-static unsigned int lineno = 1;
-static int i_depth = 0;
-static int inhibit_output = 0;
-static int g_fail = 0;
-static char *default_file_list[] = {"-", NULL};
-
-char *program_name;
-
-int
-yywrap (void)
-{
-  return 1;
-  {
-  }
-}
-
-#define MAX_DEPTH 40
-
 #define EMIT(T)								\
   do									\
     {									\
@@ -128,6 +84,99 @@ yywrap (void)
     }									\
   while (0)
 
+/* This is the maximum ifdef nesting level.  */
+/* FIXME: remove this limitation, someday.  */
+#define MAX_DEPTH 40
+
+#define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
+
+#define EMIT_DIR(Tok) emit_indented_cpp (yyout, (Tok), yytext, in_file)
+
+enum eic_type
+{
+  EIC_IF,
+  EIC_IFDEF,
+  EIC_IFNDEF,
+  EIC_ELSE,
+  EIC_ELIF,
+  EIC_ENDIF,
+  EIC_OTHER
+};
+
+static char const *const directive[] =
+{
+  [EIC_IF]	"if",
+  [EIC_IFDEF]	"ifdef",
+  [EIC_IFNDEF]	"ifndef",
+  [EIC_ELSE]	"else",
+  [EIC_ELIF]	"elif",
+  [EIC_ENDIF]	"endif",
+  [EIC_OTHER]	""
+};
+
+struct Stack
+{
+  int vec[MAX_DEPTH];
+  int top;
+};
+
+/* Stack of (opening-keyword, line number) pairs.  This lets us report
+   the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
+static struct Stack kl_stack;
+
+/* Current line number -- for diagnostics and errors.  */
+static unsigned int lineno = 1;
+
+/* Current nesting level.  */
+static int i_depth = 0;
+
+/* Set to non-zero to inhibit non-error output.  */
+static int inhibit_output = 0;
+
+/* The maximum exit status.  */
+static int g_fail = 0;
+
+static char *default_file_list[] = {"-", NULL};
+
+char *program_name;
+
+int
+yywrap (void)
+{
+  return 1;
+}
+
+static int
+kl_pack (enum eic_type t, unsigned int line_number)
+{
+  assert (t == EIC_IF
+	  || t == EIC_IFDEF
+	  || t == EIC_IFNDEF);
+  assert (0 <= (int) t && (int) t <= 2);
+  return ((line_number << 2) | (unsigned int) t);
+}
+
+static void
+kl_unpack (int kl_pair, enum eic_type *t, unsigned int *line_number)
+{
+  *t = (enum eic_type) (kl_pair & 0x3);
+  *line_number = ((unsigned int) kl_pair >> 2);
+}
+
+static int
+pop (void)
+{
+  assert (kl_stack.top > 0);
+  return kl_stack.vec[--kl_stack.top];
+}
+
+static void
+push (int packed_pair)
+{
+  assert (kl_stack.top < MAX_DEPTH);
+  kl_stack.vec[kl_stack.top++] = packed_pair;
+}
+
 static void
 emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 		   char const *in_file)
@@ -140,9 +189,10 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
     case EIC_IF:
     case EIC_IFDEF:
     case EIC_IFNDEF:
-      /* Maintain stack of (line number, keyword) pairs to better
-	 report any `unterminated #if...' errors.  */
-      /* FIXME: push here */
+      /* Maintain a stack of (keyword, line number) pairs to better
+	 report any `unterminated #if...' errors.  Put a new pair
+	 on the stack.  */
+      push (kl_pack (t, lineno));
 
       EMIT (t);
       ++i_depth;
@@ -174,6 +224,12 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 	  i_depth = 1;
 	  g_fail = 2;
 	}
+      else
+	{
+	  /* Pop the keyword,line-number stack and discard the result.  */
+	  pop ();
+	}
+
       --i_depth;
       EMIT (t);
       break;
@@ -295,11 +351,19 @@ b [^a-zA-Z_\n]
 <<EOF>> {
   if (i_depth != 0)
     {
-      /* Iterate the opener stack, giving a diagnostic per unterminated
-	 #if* directive.  */
-      /* FIXME */
-      warn (0, "%s: %s: unterminated #if, #ifdef, or #ifndef",
-	    program_name, in_file);
+      /* Iterate the opener stack from bottom to top, giving a
+	 diagnostic per unterminated #if* directive.  */
+      int i;
+      for (i = 0; i < kl_stack.top; i++)
+	{
+	  enum eic_type t;
+	  unsigned int line_number;
+
+	  kl_unpack (kl_stack.vec[i], &t, &line_number);
+	  warn (0, "%s: %s: line %d: unterminated #%s",
+		program_name, in_file, line_number, directive[t]);
+	}
+
       g_fail = 2;
     }
 
