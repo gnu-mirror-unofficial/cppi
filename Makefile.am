@@ -23,6 +23,7 @@ cpp-cond-lookup.c: cpp.gp
 	mv $@-tmp $@
 
 flex_debug = #-d
+flex_debug = # -L # suppress #line directives
 
 # This is required to avoid an infloop on certain 8-bit inputs.
 # Without this option, the generated scanner would infloop on e.g.,
