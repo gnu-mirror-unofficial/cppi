@@ -2,8 +2,8 @@
 
 	* Version 1.10.
 
-	* Makefile.maint (emit-rsync-commands): Also emit code to rsync
-	the .bz2 files.
+	* Makefile.maint (rel-files): Define and factor.
+	(emit-rsync-commands): Also emit code to rsync the .bz2 files.
 
 	* Makefile.maint: Create tar.bz2 files and include them in announcement.
 
