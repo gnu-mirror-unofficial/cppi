@@ -1,22 +1,37 @@
-#! @PERL@ -w
+#!@PERL@ -w
 # Filter C code so that CPP #-directives are indented to reflect nesting.
 # written by Jim Meyering
 use strict;
 
+# Bugs:
+# May get confused by comments or string literals containing
+# what would otherwise be valid cpp directives.
+
 # TODO: allow these to be overridden by command-line options
 my $indent_incr = ' ';
-my $do_comments = 0;
+
+sub cpp_indent ($$)
+{
+  my ($file, $check_only) = @_;
+  if (!open (IN, "<$file"))
+    {
+      warn "$0: $file: $!\n";
+      return 0;
+    }
+}
 
 my @opener_stack;
 my $depth = 0;
+my $check_only = 0;
 
-while (<>)
+my $line;
+while (defined ($line = <>))
   {
-    if (s/^\s*\#\s*//)
+    if ($line =~ s/^\s*\#\s*//)
       {
 	my $keyword;
 	my $indent;
-	if (/^if(n?def)?\b/)
+	if ($line =~ /^if(n?def)?\b/)
 	  {
 	    # Maintain stack of (line number, keyword) pairs to better
 	    # report any `unterminated #if...' errors.
@@ -25,13 +40,13 @@ while (<>)
 	    $indent = $indent_incr x $depth;
 	    ++$depth;
 	  }
-	elsif (/^(else|elif)\b/)
+	elsif ($line =~ /^(else|elif)\b/)
 	  {
 	    die "$0: line $.: found #$& without matching #if\n" if $depth < 1;
 	    $keyword = $&;
 	    $indent = $indent_incr x ($depth - 1);
 	  }
-	elsif (/^endif\b/)
+	elsif ($line =~ /^endif\b/)
 	  {
 	    die "$0: line $.: found #$& without matching #if\n" if $depth < 1;
 	    $keyword = $&;
@@ -44,27 +59,18 @@ while (<>)
 	    $keyword = '';
 	    $indent = $indent_incr x $depth;
 	  }
-	print "#$indent$keyword$'";
-      }
-    else
-      {
-        if ($do_comments)
+
+	my $new_line = "#$indent$keyword$'";
+	if ($check_only)
 	  {
-	    if (/^(\/\*.*)/)
-	      {
-		my $indent = $indent_incr x $depth;
-		print " ${indent}$_";
-	      }
-	    else
-	      {
-		print;
-	      }
+	    return 1 if $new_line ne $line;
 	  }
 	else
 	  {
-	    print;
+	    $line = $new_line;
 	  }
       }
+    print $line if !$check_only;
   }
 
 my $exit_status = 0;
