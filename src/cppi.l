@@ -506,8 +506,7 @@ b [^a-zA-Z_\n]
     }
   else if (ansi_check && (t == EIC_ELSE || t == EIC_ENDIF))
     {
-      /* If requested, make sure there's nothing after an #else or #endif */
-      /* FIXME: add an option for this */
+      /* If requested, make sure there's nothing after an #else or #endif.  */
       int found_non_ansi = 0;
       int c;
       while ((c = INPUT_AND_ECHO ()) != EOF)
