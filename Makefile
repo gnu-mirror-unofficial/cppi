@@ -1,6 +1,6 @@
 CC = gcc
 optimize = -pipe -O2
-CFLAGS = -I. -g $(optimize) -Wall -D__USE_FIXED_PROTOTYPES__
+CFLAGS = -I. -g $(optimize) -Wall -Wshadow -D__USE_FIXED_PROTOTYPES__
 LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 PERL = /p/bin/perl
