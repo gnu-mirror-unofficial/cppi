@@ -1,4 +1,12 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.in by autoheader.  */
+
+/* Define to 1 if you have the declaration of `strtoimax', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRTOIMAX
+
+/* Define to 1 if you have the declaration of `strtol', and to 0 if you don't.
+   */
+#undef HAVE_DECL_STRTOL
 
 /* Define to 1 if you have the declaration of `strtoul', and to 0 if you
    don't. */
@@ -8,12 +16,18 @@
    don't. */
 #undef HAVE_DECL_STRTOULL
 
-/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
-   declares uintmax_t. */
+/* Define to 1 if you have the declaration of `strtoumax', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRTOUMAX
+
+/* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
 /* Define if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
+
+/* Define if you have the long long type. */
+#undef HAVE_LONG_LONG
 
 /* Define if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -33,9 +47,6 @@
 /* Define if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define if you have the `strtol' function. */
-#undef HAVE_STRTOL
-
 /* Define if you have the `strtoul' function. */
 #undef HAVE_STRTOUL
 
@@ -44,6 +55,12 @@
 
 /* Define if you have the `strtoumax' function. */
 #undef HAVE_STRTOUMAX
+
+/* Define if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
 
 /* Define if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
@@ -94,9 +111,11 @@
    if it is not supported. */
 #undef inline
 
+/* Define to widest signed type if <inttypes.h> doesn't define. */
+#undef intmax_t
+
 /* Define to `unsigned' if <sys/types.h> does not define. */
 #undef size_t
 
-/* Define to unsigned long or unsigned long long if <inttypes.h> doesn't
-   define. */
+/* Define to widest unsigned type if <inttypes.h> doesn't define. */
 #undef uintmax_t
