@@ -5,22 +5,25 @@ cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
 
 noinst_HEADERS = fatal.h getopt.h obstack.h
 
-EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
+EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
   GNUmakefile Makefile.maint
 
 SUBDIRS = tests
 
-MAINTAINERCLEANFILES = cpp-cond-lookup.c
+MAINTAINERCLEANFILES = cpp-cond.c
 CLEANFILES = cpp.h lex.backup
 
 PERL = @PERL@
+GPERF = gperf
 
-cpp-cond-lookup.c: cpp.gp
-	rm -f $@ $@-tmp
-	gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
-	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
-	chmod a-w $@-tmp
-	mv $@-tmp $@
+cpp-cond.c: cpp.gp
+	rm -f $@ $@-tmp $@-t2
+	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	  > $@-tmp
+	sed 's/str\[/(unsigned char) str[/' $@-tmp > $@-t2
+	rm -f $@-tmp
+	chmod a-w $@-t2
+	mv $@-t2 $@
 
 flex_debug = #-d
 flex_debug = # -L # suppress #line directives
@@ -62,4 +65,4 @@ cpp.h: cpp.gp Makefile.am
 	@chmod -w $@-tmp
 	@mv $@-tmp $@
 
-BUILT_SOURCES = cpp-cond-lookup.c cpp.h
+BUILT_SOURCES = cpp-cond.c cpp.h
