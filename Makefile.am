@@ -13,7 +13,7 @@ MAINTAINERCLEANFILES = cpp-cond-lookup.c
 
 cpp-cond-lookup.c: cpp.gp
 	rm -f $@ $@-tmp
-	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
 	chmod a-w $@-tmp
 	mv $@-tmp $@

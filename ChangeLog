@@ -1,3 +1,10 @@
+1998-04-08  Jim Meyering  <meyering@ascend.com>
+
+	ADMIN EOI 19316: FreeBSD portability fixes
+	* Makefile.am (cpp-cond-lookup.c): Don't use gperf's -E option:
+	some older versions don't support it and we don't need it.
+	* fatal.c: Include config.h.
+
 1998-03-27  Jim Meyering  <meyering@eng.ascend.com>
 
 	* cppi.l (initial_i_depth): New variable.

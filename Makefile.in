@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.2h from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -125,7 +125,7 @@ all: all-recursive-am all-am
 .SUFFIXES:
 .SUFFIXES: .S .c .l .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnits Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -305,6 +305,10 @@ dist-all: distdir
 	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
 	-rm -rf $(distdir)
 distdir: $(DISTFILES)
+	@if sed 15q $(srcdir)/NEWS | fgrep -e "$(VERSION)" > /dev/null; then :; else \
+	  echo "NEWS not updated; not releasing" 1>&2; \
+	  exit 1; \
+	fi
 	-rm -rf $(distdir)
 	mkdir $(distdir)
 	-chmod 777 $(distdir)
@@ -312,7 +316,7 @@ distdir: $(DISTFILES)
 	top_distdir=`cd $(distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnits Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -445,7 +449,7 @@ maintainer-clean
 
 cpp-cond-lookup.c: cpp.gp
 	rm -f $@ $@-tmp
-	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
 	chmod a-w $@-tmp
 	mv $@-tmp $@
