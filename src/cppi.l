@@ -91,7 +91,8 @@ extern int errno;
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
-#define EMIT_DIR(Tok) emit_indented_cpp (yyout, (Tok), yytext, in_file)
+#define EMIT_DIR(Tok) \
+    emit_indented_cpp (yyout, (Tok), yytext, &kl_stack, in_file, &g_fail)
 
 enum eic_type
 {
@@ -121,21 +122,17 @@ struct Stack
   int top;
 };
 
-/* Stack of (opening-keyword, line number) pairs.  This lets us report
-   the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
-static struct Stack kl_stack;
-
-/* Current line number -- for diagnostics and errors.  */
-static unsigned int lineno = 1;
+/* The maximum exit status.  */
+static int g_fail = 0;
 
 /* Current nesting level.  */
-static int i_depth = 0;
+int i_depth;
+
+/* Current line number -- for diagnostics and errors.  */
+unsigned int lineno;
 
 /* Set to non-zero to inhibit non-error output.  */
 static int inhibit_output = 0;
-
-/* The maximum exit status.  */
-static int g_fail = 0;
 
 static char *default_file_list[] = {"-", NULL};
 
@@ -165,22 +162,22 @@ kl_unpack (int kl_pair, enum eic_type *t, unsigned int *line_number)
 }
 
 static int
-pop (void)
+pop (struct Stack *s)
 {
-  assert (kl_stack.top > 0);
-  return kl_stack.vec[--kl_stack.top];
+  assert (s->top > 0);
+  return s->vec[--(s->top)];
 }
 
 static void
-push (int packed_pair)
+push (struct Stack *s, int packed_pair)
 {
-  assert (kl_stack.top < MAX_DEPTH);
-  kl_stack.vec[kl_stack.top++] = packed_pair;
+  assert (s->top < MAX_DEPTH);
+  s->vec[s->top++] = packed_pair;
 }
 
 static void
 emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
-		   char const *in_file)
+		   struct Stack *s, char const *in_file, int *exit_status)
 {
   static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
   int ok = 0;
@@ -193,7 +190,7 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
       /* Maintain a stack of (keyword, line number) pairs to better
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
-      push (kl_pack (t, lineno));
+      push (s, kl_pack (t, lineno));
 
       EMIT (t);
       ++i_depth;
@@ -206,7 +203,7 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 	  warn (0, "%s: %s: line %d: found #%s without matching #if",
 	    program_name, in_file, lineno, directive[t]);
 	  i_depth = 0;
-	  g_fail = 2;
+	  *exit_status = 2;
 	  EMIT (t);
 	}
       else
@@ -223,12 +220,12 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 	  warn (0, "%s: %s: line %d: found #%s without matching #if",
 	    program_name, in_file, lineno, directive[t]);
 	  i_depth = 1;
-	  g_fail = 2;
+	  *exit_status = 2;
 	}
       else
 	{
 	  /* Pop the keyword,line-number stack and discard the result.  */
-	  pop ();
+	  pop (s);
 	}
 
       --i_depth;
@@ -245,8 +242,8 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 
   if (!ok)
     {
-      if (g_fail == 0)
-	g_fail = 1;
+      if (*exit_status == 0)
+	*exit_status = 1;
       warn (0, "%s: %s: line %d: not properly indented",
 	    program_name, in_file, lineno);
     }
@@ -258,6 +255,18 @@ w [a-zA-Z_]
 b [^a-zA-Z_\n]
 
 %%
+
+%{
+
+  /* Stack of (opening-keyword, line number) pairs.  This lets us report
+     the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
+  struct Stack kl_stack;
+
+  kl_stack.top = 0;
+  i_depth = 0;
+  lineno = 1;
+
+%}
 
 "/*"        {
   register int c;
