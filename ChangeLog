@@ -1,3 +1,9 @@
+Thu May 22 20:59:08 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+
+	* cppi.l (main): New option, -C.  Now, `cppi -C' is usable directly
+	via CVS's commitinfo file.
+	Add rules to avoid flex's backup states.
+
 Fri May 16 08:49:52 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l: Revamp to avoid backup states.
