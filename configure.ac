@@ -1,46 +1,48 @@
-dnl Process this file with autoconf to produce a configure script. -*-m4-*-
-AC_INIT(cppi.l)
+# Process this file with autoconf to produce a configure script.
+AC_INIT([GNU cppi],[1.11],[bug-cppi@gnu.org])
+AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR(config)
 AM_CONFIG_HEADER(config.h:config.hin)
-AC_PREREQ(2.52)dnl               dnl Minimum Autoconf version required.
-AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE([cppi], [1.11])
-
-dnl Checks for programs.
+AM_INIT_AUTOMAKE([1.6b gnits dist-bzip2])
 
 AC_PROG_CC
-AC_PROG_CPP
-AC_AIX
-AC_MINIX
-AC_PROG_GCC_TRADITIONAL
-AC_PROG_RANLIB
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
 AM_PROG_LEX
-AC_PROG_CC_STDC
+AC_PROG_RANLIB
 
-dnl Checks for header files.
-AC_CHECK_HEADERS(memory.h stdlib.h string.h unistd.h)
-AC_HEADER_STDC
+AC_GNU_SOURCE
+gl_USE_SYSTEM_EXTENSIONS
 
-dnl This test must precede tests of compiler characteristics like
-dnl that for the inline keyword, since it may change the degree to
-dnl which the compiler supports such features.
-AM_C_PROTOTYPES
+gl_CLOSEOUT
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
-AC_TYPE_SIZE_T
+gl_ERROR
 
-dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
-AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
+gl_EXITFAIL
 
-dnl Checks for library functions.
-AC_CHECK_FUNCS(strerror)
+gl_FATAL
 
-jm_AC_PREREQ_XSTRTOUMAX
-jm_ASSERT
+jm_FUNC_FPENDING
 
-AC_CONFIG_FILES([Makefile m4/Makefile tests/Makefile])
-AC_OUTPUT
+AM_GNU_GETTEXT([external])
+
+jm_FUNC_MALLOC
+jm_CHECK_DECLS
+
+gl_OBSTACK
+
+gl_QUOTEARG
+
+jm_FUNC_REALLOC
+
+jm_FUNC_GLIBC_UNLOCKED_IO
+
+gl_XALLOC
+
+gl_XSTRTOL
+
+
+AC_OUTPUT([Makefile lib/Makefile m4/Makefile po/Makefile
+	   src/Makefile tests/Makefile])
