@@ -43,6 +43,10 @@ gl_XALLOC
 
 gl_XSTRTOL
 
+gl_FUNC_ALLOCA
+
+AM_STDBOOL_H
+
 
 AC_OUTPUT([Makefile lib/Makefile m4/Makefile po/Makefile
 	   src/Makefile tests/Makefile])

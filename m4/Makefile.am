@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in.
 
 EXTRA_DIST =
+EXTRA_DIST += alloca.m4
 EXTRA_DIST += check-decl.m4
 EXTRA_DIST += closeout.m4
 EXTRA_DIST += codeset.m4
@@ -33,6 +34,7 @@ EXTRA_DIST += po.m4
 EXTRA_DIST += progtest.m4
 EXTRA_DIST += quotearg.m4
 EXTRA_DIST += realloc.m4
+EXTRA_DIST += stdbool.m4
 EXTRA_DIST += stdint_h.m4
 EXTRA_DIST += strerror_r.m4
 EXTRA_DIST += uintmax_t.m4
