@@ -319,7 +319,7 @@ usage (int status)
 Usage: %s [FILE]\n\
   or:  %s [-c] [FILE]...\n\
 ",
-		program_name, program_name);
+	      program_name, program_name);
     }
   exit (status == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
