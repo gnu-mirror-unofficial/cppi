@@ -1,6 +1,11 @@
-1999-02-12  Jim Meyering  <meyering@ascend.com>
+1999-02-13  Jim Meyering  <meyering@ascend.com>
 
 	* Version 1.7.
+
+	* tests/Makefile.am (TESTS): Add cxx-3.
+	* tests/cxx-3: New test.
+
+1999-02-12  Jim Meyering  <meyering@ascend.com>
 
 	* cppi.l (gobble_line): New function.
 	"//": New rule.  Handle C++ comments.
