@@ -1,8 +1,12 @@
-cppi
-cpp-cond-lookup.c
-cppi.c
-cpp-indent
-lex.backup
-config.log
-stamp.h.in
 .deps
+Makefile
+config.h config.cache
+config.log
+config.status
+cpp-cond-lookup.c
+cpp-indent
+cppi
+cppi.c
+lex.backup
+stamp-h
+stamp-h.in
