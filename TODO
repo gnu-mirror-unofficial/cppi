@@ -7,4 +7,5 @@ Allow glob or regex filtering rather than hard-coding test
 
 Put under GPL?  ask Tom
 
-
+Uli's suggestion for setting initial indentation level to e.g. -1
+for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
