@@ -327,6 +327,7 @@ distcheck: dist
 	mkdir $(distdir)/=build
 	mkdir $(distdir)/=inst
 	dc_install_base=`cd $(distdir)/=inst && pwd`; \
+	$(MAKE) $(AM_MAKEFLAGS) distcheck-hook; \
 	cd $(distdir)/=build \
 	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
@@ -541,6 +542,9 @@ cpp.h: cpp.gp Makefile.am
 	  > $@-tmp
 	@chmod -w $@-tmp
 	@mv $@-tmp $@
+
+distcheck-hook:
+	$(MAKE) my-distcheck
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
