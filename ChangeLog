@@ -2,6 +2,11 @@
 
 	* Version 1.11.
 
+	* src/cppi.l (main): Now that we use close_stdout, don't close
+	stdout explicitly.
+	Now that we're using `error' instead of `fatal' and `warn',
+	remove all of the `program_name' arguments.
+
 	* Makefile.maint (syntax checks): Use cvsu more (so we check only
 	version-controlled files), rather than hard-coding exclusions
 	for generated files like cppi.c.
