@@ -4,15 +4,6 @@
    declares uintmax_t. */
 #undef HAVE_INTTYPES_H
 
-/* Define if you have the `cposix' library (-lcposix). */
-#undef HAVE_LIBCPOSIX
-
-/* Define if you have the `fl' library (-lfl). */
-#undef HAVE_LIBFL
-
-/* Define if you have the `l' library (-ll). */
-#undef HAVE_LIBL
-
 /* Define if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 

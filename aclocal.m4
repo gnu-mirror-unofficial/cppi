@@ -1,14 +1,15 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4a
+# aclocal.m4 generated automatically by aclocal 1.4a
 
-dnl Copyright (C) 1994, 1995-9, 2000 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
+# Free Software Foundation, Inc.
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
 
-dnl This program is distributed in the hope that it will be useful,
-dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-dnl PARTICULAR PURPOSE.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
@@ -67,7 +68,7 @@ AC_DEFUN([AM_INIT_AUTOMAKE],
 [dnl We require 2.13 because we rely on SHELL being computed by configure.
 AC_REQUIRE([AC_PROG_INSTALL])dnl
 # test to see if srcdir already configured
-if test "`CDPATH=: && cd $srcdir && pwd`" != "`pwd`" &&
+if test "`CDPATH=:; cd $srcdir && pwd`" != "`pwd`" &&
    test -f $srcdir/config.status; then
   AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
 fi
@@ -175,7 +176,7 @@ AC_SUBST(install_sh)])
 # If it does, set am_missing_run to use it, otherwise, to nothing.
 AC_DEFUN([AM_MISSING_HAS_RUN], [
 test x"${MISSING+set}" = xset || \
-  MISSING="\${SHELL} `CDPATH=: && cd $ac_aux_dir && pwd`/missing"
+  MISSING="\${SHELL} `CDPATH=:; cd $ac_aux_dir && pwd`/missing"
 # Use eval to expand $SHELL
 if eval "$MISSING --run :"; then
   am_missing_run="$MISSING --run "
@@ -229,10 +230,13 @@ if test -z "$AMDEP"; then
       ;;
     none) break ;;
     esac
+    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # mode.  It turns out that the SunPro C++ compiler does not properly
+    # handle `-M -o', and we need to detect this.
     if depmode="$depmode" \
        source=conftest.c object=conftest.o \
        depfile=conftest.Po tmpdepfile=conftest.TPo \
-       $SHELL $am_depcomp $depcc -c conftest.c 2>/dev/null &&
+       $SHELL $am_depcomp $depcc -c conftest.c -o conftest.o 2>/dev/null &&
        grep conftest.h conftest.Po > /dev/null 2>&1; then
       am_cv_[$1]_dependencies_compiler_type="$depmode"
       break
