@@ -279,8 +279,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	{
 	  if (!list_files_only)
 	    {
-	      error (0, 0, _("%s: %s: line %d: found #%s without matching #if"),
-		     program_name, in_file, line_number, directive[t]);
+	      error (0, 0, _("%s: line %d: found #%s without matching #if"),
+		     in_file, line_number, directive[t]);
 	    }
 	  i_depth = 0;
 	  emit_or_check (t, yytext, keyword);
@@ -299,8 +299,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	{
 	  if (!list_files_only)
 	    {
-	      error (0, 0, _("%s: %s: line %d: found #%s without matching #if"),
-		     program_name, in_file, line_number, directive[t]);
+	      error (0, 0, _("%s: line %d: found #%s without matching #if"),
+		     in_file, line_number, directive[t]);
 	    }
 	  i_depth = initial_i_depth + 1;
 	  *fail = 2;
@@ -334,8 +334,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
   if (*fail == 1)
     {
       if (!list_files_only)
-	error (0, 0, _("%s: %s: line %d: not properly indented"),
-	       program_name, in_file, line_number);
+	error (0, 0, _("%s: line %d: not properly indented"),
+	       in_file, line_number);
     }
 
   return t;
@@ -409,8 +409,8 @@ b [^a-zA-Z_\n]
 
       if (c == EOF)
 	{
-	  error (0, 0, _("%s: %s: line %d: EOF in string"),
-		 program_name, in_file, start_lineno);
+	  error (0, 0, _("%s: line %d: EOF in string"),
+		 in_file, start_lineno);
 	  fail = 1;
 	  break;
 	}
@@ -437,8 +437,8 @@ b [^a-zA-Z_\n]
 
   if (0 < max_string_length && max_string_length < string_length)
     {
-      error (0, 0, _("%s: %s: line %d: string (%d) longer than maximum of %lu"),
-	     program_name, in_file, start_lineno, string_length,
+      error (0, 0, _("%s: line %d: string (%d) longer than maximum of %lu"),
+	     in_file, start_lineno, string_length,
 	     max_string_length);
       fail = 1;
     }
@@ -465,10 +465,10 @@ b [^a-zA-Z_\n]
 	    {
 	      if (!list_files_only)
 		{
-		  error (0, 0, _("%s: %s: line %d: not properly formatted\n\
+		  error (0, 0, _("%s: line %d: not properly formatted\n\
 There must be exactly one SPACE character after each\n\
 #if, #elif, and #define directive."),
-			 program_name, in_file, lineno);
+			 in_file, lineno);
 		}
 	      if (fail < 1)
 		fail = 1;
@@ -534,8 +534,8 @@ There must be exactly one SPACE character after each\n\
 	{
 	  if (!list_files_only)
 	    error (0, 0,
-	      _("%s: %s: line %d: text following `#%s' violates ANSI standard"),
-		   program_name, in_file, cpp_directive_lineno,
+	      _("%s: line %d: text following `#%s' violates ANSI standard"),
+		   in_file, cpp_directive_lineno,
 		   (t == EIC_ELSE ? "else" : "endif"));
 	  if (fail < 1)
 	    fail = 1;
@@ -564,9 +564,8 @@ There must be exactly one SPACE character after each\n\
 	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
 	    {
 	      struct KL_pair x = kth_entry (i);
-	      error (0, 0, _("%s: %s: line %d: unterminated #%s"),
-		     program_name, in_file, x.line_number,
-		     directive[x.opener_type]);
+	      error (0, 0, _("%s: line %d: unterminated #%s"),
+		     in_file, x.line_number, directive[x.opener_type]);
 	    }
 	}
 
@@ -593,7 +592,7 @@ cpp_indent (const char *in_file)
     {
       if ((in = fopen (in_file, "r")) == NULL)
 	{
-	  error (3, errno, "%s: %s", program_name, in_file);
+	  error (3, errno, "%s", in_file);
 	}
       yyin = in;
     }
@@ -601,7 +600,7 @@ cpp_indent (const char *in_file)
   fail = cpp_i (in_file);
 
   if (in && fclose (in) == EOF)
-    error (3, errno, "%s: %s", program_name, in_file);
+    error (3, errno, "%s", in_file);
 
   return fail;
 }
@@ -717,8 +716,7 @@ gobble_c_comment (const char *in_file, int *line_number)
 
       if (c == EOF)
 	{
-	  error (2, 0, _("%s: %s: line %d: EOF in comment"),
-		 program_name, in_file, start_lineno);
+	  error (2, 0, _("%s: line %d: EOF in comment"), in_file, start_lineno);
 	  break;
 	}
     }
@@ -814,11 +812,6 @@ main (int argc, char** argv)
 
       if (err && list_files_only)
 	puts (file_list[i]);
-    }
-
-  if (fclose (stdout) == EOF)
-    {
-      error (3, errno, _("%s: write error"), program_name);
     }
 
   exit (max_err);
