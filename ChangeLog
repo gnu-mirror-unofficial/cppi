@@ -3,7 +3,7 @@
 	* Version 1.9.
 
 	* tests/d1: Don't use `: >' to create empty files.  Use touch instead.
-	It doesn't work with Ultrix 4.4's /bin/sh.
+	The former doesn't work with Ultrix 4.4's /bin/sh.
 
 	* Makefile.am: Comment out first definition of flex_debug to placate
 	automake.
