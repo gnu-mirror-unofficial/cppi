@@ -1,5 +1,5 @@
 Changes in release 1.10:
-* --ansi gives better line numbers
+* -c --ansi gives better line numbers
 * -c --ansi no longer reports non-existent errors
 Changes in release 1.9:
 Changes in release 1.8:
