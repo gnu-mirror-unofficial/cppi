@@ -12,8 +12,9 @@ LFLAGS = $(lex_debug) $(lex_optimize)
 
 all: check
 
+tests = d1 d2 d3 d4 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6 f7
 check: cppi
-	for i in d1 d2 d3 d4 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6; do \
+	for i in $(tests); do \
 	  echo $$i...; \
 	  ./$$i; \
 	done
@@ -37,6 +38,8 @@ perl = $(patsubst %.pl,%,$(perl_in))
 .pl:
 	rm -f $@ $@.tmp
 	$(editpl) $< > $@.tmp && chmod +x-w $@.tmp && mv $@.tmp $@
+
+#.PRECIOUS: cppi.c
 
 %.c: %.l
 	rm -f $@-tmp $@
