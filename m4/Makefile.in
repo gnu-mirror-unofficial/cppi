@@ -71,6 +71,7 @@ DEPDIR = @DEPDIR@
 LEX = @LEX@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
 U = @U@
 VERSION = @VERSION@
 install_sh = @install_sh@

@@ -1,8 +1,19 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
+/* Define to 1 if you have the declaration of `strtoul', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRTOUL
+
+/* Define to 1 if you have the declaration of `strtoull', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRTOULL
+
 /* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
    declares uintmax_t. */
 #undef HAVE_INTTYPES_H
+
+/* Define if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
 
 /* Define if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -15,6 +26,12 @@
 
 /* Define if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define if you have the `strtol' function. */
+#undef HAVE_STRTOL
+
+/* Define if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
 
 /* Define if you have the `strtoull' function. */
 #undef HAVE_STRTOULL
