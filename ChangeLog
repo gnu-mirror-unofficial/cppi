@@ -1,3 +1,8 @@
+1997-11-01  Jim Meyering  <meyering@na-net.ornl.gov>
+
+	* cppi.l: Remove hard-coded limit: use an obstack for
+	keyword/line_number pairs.
+
 1997-10-26  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l: Don't pack keyword/line_number pairs into an int.
