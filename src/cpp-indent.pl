@@ -1,4 +1,5 @@
-#! @PERL@
+#! @PERL@ -w
+use strict;
 
 # TODO: allow these to be overridden by command-line options
 $indent_incr = ' ';
