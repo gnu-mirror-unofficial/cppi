@@ -1,3 +1,8 @@
+1998-10-09  Jim Meyering  <meyering@ascend.com>
+
+	* cppi.l (main, usage): Remove and undocument DISABLE_CPP_INDENT_CHECK
+	envvar support.
+
 1998-10-02  Jim Meyering  <meyering@ascend.com>
 
 	* Makefile.am (CLEANFILES): Add lex.backup.
