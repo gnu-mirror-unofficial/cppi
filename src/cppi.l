@@ -77,6 +77,7 @@ enum Eic_type
   EIC_ELSE,
   EIC_ELIF,
   EIC_ENDIF,
+  EIC_PRAGMA,
   EIC_OTHER
 };
 
@@ -88,6 +89,7 @@ static char const *const directive[] =
   [EIC_ELSE]	"else",
   [EIC_ELIF]	"elif",
   [EIC_ENDIF]	"endif",
+  [EIC_PRAGMA]	"pragma",
   [EIC_OTHER]	""
 };
 
@@ -185,22 +187,33 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
   if (inhibit_output)
     {
       int n;
-      if (text[0] == '#'
-	  && (n = strspn (text + 1, " ")) == i_depth
-	  && (type == EIC_OTHER || text[1 + n] == 'e' || text[1 + n] == 'i'))
+      if ((text[0] == '#'
+	   && (n = strspn (text + 1, " ")) == i_depth
+	   && (type == EIC_OTHER || text[1 + n] == 'e' || text[1 + n] == 'i'))
+	  /* This allows pragmas to have at least one space before the `#'.
+	     E.g., ` #pragma alloca'.  */
+	  || (type == EIC_PRAGMA && text[0] == ' '))
 	{
 	  fail = 0;
 	}
     }
   else
     {
-      int i;
-      const char *dir = (type == EIC_OTHER ? other : directive[type]);
       fail = 0;
-      fputc ('#', yyout);
-      for (i = 0; i < i_depth; i++)
-	fputc (' ', yyout);
-      fputs (dir, yyout);
+      if (type == EIC_PRAGMA && text[0] == ' ')
+	{
+	  fputs (text, yyout);
+	}
+      else
+	{
+	  int i;
+	  const char *dir = (type == EIC_OTHER ? other : directive[type]);
+
+	  fputc ('#', yyout);
+	  for (i = 0; i < i_depth; i++)
+	    fputc (' ', yyout);
+	  fputs (dir, yyout);
+	}
     }
 
   return fail;
@@ -267,6 +280,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       fail = emit_or_check (t, yytext, keyword);
       break;
 
+    case EIC_PRAGMA:
     case EIC_OTHER:
       fail = emit_or_check (t, yytext, keyword);
       break;
