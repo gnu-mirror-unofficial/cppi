@@ -5,6 +5,7 @@
 	* cppi.l (gobble_line): New function.
 	"//": New rule.  Handle C++ comments.
 	(#-directive-rule): Recognize C++ comments here, too.
+	Reported by Hanif.
 
 	* Makefile.am (distcheck-hook): Add hook to Makefile.maint.
 
