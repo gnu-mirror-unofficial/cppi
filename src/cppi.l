@@ -245,11 +245,11 @@ b [^a-zA-Z_\n]
   PUT2 ('\0', ']');
 }
 
-^[ \t]*#[ \t]*if/[ \t]    { EMIT_DIR (EIC_IF); }
-^[ \t]*#[ \t]*ifdef/[ \t] { EMIT_DIR (EIC_IFDEF); }
-^[ \t]*#[ \t]*ifndef/[ \t] {EMIT_DIR (EIC_IFNDEF); }
+^[ \t]*#[ \t]*if/{b}      { EMIT_DIR (EIC_IF); }
+^[ \t]*#[ \t]*ifdef/{b}   { EMIT_DIR (EIC_IFDEF); }
+^[ \t]*#[ \t]*ifndef/{b}  { EMIT_DIR (EIC_IFNDEF); }
 
-^[ \t]*#[ \t]*elif/[ \t]  { EMIT_DIR (EIC_ELIF); }
+^[ \t]*#[ \t]*elif/{b}    { EMIT_DIR (EIC_ELIF); }
 ^[ \t]*#[ \t]*else{w}     { MY_ECHO; }
 ^[ \t]*#[ \t]*else/{b}    { EMIT_DIR (EIC_ELSE); }
 ^[ \t]*#[ \t]*else$       { EMIT_DIR (EIC_ELSE); }
