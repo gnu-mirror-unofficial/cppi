@@ -4,16 +4,14 @@ AM_CONFIG_HEADER(config.h)
 AC_PREREQ(2.13)dnl               dnl Minimum Autoconf version required.
 
 AM_INIT_AUTOMAKE([cppi], [1.7])
-GNU_PACKAGE="GNU $PACKAGE"
-AC_DEFINE_UNQUOTED(GNU_PACKAGE, "$GNU_PACKAGE")
 
 dnl Checks for programs.
 
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
-AC_PROG_RANLIB
 AM_PROG_LEX
+AC_PROG_CC_STDC
 AC_AIX
 AC_MINIX
 
@@ -37,4 +35,7 @@ AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
 dnl Checks for library functions.
 AC_CHECK_FUNCS(strerror)
 
-AC_OUTPUT([Makefile tests/Makefile])
+jm_AC_PREREQ_XSTRTOUMAX
+
+AC_CONFIG_FILES([Makefile m4/Makefile tests/Makefile])
+AC_OUTPUT
