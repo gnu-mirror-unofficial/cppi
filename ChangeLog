@@ -2,6 +2,8 @@
 
 	* Version 1.12.
 
+	* src/cpp-cond.c: Regenerate with gperf-3.0.1.
+
 	* lib/Makefile.am: Remove duplicate line: EXTRA_DIST += stdbool_.h.
 	(libgnulib_a_SOURCES): Add exit.h.
 	* lib/exit.h: New file.  From gnulib.
