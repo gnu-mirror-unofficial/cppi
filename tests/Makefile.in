@@ -72,7 +72,8 @@ TESTS = \
    stringify-1 \
    stringify-2 \
    stringify-3 \
-   stringify-4
+   stringify-4 \
+   8-bit
 
 EXTRA_DIST = test-common $(TESTS)
 TESTS_ENVIRONMENT = srcdir=@srcdir@
