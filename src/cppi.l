@@ -18,9 +18,24 @@
 #include "config.h"
 
 #include <stdio.h>
+
+#if HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <assert.h>
-#include <string.h>
+
+#if HAVE_STRING_H
+# if !STDC_HEADERS && HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#else
+# include <strings.h>
+#endif
+
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -652,6 +667,8 @@ The exit code will be one of these:\n\
   4 found a double-quoted string longer than the specified maximum\n\
 \n\
 A pragma directive may have its `#' indented.\n\
+\n\
+Report bugs to <bug-cppi@gnu.org>.\n\
 ",
 	      program_name, program_name);
     }
