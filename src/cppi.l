@@ -425,6 +425,21 @@ usage (int status)
       printf ("\
 Usage: %s [FILE]\n\
   or:  %s [-c] [FILE]...\n\
+Indent the C preprocessor directives in FILE to reflect their\n\
+nesting, and write the result to standard output.  With no FILE,\n\
+or when FILE is -, read standard input.\n\
+\n\
+With the -c option, don't write to stdout.  Instead, check the\n\
+indentation of the specified files giving diagnostics for preprocessor\n\
+lines that aren't properly indented or are otherwise invalid.\n\
+\n\
+The exit code will be one of these:\n\
+  0 all directives properly indented\n\
+  1 some cpp directive(s) improperly indented\n\
+  2 #if/#endif mismatch\n\
+  3 file (e.g. read/write) error\n\
+Set the `DISABLE_CPP_INDENT_CHECK' environment variable to disable\n\
+all checks.  It is useful only with -c.\n\
 ",
 	      program_name, program_name);
     }
@@ -457,6 +472,11 @@ main (int argc, char** argv)
       warn (0, "too many arguments");
       usage (1);
     }
+
+  /* This is the back door.  Set this environment variable to disable
+     all checks.  It is useful only with -c.  */
+  if (inhibit_output && getenv ("DISABLE_CPP_INDENT_CHECK"))
+    exit (0);
 
   file_list = (argc == 1 ? default_file_list : argv + 1);
 
