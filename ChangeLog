@@ -1,5 +1,7 @@
 1998-03-15  Jim Meyering  <meyering@eng.ascend.com>
 
+	* Makefile.am (cppi.c): Add explicit rule.
+
 	* cppi.l (VERSION): Remove definition.
 	(usage): Describe options.
 
