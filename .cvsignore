@@ -10,3 +10,4 @@ cppi.c
 lex.backup
 stamp-h
 stamp-h.in
+cpp.h
