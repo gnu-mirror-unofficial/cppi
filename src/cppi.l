@@ -33,6 +33,7 @@ extern int errno;
 
 #include "fatal.h"
 #include "obstack.h"
+#include "cpp.h"
 
 #define obstack_chunk_alloc malloc
 #define obstack_chunk_free free
@@ -70,33 +71,6 @@ extern int errno;
 #endif
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
-
-enum Eic_type
-{
-  EIC_IF,
-  EIC_IFDEF,
-  EIC_IFNDEF,
-  EIC_ELSE,
-  EIC_ELIF,
-  EIC_ENDIF,
-  EIC_PRAGMA,
-  EIC_DEFINE,
-  EIC_OTHER
-};
-
-static char const *const directive[] =
-{
-  /* FIXME: Note: This syntax uses a GCC extension.  */
-  [EIC_IF]	"if",
-  [EIC_IFDEF]	"ifdef",
-  [EIC_IFNDEF]	"ifndef",
-  [EIC_ELSE]	"else",
-  [EIC_ELIF]	"elif",
-  [EIC_ENDIF]	"endif",
-  [EIC_PRAGMA]	"pragma",
-  [EIC_DEFINE]	"define",
-  [EIC_OTHER]	""
-};
 
 #define OPENER_STACK_HEIGHT \
   (obstack_object_size (&opener_stack) / sizeof (struct KL_pair))
