@@ -1,10 +1,13 @@
 2001-12-08  Jim Meyering  <meyering@lucent.com>
 
+	* Version 1.11.
+
+	* cppi.l: (yywrap): Remove function.
+	Use `%option noyywrap' instead.
+
 	* Makefile.am (cpp-cond.c): Remove stray `rm'.
 
 2001-09-30  Jim Meyering  <meyering@lucent.com>
-
-	* Version 1.11.
 
 	* configure.ac: Tell automake to use the file name `config.hin'
 	rather than the two-`.' config.h.in.
