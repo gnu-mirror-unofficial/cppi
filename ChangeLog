@@ -1,5 +1,7 @@
 1998-10-02  Jim Meyering  <meyering@ascend.com>
 
+	* Makefile.am (CLEANFILES): Add lex.backup.
+
 	* Version 1.4.
 
 	Line numbers in diagnostics were off -- sometimes by a lot.
