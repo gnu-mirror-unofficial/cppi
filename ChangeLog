@@ -1,6 +1,10 @@
-2003-08-22  Jim Meyering  <jim@meyering.net>
+2003-11-22  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.12.
+
+	* src/Makefile.am: Don't set ACLOCAL_AMFLAGS here.
+
+2003-08-22  Jim Meyering  <jim@meyering.net>
 
 	* tests/{most tests}: Remove any `./' prefix on path to test-common.
 	Otherwise, a non-srcdir `make check' would fail.
