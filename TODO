@@ -15,3 +15,9 @@ and flex is not available.
 Likewise with cpp.gp and gperf (do this via the `missing' script).
 
 Add gettext support.
+
+Add C++ support: in particular, interpret // comments.
+  Otherwise, lines like this can cause spurious errors:
+  //*p = 1;
+  #if 0 /* foo */
+  #endif
