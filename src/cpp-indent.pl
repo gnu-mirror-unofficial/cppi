@@ -10,29 +10,29 @@ my $depth = 0;
 
 while (<>)
   {
-    if (/^#/)
+    if (/^\s*#/)
       {
-	if (/^#\s*(if(n?def)?)\b(.*)/)
+	if (/^\s*#\s*(if(n?def)?)\b/)
 	  {
 	    my $indent = $indent_incr x $depth;
-	    print "#$indent$1$3\n";
+	    print "#$indent$1$'";
 	    ++$depth;
 	  }
-	elsif (/^#\s*(else|elif)\b(.*)/)
+	elsif (/^\s*#\s*(else|elif)\b/)
 	  {
 	    my $indent = $indent_incr x ($depth - 1);
-	    print "#${indent}$1$2\n";
+	    print "#${indent}$1$'";
 	  }
-	elsif (/^#\s*endif\b(.*)/)
+	elsif (/^\s*#\s*endif\b/)
 	  {
 	    --$depth;
 	    my $indent = $indent_incr x $depth;
-	    print "#${indent}endif$1\n";
+	    print "#${indent}endif$'";
 	  }
-	elsif (/^#\s*(.*)/)
+	elsif (/^\s*#\s*/)
 	  {
 	    my $indent = $indent_incr x $depth;
-	    print '#', $indent, $1, "\n";
+	    print "#$indent$1$'";
 	  }
 	else
 	  {
