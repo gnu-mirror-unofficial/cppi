@@ -138,7 +138,7 @@ AUTOMAKE_OPTIONS = 1.7 gnits
 
 noinst_LIBRARIES = libgnulib.a
 
-libgnulib_a_SOURCES = closeout.h closeout.c exitfail.h exitfail.c __fpending.h gettext.h quotearg.h quotearg.c unlocked-io.h xalloc.h xmalloc.c xstrdup.c xstrtol.h xstrtol.c xstrtoul.c version-etc.h version-etc.c pathmax.h
+libgnulib_a_SOURCES = closeout.h closeout.c exitfail.h exitfail.c __fpending.h gettext.h quotearg.h quotearg.c unlocked-io.h xalloc.h xmalloc.c xstrdup.c xstrtol.h xstrtol.c xstrtoul.c version-etc.h version-etc.c pathmax.h getopt.h getopt.c getopt1.c
 libgnulib_a_LIBADD = $(LIBOBJS)
 
 EXTRA_DIST = stdbool_.h stdbool_.h alloca_.h
@@ -159,7 +159,8 @@ libgnulib_a_AR = $(AR) cru
 libgnulib_a_DEPENDENCIES = @LIBOBJS@
 am_libgnulib_a_OBJECTS = closeout.$(OBJEXT) exitfail.$(OBJEXT) \
 	quotearg.$(OBJEXT) xmalloc.$(OBJEXT) xstrdup.$(OBJEXT) \
-	xstrtol.$(OBJEXT) xstrtoul.$(OBJEXT) version-etc.$(OBJEXT)
+	xstrtol.$(OBJEXT) xstrtoul.$(OBJEXT) version-etc.$(OBJEXT) \
+	getopt.$(OBJEXT) getopt1.$(OBJEXT)
 libgnulib_a_OBJECTS = $(am_libgnulib_a_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -168,7 +169,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/__fpending.Po $(DEPDIR)/error.Po \
 @AMDEP_TRUE@	$(DEPDIR)/malloc.Po $(DEPDIR)/obstack.Po \
 @AMDEP_TRUE@	$(DEPDIR)/realloc.Po ./$(DEPDIR)/closeout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/exitfail.Po ./$(DEPDIR)/quotearg.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/exitfail.Po ./$(DEPDIR)/getopt.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/getopt1.Po ./$(DEPDIR)/quotearg.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/version-etc.Po ./$(DEPDIR)/xmalloc.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/xstrdup.Po ./$(DEPDIR)/xstrtol.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/xstrtoul.Po
@@ -214,6 +216,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/realloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/closeout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exitfail.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getopt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getopt1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quotearg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version-etc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmalloc.Po@am__quote@
