@@ -1,5 +1,6 @@
 #! @PERL@ -w
 # Filter C code so that CPP #-directives are indented to reflect nesting.
+# written by Jim Meyering
 use strict;
 
 # TODO: allow these to be overridden by command-line options
