@@ -25,6 +25,8 @@ extern int errno;
    _c_;						\
  })
 
+#define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
+
 static int lineno = 1;
 static int i_depth = 0;
 static int inhibit_output = 0;
@@ -61,8 +63,7 @@ emit_indented_cpp (char const *directive, FILE *out)
 "/*"        {
   register int c;
 
-  if (!inhibit_output)
-    ECHO;
+  MY_ECHO;
   for ( ; ; )
     {
       while ((c = input_and_echo ()) != '*' && c != EOF)
@@ -90,8 +91,7 @@ emit_indented_cpp (char const *directive, FILE *out)
 /* We need this so that the double quote in the character literal, '"',
    is not interpreted as the string opener.  */
 "'\"'" {
-  if (!inhibit_output)
-    ECHO;
+  MY_ECHO;
 }
 
 "\"" {
@@ -101,8 +101,7 @@ emit_indented_cpp (char const *directive, FILE *out)
      a string of them immediately precedes a double quote.  */
   int n_backslashes = 0;
 
-  if (!inhibit_output)
-    ECHO;
+  MY_ECHO;
 
   while (1)
     {
@@ -133,8 +132,8 @@ emit_indented_cpp (char const *directive, FILE *out)
 
 ^[ \t]*#			{ emit_indented_cpp ("", yyout); }
 
-.				{ if (!inhibit_output) ECHO; }
-\n				{ if (!inhibit_output) ECHO; ++lineno; }
+.				{ MY_ECHO; }
+\n				{ MY_ECHO; ++lineno; }
 
 %%
 
