@@ -1,4 +1,9 @@
 %option noyywrap
+%top{
+/* config.h must precede flex's inclusion of <stdio.h>
+   in order for its _GNU_SOURCE definition to take effect.  */
+#include "config.h"
+}
 
 %{ /* -*- C -*- */
 
@@ -13,9 +18,6 @@
 # error This scanner must be made using flex, not lex.
 #endif
 
-#include "config.h"
-
-#include <stdio.h>
 #include <assert.h>
 
 #include <sys/types.h>
