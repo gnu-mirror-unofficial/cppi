@@ -1,12 +1,11 @@
 ## Process this file with automake to produce Makefile.in.
 
-AUTOMAKE_OPTIONS = 1.5 gnits no-dependencies
+AUTOMAKE_OPTIONS = 1.7 gnits
 
 noinst_LIBRARIES = libgnulib.a
 
-gnulib_SOURCES =
-gnulib_LIBADD = $(LIBOBJS)
-#gnulib_LIBADD = $(LTLIBOBJS)
+libgnulib_a_SOURCES =
+libgnulib_a_LIBADD = $(LIBOBJS)
 EXTRA_DIST =
 BUILT_SOURCES =
 SUFFIXES =
@@ -14,25 +13,26 @@ MOSTLYCLEANFILES =
 CLEANFILES =
 DISTCLEANFILES =
 MAINTAINERCLEANFILES =
-gnulib_SOURCES += closeout.h closeout.c
 
-gnulib_SOURCES += exitfail.h exitfail.c
+libgnulib_a_SOURCES += closeout.h closeout.c
 
-gnulib_SOURCES += __fpending.h
+libgnulib_a_SOURCES += exitfail.h exitfail.c
 
-gnulib_SOURCES += gettext.h
+libgnulib_a_SOURCES += __fpending.h
 
-gnulib_SOURCES += quotearg.h quotearg.c
+libgnulib_a_SOURCES += gettext.h
 
-gnulib_SOURCES += unlocked-io.h
+libgnulib_a_SOURCES += quotearg.h quotearg.c
 
-gnulib_SOURCES += xalloc.h xmalloc.c xstrdup.c
+libgnulib_a_SOURCES += unlocked-io.h
 
-gnulib_SOURCES += xstrtol.h xstrtol.c xstrtoul.c
+libgnulib_a_SOURCES += xalloc.h xmalloc.c xstrdup.c
 
-gnulib_SOURCES += version-etc.h version-etc.c
+libgnulib_a_SOURCES += xstrtol.h xstrtol.c xstrtoul.c
 
-gnulib_SOURCES += pathmax.h
+libgnulib_a_SOURCES += version-etc.h version-etc.c
+
+libgnulib_a_SOURCES += pathmax.h
 
 EXTRA_DIST += stdbool_.h
 
