@@ -3,8 +3,6 @@ optimize = -pipe -O2
 CFLAGS = -I. -g $(optimize) -Wall -Wshadow -D__USE_FIXED_PROTOTYPES__
 LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
-PERL = /p/bin/perl
-
 LEX = flex
 lex_debug = #-d
 lex_optimize = -Cfr -p -b
@@ -31,15 +29,7 @@ cpp-cond-lookup.c: cpp.gp
 	mv $@-tmp $@
 
 .SUFFIXES:
-.SUFFIXES: .c .o .l .pl
-
-editpl = sed -e 's,@''PERL''@,$(PERL),g'
-perl_in = $(wildcard *.pl)
-perl = $(patsubst %.pl,%,$(perl_in))
-
-.pl:
-	rm -f $@ $@.tmp
-	$(editpl) $< > $@.tmp && chmod +x-w $@.tmp && mv $@.tmp $@
+.SUFFIXES: .c .o .l
 
 #.PRECIOUS: cppi.c
 
