@@ -5,7 +5,7 @@ all: a.O
 	diff -u a.E a.O
 
 a.O: a.I cpp-indent
-	./cpp-indent < $< > $@-tmp
+	./cpp-indent $< > $@-tmp
 	mv $@-tmp $@
 
 .SUFFIXES:
