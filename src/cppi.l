@@ -58,32 +58,6 @@ extern int errno;
    _c_;						\
  })
 
-#define EMIT(T)								\
-  do									\
-    {									\
-      if (inhibit_output)						\
-	{								\
-	  int n;							\
-	  if (text[0] == '#'						\
-	      && (n = strspn (text + 1, " ")) == i_depth		\
-	      && ((T == EIC_OTHER && text[1 + n] == '\0')		\
-		  || text[1 + n] == 'e' || text[1 + n] == 'i'))		\
-	    {								\
-	      ok = 1;							\
-	    }								\
-	}								\
-      else								\
-	{								\
-	  int i;							\
-	  ok = 1;							\
-	  fputc ('#', yyout);						\
-	  for (i = 0; i < i_depth; i++)					\
-	    fputc (' ', yyout);						\
-	  fputs (directive[T], yyout);					\
-	}								\
-    }									\
-  while (0)
-
 /* This is the maximum ifdef nesting level.  */
 /* FIXME: remove this limitation, someday.  */
 #define MAX_DEPTH 40
@@ -91,9 +65,9 @@ extern int errno;
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
 #define EMIT_DIR(Tok) \
-    emit_indented_cpp ((Tok), yytext, &kl_stack, in_file, &g_fail)
+    emit_indented_cpp (in_file, lineno, (Tok), yytext, &kl_stack, &g_fail)
 
-enum eic_type
+enum Eic_type
 {
   EIC_IF,
   EIC_IFDEF,
@@ -125,10 +99,7 @@ struct Stack
 static int g_fail = 0;
 
 /* Current nesting level.  */
-int i_depth;
-
-/* Current line number -- for diagnostics and errors.  */
-unsigned int lineno;
+static int i_depth;
 
 /* Set to non-zero to inhibit non-error output.  */
 static int inhibit_output = 0;
@@ -144,7 +115,7 @@ yywrap (void)
 }
 
 static int
-kl_pack (enum eic_type t, unsigned int line_number)
+kl_pack (enum Eic_type t, unsigned int line_number)
 {
   assert (t == EIC_IF
 	  || t == EIC_IFDEF
@@ -154,9 +125,9 @@ kl_pack (enum eic_type t, unsigned int line_number)
 }
 
 static void
-kl_unpack (int kl_pair, enum eic_type *t, unsigned int *line_number)
+kl_unpack (int kl_pair, enum Eic_type *t, unsigned int *line_number)
 {
-  *t = (enum eic_type) (kl_pair & 0x3);
+  *t = (enum Eic_type) (kl_pair & 0x3);
   *line_number = ((unsigned int) kl_pair >> 2);
 }
 
@@ -174,11 +145,41 @@ push (struct Stack *s, int packed_pair)
   s->vec[s->top++] = packed_pair;
 }
 
-static void
-emit_indented_cpp (enum eic_type t, char const *text,
-		   struct Stack *s, char const *in_file, int *exit_status)
+static int
+emit_or_check (enum Eic_type type, const char *text)
 {
-  int ok = 0;
+  int fail = 1;
+
+  if (inhibit_output)
+    {
+      int n;
+      if (text[0] == '#'
+	  && (n = strspn (text + 1, " ")) == i_depth
+	  && ((type == EIC_OTHER && text[1 + n] == '\0')
+	      || text[1 + n] == 'e' || text[1 + n] == 'i'))
+	{
+	  fail = 0;
+	}
+    }
+  else
+    {
+      int i;
+      fail = 0;
+      fputc ('#', yyout);
+      for (i = 0; i < i_depth; i++)
+	fputc (' ', yyout);
+      fputs (directive[type], yyout);
+    }
+
+  return fail;
+}
+
+static void
+emit_indented_cpp (char const *in_file, unsigned int line_number,
+		   enum Eic_type t, char const *text,
+		   struct Stack *s, int *exit_status)
+{
+  int fail;
 
   switch (t)
     {
@@ -188,9 +189,9 @@ emit_indented_cpp (enum eic_type t, char const *text,
       /* Maintain a stack of (keyword, line number) pairs to better
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
-      push (s, kl_pack (t, lineno));
+      push (s, kl_pack (t, line_number));
 
-      EMIT (t);
+      fail = emit_or_check (t, yytext);
       ++i_depth;
       break;
 
@@ -199,15 +200,15 @@ emit_indented_cpp (enum eic_type t, char const *text,
       if (i_depth <= 0)
 	{
 	  warn (0, "%s: %s: line %d: found #%s without matching #if",
-	    program_name, in_file, lineno, directive[t]);
+	    program_name, in_file, line_number, directive[t]);
 	  i_depth = 0;
+	  fail = emit_or_check (t, yytext);
 	  *exit_status = 2;
-	  EMIT (t);
 	}
       else
 	{
 	  --i_depth;
-	  EMIT (t);
+	  fail = emit_or_check (t, yytext);
 	  ++i_depth;
 	}
       break;
@@ -216,7 +217,7 @@ emit_indented_cpp (enum eic_type t, char const *text,
       if (i_depth <= 0)
 	{
 	  warn (0, "%s: %s: line %d: found #%s without matching #if",
-	    program_name, in_file, lineno, directive[t]);
+	    program_name, in_file, line_number, directive[t]);
 	  i_depth = 1;
 	  *exit_status = 2;
 	}
@@ -227,23 +228,23 @@ emit_indented_cpp (enum eic_type t, char const *text,
 	}
 
       --i_depth;
-      EMIT (t);
+      fail = emit_or_check (t, yytext);
       break;
 
     case EIC_OTHER:
-      EMIT (t);
+      fail = emit_or_check (t, yytext);
       break;
 
     default:
       abort ();
     }
 
-  if (!ok)
+  if (fail)
     {
       if (*exit_status == 0)
 	*exit_status = 1;
       warn (0, "%s: %s: line %d: not properly indented",
-	    program_name, in_file, lineno);
+	    program_name, in_file, line_number);
     }
 }
 
@@ -260,9 +261,11 @@ b [^a-zA-Z_\n]
      the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
   struct Stack kl_stack;
 
+  /* Current line number -- for diagnostics and errors.  */
+  unsigned int lineno = 1;
+
   kl_stack.top = 0;
   i_depth = 0;
-  lineno = 1;
 
 %}
 
@@ -367,7 +370,7 @@ b [^a-zA-Z_\n]
       int i;
       for (i = 0; i < kl_stack.top; i++)
 	{
-	  enum eic_type t;
+	  enum Eic_type t;
 	  unsigned int line_number;
 
 	  kl_unpack (kl_stack.vec[i], &t, &line_number);
