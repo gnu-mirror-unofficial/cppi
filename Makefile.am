@@ -11,6 +11,9 @@ EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
 SUBDIRS = tests
 
 MAINTAINERCLEANFILES = cpp-cond-lookup.c
+CLEANFILES = cpp.h
+
+PERL = @PERL@
 
 cpp-cond-lookup.c: cpp.gp
 	rm -f $@ $@-tmp
@@ -36,5 +39,26 @@ cppi.c: cppi.l
 	$(LEX) $(LFLAGS) $(srcdir)/cppi.l
 	chmod a-w $(LEX_OUTPUT_ROOT).c
 	mv $(LEX_OUTPUT_ROOT).c $@
+
+cpp.h: cpp.gp Makefile.am
+	@rm -f $@-tmp $@
+	@(								\
+	 echo '/* This file is generated automatically from $<.  */';	\
+	 echo;								\
+	 echo 'enum Eic_type';						\
+	 echo '{';							\
+	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $<;			\
+	 echo '  EIC_OTHER';						\
+	 echo '};';							\
+	 echo;								\
+	 echo 'static char const *const directive[] =';			\
+	 echo '{';							\
+	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $<;			\
+	 echo '  ""';							\
+	 echo '};';							\
+	)								\
+	  > $@-tmp
+	@chmod -w $@-tmp
+	@mv $@-tmp $@
 
 BUILT_SOURCES = cpp-cond-lookup.c
