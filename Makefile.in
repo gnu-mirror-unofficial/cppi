@@ -559,13 +559,12 @@ uninstall-info: uninstall-info-recursive
 
 
 cpp-cond.c: cpp.gp
-	rm -f $@ $@-tmp $@-t2
+	rm -f $@ $@-tmp
 	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  > $@-tmp
-	sed 's/str\[/(unsigned char) str[/' $@-tmp > $@-t2
 	rm -f $@-tmp
-	chmod a-w $@-t2
-	mv $@-t2 $@
+	chmod a-w $@-tmp
+	mv $@-tmp $@
 
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
