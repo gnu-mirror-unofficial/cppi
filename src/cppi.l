@@ -568,7 +568,7 @@ main (int argc, char** argv)
     }
 
   /* This is the back door.  Set this environment variable to disable
-     all checks.  It is useful only with -c.  */
+     all checks.  It is useful only with -c or -C.  */
   if (inhibit_output && getenv ("DISABLE_CPP_INDENT_CHECK"))
     exit (0);
 
