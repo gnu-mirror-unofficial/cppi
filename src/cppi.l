@@ -33,6 +33,7 @@ extern int errno;
 
 #include "fatal.h"
 #include "obstack.h"
+#include "xstrtol.h"
 #include "cpp.h"
 
 #define obstack_chunk_alloc malloc
@@ -113,6 +114,10 @@ static int ansi_check = 0;
 /* Set to non-zero to inhibit non-error output.  */
 static int inhibit_output = 0;
 
+/* The maximum length of a double-quoted string.  Set to zero
+   to indicate there is no limit.  */
+static unsigned long int max_string_length = 0;
+
 static char *default_file_list[] = {"-", NULL};
 
 char *program_name;
@@ -128,6 +133,7 @@ static struct option const long_options[] =
   {"ansi", no_argument, NULL, 'a'},
   {"check", no_argument, NULL, 'c'},
   {"list-files-only", no_argument, NULL, 'l'},
+  {"max-string-length", required_argument, NULL, 'm'},
   {"help", no_argument, &show_help, 1},
   {"version", no_argument, &show_version, 1},
   {NULL, 0, NULL, 0}
@@ -397,6 +403,7 @@ b [^a-zA-Z_\n]
   /* Count consecutive backslashes.  We'll need this number when
      a string of them immediately precedes a double quote.  */
   int n_backslashes = 0;
+  int string_length = 0;
 
   PUT2 ('[', '\0');
   MY_ECHO;
@@ -417,10 +424,26 @@ b [^a-zA-Z_\n]
 	break;
 
       n_backslashes = (c == '\\' ? n_backslashes + 1 : 0);
+
+      /* Some compilers (irix4's cc) impose a limit on the length of a
+	 double quoted string.  It's probably a limit on the length of
+	 the actual value of the string, rather than on the number of
+	 bytes between `"'s in the source, but I'm not sure it's worth
+	 the trouble of computing the former.  */
+      ++string_length;
+
       if (c == '\n')
 	++lineno;
     }
+
   PUT2 ('\0', ']');
+
+  if (0 < max_string_length && max_string_length < string_length)
+    {
+      fatal (4, 0, "%s: %s: line %d: string (%d) longer than maximum of %lu",
+	     program_name, in_file, start_lineno, string_length,
+	     max_string_length);
+    }
 }
 
 ^[ \t]*#[ \t]*[a-zA-Z0-9_]+   {
@@ -606,6 +629,10 @@ to standard output.  With no FILE, or when FILE is -, read standard input.\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
 			   print to stdout only the names of files that\n\
 			   are not properly indented\n\
+  -m, --max-string-length=LEN\n\
+                         fail if there is a double-quoted string longer\n\
+                           than LEN;  if LEN is 0 (the default), then there\n\
+                           is no limit\n\
       --help             print this help, then exit\n\
       --version          print tar program version number, then exit\n\
 \n\
@@ -622,6 +649,7 @@ The exit code will be one of these:\n\
   1 if text follows #else/#endif (enabled with --check --ansi)\n\
   2 #if/#endif mismatch\n\
   3 file (e.g. read/write) error\n\
+  4 found a double-quoted string longer than the specified maximum\n\
 \n\
 A pragma directive may have its `#' indented.\n\
 ",
@@ -714,10 +742,11 @@ main (int argc, char** argv)
   int max_err;
   char **file_list;
   int c;
+  int fail = 0;
 
   program_name = argv[0];
 
-  while ((c = getopt_long (argc, argv, "acl", long_options, NULL)) != -1)
+  while ((c = getopt_long (argc, argv, "aclm:", long_options, NULL)) != -1)
     {
       switch (c)
 	{
@@ -737,6 +766,15 @@ main (int argc, char** argv)
 	  list_files_only = 1;
 	  break;
 
+	case 'm':
+	  if (xstrtoul (optarg, NULL, 0, &max_string_length, NULL)
+	      != LONGINT_OK)
+	    {
+	      warn (0, "invalid maximum string length %s", optarg);
+	      fail = 1;
+	    }
+	  break;
+
 	default:
 	  usage (2);
 	  break;
@@ -752,7 +790,10 @@ main (int argc, char** argv)
   if (show_help)
     usage (0);
 
-  if (!inhibit_output && argc > 2)
+  if (fail)
+    exit (1);
+
+  if (!inhibit_output && argc - optind > 2)
     {
       warn (0, "too many arguments");
       usage (1);
