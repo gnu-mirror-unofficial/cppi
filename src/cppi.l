@@ -64,10 +64,6 @@ extern int errno;
 # define isblank(c) ((c) == ' ' || (c) == '\t')
 #endif
 
-/* This is the maximum ifdef nesting level.  */
-/* FIXME: remove this limitation, someday.  */
-#define MAX_DEPTH 40
-
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
 enum Eic_type
@@ -96,9 +92,20 @@ static char const *const directive[] =
   [EIC_OTHER]	""
 };
 
+struct KL_pair
+{
+  enum Eic_type keyword_type;
+  unsigned int line_number;
+};
+
+/* This is the maximum ifdef nesting level.  */
+/* FIXME: remove this limitation, some day.  */
+#define MAX_DEPTH 40
+
+/* FIXME: implement with an obstack.  */
 struct Stack
 {
-  int vec[MAX_DEPTH];
+  struct KL_pair vec[MAX_DEPTH];
   int top;
 };
 
@@ -169,24 +176,14 @@ yywrap (void)
   return 1;
 }
 
-static int
-kl_pack (enum Eic_type t, unsigned int line_number)
+static struct KL_pair
+nth_entry (const struct Stack *s, int i)
 {
-  assert (t == EIC_IF
-	  || t == EIC_IFDEF
-	  || t == EIC_IFNDEF);
-  assert (0 <= (int) t && (int) t <= 2);
-  return ((line_number << 2) | (unsigned int) t);
+  assert (0 <= i && i < s->top);
+  return s->vec[i];
 }
 
-static void
-kl_unpack (int kl_pair, enum Eic_type *t, unsigned int *line_number)
-{
-  *t = (enum Eic_type) (kl_pair & 0x3);
-  *line_number = ((unsigned int) kl_pair >> 2);
-}
-
-static int
+static struct KL_pair
 pop (struct Stack *s)
 {
   assert (s->top > 0);
@@ -194,10 +191,10 @@ pop (struct Stack *s)
 }
 
 static void
-push (struct Stack *s, int packed_pair)
+push (struct Stack *s, struct KL_pair pair)
 {
   assert (s->top < MAX_DEPTH);
-  s->vec[s->top++] = packed_pair;
+  s->vec[s->top++] = pair;
 }
 
 static int
@@ -268,7 +265,12 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       /* Maintain a stack of (keyword, line number) pairs to better
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
-      push (s, kl_pack (t, line_number));
+      {
+	struct KL_pair x;
+	x.keyword_type = t;
+	x.line_number = line_number;
+	push (s, x);
+      }
 
       *fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
@@ -357,7 +359,9 @@ b [^a-zA-Z_\n]
 
   int lex_fail = 0;
 
+  /* FIXME: call a stack initialization function.  */
   kl_stack.top = 0;
+
   i_depth = 0;
 
 %}
@@ -495,18 +499,19 @@ b [^a-zA-Z_\n]
 <<EOF>> {
   if (i_depth != 0)
     {
-      /* Iterate the opener stack from bottom to top, giving a
-	 diagnostic per unterminated #if* directive.  */
-      int i;
-      for (i = 0; i < kl_stack.top; i++)
+      if (!list_files_only)
 	{
-	  enum Eic_type t;
-	  unsigned int line_number;
-
-	  kl_unpack (kl_stack.vec[i], &t, &line_number);
-	  if (!list_files_only)
-	    warn (0, "%s: %s: line %d: unterminated #%s",
-		  program_name, in_file, line_number, directive[t]);
+	  /* Iterate the opener stack from bottom to top, giving a
+	     diagnostic per unterminated #if* directive.  */
+	  int i;
+	  /* FIXME don't reference .top explicitely.  */
+	  for (i = 0; i < kl_stack.top; i++)
+	    {
+	      struct KL_pair x = nth_entry (&kl_stack, i);
+	      warn (0, "%s: %s: line %d: unterminated #%s",
+		    program_name, in_file, x.line_number,
+		    directive[x.keyword_type]);
+	    }
 	}
 
       lex_fail = 2;
