@@ -1,3 +1,24 @@
+1999-02-12  Jim Meyering  <meyering@ascend.com>
+
+	* tests/ansi-6: New test.
+	* tests/Makefile.am (TESTS): Add it.
+
+1999-02-10  Jim Meyering  <meyering@ascend.com>
+
+	* cppi.l (gobble_comment): New function -- extracted from
+	comment-processing rule.
+	(#-directive-rule): Detect text after #else and #endif.
+	Use gobble_comment here, too.
+	New option: --ansi (-a).
+
+	* tests/Makefile.am (TESTS): Add new ansi-? tests.
+
+	* tests/e9: Adjust for new #else/#endif ansi test.
+	* tests/ansi-1: New test.
+	* tests/ansi-2: New test.
+	* tests/ansi-3: New test.
+	* tests/ansi-4: New test.
+
 1998-11-22  Jim Meyering  <meyering@ascend.com>
 
 	* Version 1.6.
