@@ -1,13 +1,15 @@
 .deps
-autom4te
 Makefile
-config.h config.cache
+autom4te
+config.cache
+config.h
+config.hin
 config.log
 config.status
 cpp-indent
+cpp.h
 cppi
 cppi.c
 lex.backup
 stamp-h
 stamp-h.in
-cpp.h
