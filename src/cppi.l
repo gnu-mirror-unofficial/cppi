@@ -582,9 +582,6 @@ The exit code will be one of these:\n\
   2 #if/#endif mismatch\n\
   3 file (e.g. read/write) error\n\
 \n\
-Set the `DISABLE_CPP_INDENT_CHECK' environment variable to disable\n\
-all checks.  It is useful only with -c.\n\
-\n\
 Pragma directives may have their `#' indented.\n\
 ",
 	      program_name, program_name);
@@ -665,11 +662,6 @@ main (int argc, char** argv)
       warn (0, "too many arguments");
       usage (1);
     }
-
-  /* This is the back door.  Set this environment variable to disable
-     all checks.  It is useful only with -c.  */
-  if (inhibit_output && getenv ("DISABLE_CPP_INDENT_CHECK"))
-    exit (0);
 
   file_list = (optind == argc ? default_file_list : argv + optind);
 
