@@ -1,3 +1,8 @@
+In addition to " #pragma", " #error" should also be granted
+an exception, since the unindented form would be rejected by
+pre-ANSI C preprocessors.
+  From Karl Heuer
+
 Write documentation
   Include an example explaining how to use cppi as part of a cvs commit hook.
 
