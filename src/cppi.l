@@ -15,6 +15,10 @@
 # error This scanner must be compiled with gcc.
 #endif
 
+/* FIXME: Use autoconf, and then include config.h rather than hard-coding
+   something like this.  */
+#define HAVE_STRING_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -30,6 +34,10 @@ extern int errno;
 #endif
 
 #include "fatal.h"
+#include "obstack.h"
+
+#define obstack_chunk_alloc malloc
+#define obstack_chunk_free free
 
 #ifndef EXIT_FAILURE
 # define EXIT_FAILURE 1
@@ -39,7 +47,7 @@ extern int errno;
 # define EXIT_SUCCESS 0
 #endif
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 
 #ifdef MY_DEBUG
 # define PUT2(x,y) do { putchar (x); putchar (y); } while (0)
@@ -52,6 +60,7 @@ extern int errno;
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
+/* NOTE: this use of stmt-expression is another gcc-ism.  */
 #define INPUT_AND_ECHO()			\
  ({						\
    int _c_ = input ();				\
@@ -93,6 +102,9 @@ static char const *const directive[] =
   [EIC_OTHER]	""
 };
 
+#define OPENER_STACK_HEIGHT \
+  (obstack_object_size (&opener_stack) / sizeof (struct KL_pair))
+
 /* An entry on the stack of opener (keyword/line_number) specs.  */
 struct KL_pair
 {
@@ -104,21 +116,15 @@ struct KL_pair
   unsigned int line_number;
 };
 
-/* This is the maximum ifdef nesting level.  */
-/* FIXME: remove this limitation, some day.  */
-#define MAX_DEPTH 40
-
-/* FIXME: implement with an obstack.  */
-struct Stack
-{
-  struct KL_pair vec[MAX_DEPTH];
-  int top;
-};
+/* A stack of cpp-opener-directive-spec/line-number pairs.
+   This lets us report the line numbers of any unmatched #if,
+   #ifdef, or #ifndef directives.  */
+static struct obstack opener_stack;
 
 /* Current nesting level.  */
 static int i_depth;
 
-/* Nonzero means don't generate diagnostics about indentation and print
+/* Nonzero means don't generate diagnostics about indentation, and print
    to stdout only the names of files that aren't properly indented.  */
 static int list_files_only;
 
@@ -183,24 +189,24 @@ yywrap (void)
 }
 
 static __inline struct KL_pair
-nth_entry (const struct Stack *s, int i)
+kth_entry (int k)
 {
-  assert (0 <= i && i < s->top);
-  return s->vec[i];
-}
-
-static __inline struct KL_pair
-pop (struct Stack *s)
-{
-  assert (s->top > 0);
-  return s->vec[--(s->top)];
+  struct KL_pair *s = (struct KL_pair *) obstack_base (&opener_stack);
+  assert (0 <= k && k < OPENER_STACK_HEIGHT);
+  return s[k];
 }
 
 static __inline void
-push (struct Stack *s, struct KL_pair pair)
+pop (void)
 {
-  assert (s->top < MAX_DEPTH);
-  s->vec[s->top++] = pair;
+  assert (OPENER_STACK_HEIGHT > 0);
+  obstack_blank (&opener_stack, -(sizeof (struct KL_pair)));
+}
+
+static __inline void
+push (struct KL_pair pair)
+{
+  obstack_grow (&opener_stack, &pair, sizeof (struct KL_pair));
 }
 
 static int
@@ -255,8 +261,7 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
 
 static enum Eic_type
 emit_indented_cpp (char const *in_file, unsigned int line_number,
-		   char const *text, size_t len,
-		   struct Stack *s, int *fail)
+		   char const *text, size_t len, int *fail)
 {
   const char *keyword;
   enum Eic_type t = lookup_cpp_keyword (text, len, &keyword);
@@ -272,7 +277,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
       /* FIXME: Note: this initialization syntax uses a GCC extension.  */
-      push (s, (struct KL_pair) {t, line_number});
+      push ((struct KL_pair) {t, line_number});
 
       *fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
@@ -315,7 +320,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	  /* We've just found an #endif.  Pop off and discard the
 	     keyword,line-number pair that's on the top of the stack.
 	     That pair identifies the matching #if, #ifdef, or #ifndef.  */
-	  pop (s);
+	  pop ();
 	}
 
       --i_depth;
@@ -356,17 +361,12 @@ b [^a-zA-Z_\n]
 %{
   /* This section contains dcls and code local to the scanning routine.  */
 
-  /* Stack of (opening-keyword, line number) pairs.  This lets us report
-     the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
-  struct Stack kl_stack;
-
   /* Current line number -- for diagnostics and errors.  */
   unsigned int lineno = 1;
 
   int lex_fail = 0;
 
-  /* FIXME: call a stack initialization function.  */
-  kl_stack.top = 0;
+  obstack_init (&opener_stack);
 
   i_depth = 0;
 
@@ -457,7 +457,7 @@ b [^a-zA-Z_\n]
   enum Eic_type t;
   int fail;
 
-  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &fail);
+  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &fail);
 
   if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
     {
@@ -510,10 +510,9 @@ b [^a-zA-Z_\n]
 	  /* Iterate the opener stack from bottom to top, giving a
 	     diagnostic per unterminated #if* directive.  */
 	  int i;
-	  /* FIXME don't reference .top explicitely.  */
-	  for (i = 0; i < kl_stack.top; i++)
+	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
 	    {
-	      struct KL_pair x = nth_entry (&kl_stack, i);
+	      struct KL_pair x = kth_entry (i);
 	      warn (0, "%s: %s: line %d: unterminated #%s",
 		    program_name, in_file, x.line_number,
 		    directive[x.opener_type]);
