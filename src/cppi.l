@@ -653,7 +653,9 @@ Usage: %s [FILE]\n\
 Indent the C preprocessor directives in FILE to reflect their nesting\n\
 and ensure that there is exactly one space character between each #if,\n\
 #elif, #define directive and the following token, and write the result\n\
-to standard output.  With no FILE, or when FILE is -, read standard input.\n\
+to standard output.  The number of spaces between the `#' and the following\n\
+directive must correspond to the level of nesting of that directive.\n\
+With no FILE, or when FILE is -, read standard input.\n\
 \n\
   -a, --ansi             when checking, fail if text follows #else or #endif\n\
   -c, --check            set exit code, but don't produce any output\n\
