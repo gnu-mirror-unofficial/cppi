@@ -2,6 +2,10 @@
 
 	* Version 1.11.
 
+	* Makefile.maint (syntax checks): Use cvsu more (so we check only
+	version-controlled files), rather than hard-coding exclusions
+	for generated files like cppi.c.
+
 	* m4/po.m4: Change SPACE-TAB sequence to TAB-SPACE in sed range.
 	* tests/f5: Change SPACE-TAB sequence to TAB-SPACE.
 
