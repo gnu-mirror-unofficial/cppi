@@ -970,7 +970,7 @@ fi
 
 # Define the identity of the package.
 PACKAGE=cppi
-VERSION=1.7
+VERSION=1.8
 
 cat >>confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
