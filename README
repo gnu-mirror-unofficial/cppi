@@ -2,9 +2,6 @@ Please glance through *all* sections of this
 `README' file before starting configuration.  Also make sure you read files
 `ABOUT-NLS' and `INSTALL' if you are not familiar with them already.
 
-If you got the `cppi' distribution in `shar' format, time stamps ought to be
-properly restored; do not ignore such complaints at `unshar' time.
-
 GNU `cppi' adjusts or checks the indentation of C and C++ preprocessor
 directives in a file.
 
