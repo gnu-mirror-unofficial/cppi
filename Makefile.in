@@ -443,9 +443,19 @@ maintainer-clean
 
 
 cpp-cond-lookup.c: cpp.gp
+	rm -f $@ $@-tmp
 	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
+	chmod a-w $@-tmp
 	mv $@-tmp $@
+
+# Don't use automake's default .l.c rule.
+# I prefer to make generated .c files unwritable.
+cppi.c: cppi.l
+	rm -f $@
+	$(LEX) $(LFLAGS) $(srcdir)/cppi.l
+	chmod a-w $(LEX_OUTPUT_ROOT).c
+	mv $(LEX_OUTPUT_ROOT).c $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
