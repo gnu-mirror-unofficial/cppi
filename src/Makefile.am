@@ -12,7 +12,6 @@ CLEANFILES = cpp.h lex.backup
 
 GPERF = gperf
 
-ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I.. -I$(srcdir) -I$(top_srcdir)/lib -I../lib
 
 LDADD = ../lib/libgnulib.a $(LIBINTL) ../lib/libgnulib.a
