@@ -1,5 +1,3 @@
-convert to use automake/autoconf
-
 Add overwrite option -- maybe use GNU-style backup code.
 
 Allow regex filtering (use Henry Spencer's new perl-like regexps)
