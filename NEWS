@@ -1,3 +1,5 @@
+Changes in release 1.6:
+* portability: no file names longer than 14 bytes
 Changes in release 1.4:
 * gives accurate line numbers in diagnostics
 Changes in release 1.3:

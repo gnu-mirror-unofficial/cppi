@@ -1,3 +1,9 @@
+1998-11-22  Jim Meyering  <meyering@ascend.com>
+
+	* Version 1.6.
+
+	* cppi.l: Include cpp-cond.c, not cpp-cond-lookup.c.
+
 1998-11-12  Jim Meyering  <meyering@ascend.com>
 
 	* Makefile.am (cpp-cond.c): Rename from cpp-cond-lookup.c (was longer
