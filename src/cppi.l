@@ -518,9 +518,11 @@ usage (int status)
       printf ("\
 Usage: %s [FILE]\n\
   or:  %s [-c] [FILE]...\n\
-Indent the C preprocessor directives in FILE to reflect their\n\
-nesting, and write the result to standard output.  With no FILE,\n\
-or when FILE is -, read standard input.\n\
+\n\
+Indent the C preprocessor directives in FILE to reflect their nesting\n\
+and ensure that there is exactly one space character between each #if,\n\
+#elif, #define directive and the following token, and write the result\n\
+to standard output.  With no FILE, or when FILE is -, read standard input.\n\
 \n\
 With the -c option, don't write to stdout.  Instead, check the\n\
 indentation of the specified files giving diagnostics for preprocessor\n\
@@ -531,8 +533,11 @@ The exit code will be one of these:\n\
   1 some cpp directive(s) improperly indented\n\
   2 #if/#endif mismatch\n\
   3 file (e.g. read/write) error\n\
+\n\
 Set the `DISABLE_CPP_INDENT_CHECK' environment variable to disable\n\
 all checks.  It is useful only with -c.\n\
+\n\
+Pragma directives may have their `#' indented.
 ",
 	      program_name, program_name);
     }
