@@ -36,20 +36,22 @@ libgnulib_a_SOURCES += pathmax.h
 
 EXTRA_DIST += stdbool_.h
 
-# We need the following in order to create an <stdbool.h> when the system
-# doesn't have one that works.
-all-local $(lib_OBJECTS): $(STDBOOL_H)
-stdbool.h: stdbool_.h
-	sed -e 's/@''HAVE__BOOL''@/$(HAVE__BOOL)/g' $(srcdir)/stdbool_.h > $@-t
-	mv $@-t $@
+BUILT_SOURCES += $(STDBOOL_H)
+EXTRA_DIST += stdbool_.h
 MOSTLYCLEANFILES += stdbool.h stdbool.ht
+# Create stdbool.h on systems that lack a working one.
+stdbool.h: stdbool_.h
+	sed -e 's/@''HAVE__BOOL''@/$(HAVE__BOOL)/g' $(srcdir)/stdbool_.h > $@t
+	mv $@t $@
 
 EXTRA_DIST += alloca_.h
 
+BUILT_SOURCES += $(ALLOCA_H)
+EXTRA_DIST += alloca_.h
+MOSTLYCLEANFILES += alloca.h alloca.h-t
 # We need the following in order to create an <alloca.h> when the system
 # doesn't have one that works with the given compiler.
 all-local $(lib_OBJECTS): $(ALLOCA_H)
 alloca.h: alloca_.h
 	cp $(srcdir)/alloca_.h $@-t
 	mv $@-t $@
-MOSTLYCLEANFILES += alloca.h alloca.h-t
