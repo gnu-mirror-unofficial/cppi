@@ -1,3 +1,10 @@
+2003-08-15  Jim Meyering  <jim@meyering.net>
+
+	* man/Makefile.am, man/cppi.x: New files.
+	* configure.ac: Check for help2man.
+
+	* Makefile.am (SUBDIRS): Add man.
+
 2003-08-13  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.11.
