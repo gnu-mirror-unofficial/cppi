@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4e from Makefile.am.
+# Makefile.in generated automatically by automake 1.4i from Makefile.am.
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
@@ -10,6 +10,8 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+@SET_MAKE@
 
 SHELL = @SHELL@
 
@@ -31,11 +33,9 @@ infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
-
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-
 top_builddir = .
 
 ACLOCAL = @ACLOCAL@
@@ -49,36 +49,28 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_HEADER = $(INSTALL_DATA)
 transform = @program_transform_name@
-
 NORMAL_INSTALL = :
 PRE_INSTALL = :
 POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-
 host_alias = @host_alias@
 host_triplet = @host@
-
-@SET_MAKE@
-AMDEP = @AMDEP@
 AMTAR = @AMTAR@
 AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
 DEPDIR = @DEPDIR@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INSTALL_STRIP_PROGRAM_ENV = @INSTALL_STRIP_PROGRAM_ENV@
 LEX = @LEX@
-MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-STRIP = @STRIP@
 U = @U@
 VERSION = @VERSION@
 _am_include = @_am_include@
+_am_quote = @_am_quote@
 install_sh = @install_sh@
-
 
 AUTOMAKE_OPTIONS = gnits 1.4
 
@@ -99,7 +91,7 @@ LDADD = libcppi.a
 noinst_HEADERS = fatal.h getopt.h obstack.h xstrtol.h
 
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
-  GNUmakefile Makefile.maint .prev-version
+  GNUmakefile Makefile.cfg Makefile.maint .prev-version
 
 
 SUBDIRS = . m4 tests
@@ -111,6 +103,8 @@ PERL = @PERL@
 GPERF = gperf
 
 ACLOCAL_AMFLAGS = -I m4
+
+# flex_debug = #-d
 flex_debug = # -L # suppress #line directives
 
 # This is required to avoid an infloop on certain 8-bit inputs.
@@ -131,17 +125,11 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 
-
-DEFS = @DEFS@ -I. -I$(srcdir) -I.
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
 libcppi_a_AR = $(AR) cru
 am_libcppi_a_OBJECTS = fatal.$(OBJEXT) getopt.$(OBJEXT) \
-getopt1.$(OBJEXT) obstack.$(OBJEXT) xstrtol.$(OBJEXT) \
-xstrtoul.$(OBJEXT)
+	getopt1.$(OBJEXT) obstack.$(OBJEXT) xstrtol.$(OBJEXT) \
+	xstrtoul.$(OBJEXT)
 libcppi_a_OBJECTS = $(am_libcppi_a_OBJECTS)
-AR = ar
 bin_PROGRAMS = cppi$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
@@ -149,50 +137,58 @@ am_cppi_OBJECTS = cppi.$(OBJEXT)
 cppi_OBJECTS = $(am_cppi_OBJECTS)
 cppi_LDADD = $(LDADD)
 cppi_DEPENDENCIES = libcppi.a
-cppi_LDFLAGS = 
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CFLAGS = @CFLAGS@
-LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
-LEXLIB = @LEXLIB@
+cppi_LDFLAGS =
+
+DEFS = @DEFS@
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/cppi.Po $(DEPDIR)/fatal.Po \
+@AMDEP_TRUE@	$(DEPDIR)/getopt.Po $(DEPDIR)/getopt1.Po \
+@AMDEP_TRUE@	$(DEPDIR)/obstack.Po $(DEPDIR)/strtol.Po \
+@AMDEP_TRUE@	$(DEPDIR)/strtoul.Po $(DEPDIR)/strtoull.Po \
+@AMDEP_TRUE@	$(DEPDIR)/strtoumax.Po $(DEPDIR)/xstrtol.Po \
+@AMDEP_TRUE@	$(DEPDIR)/xstrtoul.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+LEXCOMPILE = $(LEX) $(LFLAGS) $(AM_LFLAGS)
 DIST_SOURCES = $(libcppi_a_SOURCES) $(cppi_SOURCES)
 HEADERS = $(noinst_HEADERS)
 
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP@DEP_FILES = $(DEPDIR)/cppi.Po $(DEPDIR)/fatal.Po \
-@AMDEP@ $(DEPDIR)/getopt.Po $(DEPDIR)/getopt1.Po $(DEPDIR)/obstack.Po \
-@AMDEP@ $(DEPDIR)/strtol.Po $(DEPDIR)/strtoul.Po $(DEPDIR)/strtoull.Po \
-@AMDEP@ $(DEPDIR)/strtoumax.Po $(DEPDIR)/xstrtol.Po \
-@AMDEP@ $(DEPDIR)/xstrtoul.Po
-DIST_COMMON = README $(noinst_HEADERS) ./stamp-h.in AUTHORS COPYING \
-ChangeLog INSTALL Makefile.am Makefile.in NEWS THANKS TODO aclocal.m4 \
-config.guess config.h.in config.sub configure configure.in cppi.c \
-depcomp install-sh missing mkinstalldirs strtol.c strtoul.c strtoull.c \
-strtoumax.c
 
+RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
+	uninstall-info-recursive all-recursive install-data-recursive \
+	install-exec-recursive installdirs-recursive install-recursive \
+	uninstall-recursive check-recursive installcheck-recursive
+DIST_COMMON = README $(noinst_HEADERS) ./stamp-h.in AUTHORS COPYING \
+	ChangeLog INSTALL Makefile.am Makefile.in NEWS THANKS TODO \
+	aclocal.m4 config.guess config.h.in config.sub configure \
+	configure.in cppi.c depcomp install-sh missing mkinstalldirs \
+	strtol.c strtoul.c strtoull.c strtoumax.c
 DIST_SUBDIRS = $(SUBDIRS)
 SOURCES = $(libcppi_a_SOURCES) $(cppi_SOURCES)
-OBJECTS = $(am_libcppi_a_OBJECTS) $(am_cppi_OBJECTS)
 
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .l .o .obj
-
-$(srcdir)/Makefile.in: Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
+$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnits  Makefile
-$(ACLOCAL_M4): configure.in m4/assert.m4 m4/inttypes_h.m4 m4/lex.m4 \
-		m4/uintmax_t.m4 m4/ulonglong.m4 m4/xstrtoumax.m4
-	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
-config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+$(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
+$(ACLOCAL_M4):  configure.in m4/assert.m4 m4/inttypes_h.m4 m4/lex.m4 m4/uintmax_t.m4 m4/ulonglong.m4 m4/xstrtoumax.m4
+	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 config.h: stamp-h
 	@if test ! -f $@; then \
 		rm -f stamp-h; \
@@ -205,7 +201,7 @@ stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
 	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
 	     $(SHELL) ./config.status
 	@mv stamp-hT stamp-h
-$(srcdir)/config.h.in: $(srcdir)/./stamp-h.in
+$(srcdir)/config.h.in:  $(srcdir)/./stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/./stamp-h.in; \
 		$(MAKE) $(srcdir)/./stamp-h.in; \
@@ -219,15 +215,10 @@ $(srcdir)/./stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4)
 distclean-hdr:
 	-rm -f config.h
 
+AR = ar
+
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-
-mostlyclean-compile:
-	-rm -f *.$(OBJEXT) core *.core
-
-distclean-compile:
-	-rm -f *.tab.c
-
 libcppi.a: $(libcppi_a_OBJECTS) $(libcppi_a_DEPENDENCIES)
 	-rm -f libcppi.a
 	$(libcppi_a_AR) libcppi.a $(libcppi_a_OBJECTS) $(libcppi_a_LIBADD)
@@ -253,12 +244,50 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-cppi: $(cppi_OBJECTS) $(cppi_DEPENDENCIES)
-	@rm -f cppi
+cppi$(EXEEXT): $(cppi_OBJECTS) $(cppi_DEPENDENCIES)
+	@rm -f cppi$(EXEEXT)
 	$(LINK) $(cppi_LDFLAGS) $(cppi_OBJECTS) $(cppi_LDADD) $(LIBS)
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/cppi.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/fatal.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/getopt.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/getopt1.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/obstack.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/strtol.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/strtoul.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/strtoull.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/strtoumax.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/xstrtol.Po@_am_quote@
+@AMDEP_TRUE@@_am_include@ @_am_quote@$(DEPDIR)/xstrtoul.Po@_am_quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+CCDEPMODE = @CCDEPMODE@
+
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LEXLIB = @LEXLIB@
+
 .l.c:
-	$(LEX) $(AM_LFLAGS) $(LFLAGS) $< && mv $(LEX_OUTPUT_ROOT).c $@
+	$(LEXCOMPILE) $< && mv $(LEX_OUTPUT_ROOT).c $@
+uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -266,10 +295,7 @@ cppi: $(cppi_OBJECTS) $(cppi_DEPENDENCIES)
 # (1) if the variable is set in `config.status', edit `config.status'
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive \
-install-info-recursive uninstall-info-recursive \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
+$(RECURSIVE_TARGETS):
 	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -334,9 +360,9 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
-   if test "$$subdir" = .; then :; else \
+	  if test "$$subdir" = .; then :; else \
 	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-   fi; \
+	  fi; \
 	done; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -355,52 +381,28 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID
 
-@AMDEP@@_am_include@ $(DEPDIR)/cppi.Po
-@AMDEP@@_am_include@ $(DEPDIR)/fatal.Po
-@AMDEP@@_am_include@ $(DEPDIR)/getopt.Po
-@AMDEP@@_am_include@ $(DEPDIR)/getopt1.Po
-@AMDEP@@_am_include@ $(DEPDIR)/obstack.Po
-@AMDEP@@_am_include@ $(DEPDIR)/strtol.Po
-@AMDEP@@_am_include@ $(DEPDIR)/strtoul.Po
-@AMDEP@@_am_include@ $(DEPDIR)/strtoull.Po
-@AMDEP@@_am_include@ $(DEPDIR)/strtoumax.Po
-@AMDEP@@_am_include@ $(DEPDIR)/xstrtol.Po
-@AMDEP@@_am_include@ $(DEPDIR)/xstrtoul.Po
-
-distclean-depend:
-	-rm -rf $(DEPDIR)
-
-@AMDEP@CCDEPMODE = @CCDEPMODE@
-
-.c.o:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
-
-.c.obj:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `cygpath -w $<`
-
-
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = .
-distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+# Avoid unsightly `./'.
+distdir = $(PACKAGE)-$(VERSION)
 
 GZIP_ENV = --best
 
 distdir: $(DISTFILES)
-	@if sed 15q $(srcdir)/NEWS | fgrep -e "$(VERSION)" >/dev/null; then :; else \
+	@if sed 15q $(srcdir)/NEWS | fgrep -e "$(VERSION)" >/dev/null; \
+	then :; else \
 	  echo "NEWS not updated; not releasing" 1>&2; \
 	  exit 1; \
 	fi
 	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
 	mkdir $(distdir)
 	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
 	  if test -d $$d/$$file; then \
 	    cp -pR $$d/$$file $(distdir) \
 	    || exit 1; \
@@ -431,6 +433,7 @@ distdir: $(DISTFILES)
 dist: distdir
 	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
+
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
 # tarfile.
@@ -464,7 +467,6 @@ distcheck: dist
 check-am: all-am
 check: check-recursive
 all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS) config.h
-
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
@@ -478,43 +480,40 @@ install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
 installcheck: installcheck-recursive
-
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
-	  INSTALL_PROGRAM_ENV='$(INSTALL_STRIP_PROGRAM_ENV)' install
-
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
 	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	-rm -f Makefile $(CONFIG_CLEAN_FILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-rm -f Makefile.in
-	-test -z "cppi.c$(BUILT_SOURCES)$(MAINTAINERCLEANFILES)" || rm -f cppi.c $(BUILT_SOURCES) $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)$(MAINTAINERCLEANFILES)" || rm -f $(BUILT_SOURCES) $(MAINTAINERCLEANFILES)
 clean: clean-recursive
 
 clean-am: clean-binPROGRAMS clean-generic clean-noinstLIBRARIES \
 	mostlyclean-am
 
-dist-all: dist
-
+dist-all: distdir
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
 distclean: distclean-recursive
-	-rm -f config.status
-
+	-rm -f config.status config.cache config.log
 distclean-am: clean-am distclean-compile distclean-depend \
 	distclean-generic distclean-hdr distclean-tags
 
-dvi:
+dvi: dvi-recursive
 
 dvi-am:
 
-info:
+info: info-recursive
 
 info-am:
 
@@ -522,14 +521,13 @@ install-data-am:
 
 install-exec-am: install-binPROGRAMS
 
-install-info:
+install-info: install-info-recursive
 
 install-man:
 
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-	-rm -f config.status
 
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -537,9 +535,11 @@ mostlyclean: mostlyclean-recursive
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
-.PHONY: all all-am all-recursive check check-am check-recursive clean \
+uninstall-info: uninstall-info-recursive
+
+.PHONY: $(RECURSIVE_TARGETS) all all-am check check-am clean \
 	clean-binPROGRAMS clean-generic clean-noinstLIBRARIES \
 	clean-recursive dist dist-all distcheck distclean \
 	distclean-compile distclean-depend distclean-generic \
@@ -547,15 +547,15 @@ uninstall-am: uninstall-binPROGRAMS
 	dvi-am dvi-recursive info info-am info-recursive install \
 	install-am install-binPROGRAMS install-data install-data-am \
 	install-data-recursive install-exec install-exec-am \
-	install-exec-recursive install-info install-info-recursive \
-	install-man install-recursive install-strip installcheck \
-	installcheck-am installcheck-recursive installdirs \
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
 	installdirs-am installdirs-recursive maintainer-clean \
 	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-recursive \
 	tags tags-recursive uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-info-recursive \
-	uninstall-recursive
+	uninstall-binPROGRAMS uninstall-info-am \
+	uninstall-info-recursive uninstall-recursive
 
 
 cpp-cond.c: cpp.gp
@@ -599,7 +599,6 @@ Makefile: $(BUILT_SOURCES)
 
 distcheck-hook:
 	$(MAKE) my-distcheck
-
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
