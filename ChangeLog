@@ -2,6 +2,10 @@
 
 	* Version 1.12.
 
+	* lib/Makefile.am: Remove duplicate line: EXTRA_DIST += stdbool_.h.
+	(libgnulib_a_SOURCES): Add exit.h.
+	* lib/exit.h: New file.  From gnulib.
+
 	* src/Makefile.am: Don't set ACLOCAL_AMFLAGS here.
 
 2003-08-22  Jim Meyering  <jim@meyering.net>
