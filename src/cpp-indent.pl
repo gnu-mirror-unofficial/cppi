@@ -13,8 +13,15 @@ my $indent_incr = ' ';
 my @opener_stack;
 my $depth = 0;
 
+unshift (@ARGV, '-') if @ARGV == 0;
+die "usage: $0 [FILE]\n" if @ARGV > 1;
+
+my $file = shift @ARGV;
+
+open (FILE, $file) || die "$0: couldn't open $file: $!\n";
+
 my $line;
-while (defined ($line = <>))
+while (defined ($line = <FILE>))
   {
     if ($line =~ s/^\s*\#\s*//)
       {
@@ -31,13 +38,15 @@ while (defined ($line = <>))
 	  }
 	elsif ($line =~ /^(else|elif)\b/)
 	  {
-	    die "$0: line $.: found #$& without matching #if\n" if $depth < 1;
+	    die "$0: $file: line $.: found #$& without matching #if\n"
+	      if $depth < 1;
 	    $keyword = $&;
 	    $indent = $indent_incr x ($depth - 1);
 	  }
 	elsif ($line =~ /^endif\b/)
 	  {
-	    die "$0: line $.: found #$& without matching #if\n" if $depth < 1;
+	    die "$0: $file: line $.: found #$& without matching #if\n"
+	      if $depth < 1;
 	    $keyword = $&;
 	    --$depth;
 	    $indent = $indent_incr x $depth;
@@ -61,7 +70,7 @@ if ($depth != 0)
     my $x;
     foreach $x (@opener_stack)
       {
-	warn "$0: line $x->{LINE_NUMBER}: unterminated #$x->{KEYWORD}\n"
+	warn "$0: $file: line $x->{LINE_NUMBER}: unterminated #$x->{KEYWORD}\n"
       }
     $exit_status = 1;
   }
