@@ -1,4 +1,4 @@
-"  long string\
+"  string containing otherwise-valid cpp-directive \
 #if
 "
 #if
@@ -7,7 +7,7 @@
 # include "foo"
 #endif
 
-int c = "\\";
+int c = " /* \\";
 #if
 # error
 #else
