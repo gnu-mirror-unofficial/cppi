@@ -1,8 +1,42 @@
-## Process this file with automake to produce Makefile.in -*-Makefile-*-
+## Process this file with automake to produce Makefile.in.
 
-EXTRA_DIST = \
-  assert.m4 \
-  inttypes.m4 \
-  lex.m4 \
-  longlong.m4 \
-  xstrtoumax.m4
+EXTRA_DIST =
+EXTRA_DIST += check-decl.m4
+EXTRA_DIST += closeout.m4
+EXTRA_DIST += codeset.m4
+EXTRA_DIST += error.m4
+EXTRA_DIST += exitfail.m4
+EXTRA_DIST += extensions.m4
+EXTRA_DIST += fatal.m4
+EXTRA_DIST += fpending.m4
+EXTRA_DIST += gettext.m4
+EXTRA_DIST += glibc21.m4
+EXTRA_DIST += iconv.m4
+EXTRA_DIST += intdiv0.m4
+EXTRA_DIST += intmax_t.m4
+EXTRA_DIST += inttypes-pri.m4
+EXTRA_DIST += inttypes.m4
+EXTRA_DIST += inttypes_h.m4
+EXTRA_DIST += isc-posix.m4
+EXTRA_DIST += lcmessage.m4
+EXTRA_DIST += lib-ld.m4
+EXTRA_DIST += lib-link.m4
+EXTRA_DIST += lib-prefix.m4
+EXTRA_DIST += longlong.m4
+EXTRA_DIST += malloc.m4
+EXTRA_DIST += mbrtowc.m4
+EXTRA_DIST += mbstate_t.m4
+EXTRA_DIST += nls.m4
+EXTRA_DIST += obstack.m4
+EXTRA_DIST += onceonly_2_57.m4
+EXTRA_DIST += po.m4
+EXTRA_DIST += progtest.m4
+EXTRA_DIST += quotearg.m4
+EXTRA_DIST += realloc.m4
+EXTRA_DIST += stdint_h.m4
+EXTRA_DIST += strerror_r.m4
+EXTRA_DIST += uintmax_t.m4
+EXTRA_DIST += ulonglong.m4
+EXTRA_DIST += unlocked-io.m4
+EXTRA_DIST += xalloc.m4
+EXTRA_DIST += xstrtol.m4
