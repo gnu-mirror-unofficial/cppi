@@ -20,7 +20,7 @@ extern int errno;
 #define INPUT_AND_ECHO()			\
  ({						\
    int _c_ = input ();				\
-   if (_c_ != EOF)				\
+   if (_c_ != EOF && !inhibit_output)		\
      fputc (_c_, yyout);			\
    _c_;						\
  })
@@ -42,7 +42,7 @@ yywrap (void)
 static void
 emit_indented_cpp (char const *directive, FILE *out)
 {
-#define MAX_DEPTH
+#define MAX_DEPTH 40
   static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
 
   if (inhibit_output)
@@ -132,8 +132,8 @@ emit_indented_cpp (char const *directive, FILE *out)
 
 ^[ \t]*#			{ emit_indented_cpp ("", yyout); }
 
-.				{ MY_ECHO; }
 \n				{ MY_ECHO; ++lineno; }
+.				{ MY_ECHO; }
 
 %%
 
