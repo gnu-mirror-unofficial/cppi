@@ -458,8 +458,7 @@ b [^a-zA-Z_\n]
       int c;
       if (inhibit_output)
 	{
-	  /* Make sure there's exactly one space after this #if or #elif
-	     directive.  */
+	  /* Make sure there's exactly one space after this directive.  */
 	  c = input ();
 	  if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
 	    {
