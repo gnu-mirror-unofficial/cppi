@@ -8,4 +8,4 @@ TESTS = \
    cxx-1 cxx-2 cxx-3
 
 EXTRA_DIST = test-common $(TESTS)
-TESTS_ENVIRONMENT = srcdir=$(srcdir) PATH=..$(PATH_SEPARATOR)$$PATH
+TESTS_ENVIRONMENT = srcdir=$(srcdir) PATH=../src$(PATH_SEPARATOR)$$PATH
