@@ -77,6 +77,9 @@ EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
 SUBDIRS = tests
 
 MAINTAINERCLEANFILES = cpp-cond-lookup.c
+CLEANFILES = cpp.h
+
+PERL = @PERL@
 
 flex_debug = #-d
 
@@ -463,6 +466,27 @@ cppi.c: cppi.l
 	$(LEX) $(LFLAGS) $(srcdir)/cppi.l
 	chmod a-w $(LEX_OUTPUT_ROOT).c
 	mv $(LEX_OUTPUT_ROOT).c $@
+
+cpp.h: cpp.gp Makefile.am
+	@rm -f $@-tmp $@
+	@(								\
+	 echo '/* This file is generated automatically from $<.  */';	\
+	 echo;								\
+	 echo 'enum Eic_type';						\
+	 echo '{';							\
+	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $<;			\
+	 echo '  EIC_OTHER';						\
+	 echo '};';							\
+	 echo;								\
+	 echo 'static char const *const directive[] =';			\
+	 echo '{';							\
+	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $<;			\
+	 echo '  ""';							\
+	 echo '};';							\
+	)								\
+	  > $@-tmp
+	@chmod -w $@-tmp
+	@mv $@-tmp $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
