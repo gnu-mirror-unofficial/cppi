@@ -43,6 +43,7 @@ sub cpp_indent ($$)
   my $line;
   while (defined ($line = <FILE>))
     {
+      my $saved_line = $line;
       if ($line =~ s/^\s*\#\s*//)
 	{
 	  my $keyword;
@@ -86,8 +87,9 @@ sub cpp_indent ($$)
 	      $indent = $indent_incr x $depth;
 	    }
 
-	  if ($checking && $line ne "#$indent$keyword$'")
+	  if ($checking && $saved_line ne "#$indent$keyword$'")
 	    {
+	      warn "foo: $saved_line ne #$indent$keyword$'\n";
 	      close FILE;
 	      return 1;
 	    }
