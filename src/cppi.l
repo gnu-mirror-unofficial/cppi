@@ -665,7 +665,7 @@ to standard output.  With no FILE, or when FILE is -, read standard input.\n\
                            than LENGTH;  if LENGTH is 0 (the default),\n\
                            then there is no limit\n\
       --help             print this help, then exit\n\
-      --version          print tar program version number, then exit\n\
+      --version          print version information, then exit\n\
 \n\
 With the -c option, don't write to stdout.  Instead, check the\n\
 indentation of the specified files giving diagnostics for preprocessor\n\
