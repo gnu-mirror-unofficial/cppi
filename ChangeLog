@@ -1,5 +1,7 @@
 1997-11-01  Jim Meyering  <meyering@na-net.ornl.gov>
 
+	* Makefile (cppi): Depend on obstack.o.
+
 	* obstack.c: New file.
 	* obstack.h: New file.
 
