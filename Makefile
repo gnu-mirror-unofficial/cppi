@@ -5,10 +5,7 @@ LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 PERL = /p/bin/perl
 
-t = a b c
-td = $(addsuffix .d,$t)
-tO = $(addsuffix .O,$t)
-
+t = b c
 qd = $(addsuffix .qd,$t)
 qO = $(addsuffix .qO,$t)
 
@@ -21,7 +18,7 @@ LFLAGS = $(lex_debug) $(lex_optimize)
 all: check
 
 check: $(qd) cppi
-	for i in d1 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6; do \
+	for i in d1 d2 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6; do \
 	  echo $$i...; \
 	  ./$$i; \
 	done
@@ -33,15 +30,6 @@ cppi.o: cpp-cond-lookup.c
 
 cpp-cond-lookup.c: cpp.gp
 	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< > $@-tmp
-	mv $@-tmp $@
-
-$(td): %.d: %.E %.O
-	-diff -u $^ > $@-tmp
-	@mv $@-tmp $@
-	@test -s $@ && cat $@ || :
-
-$(tO): %.O: %.I cpp-indent
-	./cpp-indent $< > $@-tmp
 	mv $@-tmp $@
 
 $(qd): %.qd: %.E %.qO
