@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([GNU cppi],[1.11],[bug-cppi@gnu.org])
+AC_INIT([GNU cppi],[1.12],[bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR(config)
