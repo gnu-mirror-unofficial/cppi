@@ -1,3 +1,13 @@
+2001-07-07  Jim Meyering  <meyering@lucent.com>
+
+	* tests/Makefile.am (TESTS): Add ansi-7 and ansi-8.
+	* tests/ansi-8: New file.
+	* tests/ansi-7: New file.
+
+2001-04-24  Jim Meyering  <meyering@lucent.com>
+
+	* Version 1.9.
+
 2001-01-21  Jim Meyering  <meyering@lucent.com>
 
 	* m4/lex.m4: Don't undefine AM_PROG_LEX.
