@@ -524,6 +524,7 @@ b [^a-zA-Z_\n]
     {
       /* If requested, make sure there's nothing after an #else or #endif.  */
       int found_non_ansi = 0;
+      int cpp_directive_lineno = lineno;
       int c;
       while ((c = INPUT_AND_ECHO ()) != EOF)
 	{
@@ -542,7 +543,7 @@ b [^a-zA-Z_\n]
 	      if (c == '/')
 		{
 		  gobble_line (&lineno);
-		  continue;
+		  break;
 		}
 
 	      /* else, fall through to next if-stmt */
@@ -564,7 +565,7 @@ b [^a-zA-Z_\n]
 	  if (!list_files_only)
 	    warn (0,
 	      "%s: %s: line %d: text following `#%s' violates ANSI standard",
-		  program_name, in_file, lineno,
+		  program_name, in_file, cpp_directive_lineno,
 		  (t == EIC_ELSE ? "else" : "endif"));
 	  if (fail < 1)
 	    fail = 1;
