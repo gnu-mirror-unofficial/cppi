@@ -1,0 +1,21 @@
+#!/bin/sh
+
+t=`basename $0`
+
+cat > $t.I <<\EOF
+#if(FOO)
+# error ick
+#endif(THIS_IS_NON_ANSI)
+EOF
+
+cat > $t.EO <<\EOF
+EOF
+
+cat > $t.Ee <<\EOF
+./cppi: standard input: line 3: not properly indented
+EOF
+
+options=-c
+expected_status=1
+
+. ./test-common
