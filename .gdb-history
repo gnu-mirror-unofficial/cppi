@@ -15,3 +15,11 @@ q
 b emit_indented_cpp 
 r b.I
 q
+b main
+./cppi
+r
+n
+q
+r b.I
+p in_file
+q
