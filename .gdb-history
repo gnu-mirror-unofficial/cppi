@@ -1,0 +1,17 @@
+r empty.I
+p in_file
+up
+p in
+q
+b emit_indented_cpp 
+r b.I
+p i_depth 
+c
+p directive 
+c
+c
+,
+q
+b emit_indented_cpp 
+r b.I
+q
