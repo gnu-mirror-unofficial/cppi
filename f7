@@ -13,7 +13,7 @@ cat > $t.I <<\EOF
 #endif
 EOF
 
-cat > $t.EO <<\EOF
+cat > $t.EO <<EOF
 $t.I2
 EOF
 
