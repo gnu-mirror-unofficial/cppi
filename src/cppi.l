@@ -128,7 +128,7 @@ static struct option const long_options[] =
   {NULL, 0, NULL, 0}
 };
 
-static void gobble_define (void);
+static void gobble_define (int*);
 
 /* Include gperf-generated hash function.  */
 #include "cpp-cond-lookup.c"
@@ -478,7 +478,7 @@ b [^a-zA-Z_\n]
       unput (c);
       if (t == EIC_DEFINE)
 	{
-	  gobble_define ();
+	  gobble_define (&lineno);
 	}
     }
 
@@ -598,14 +598,19 @@ Pragma directives may have their `#' indented.\n\
    stringification of a macro argument as a cpp directive.  */
 
 static void
-gobble_define (void)
+gobble_define (int *line_number)
 {
   int c;
   int backslash_count = 0;
   while ((c = INPUT_AND_ECHO ()) != EOF)
     {
-      if (c == '\n' && backslash_count % 2 == 0)
-	break;
+      if (c == '\n')
+	{
+	  ++(*line_number);
+	  if (backslash_count % 2 == 0)
+	    break;
+	}
+
 
       if (c == '\\')
 	++backslash_count;
