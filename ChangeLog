@@ -1,3 +1,9 @@
+Sun Jun 15 08:16:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+
+	* cppi.l (emit_or_check): Handle leading-space #pragmas a little
+	differently.
+	* f5: Modify test to reflect the change.
+
 Thu May 29 09:50:24 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (usage): Describe white-space-squeezing xform.
