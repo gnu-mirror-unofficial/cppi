@@ -1,5 +1,7 @@
 1998-08-01  Jim Meyering  <meyering@ascend.com>
 
+	* configure.in: Bump version to 1.2.
+
 	* cppi.l (gobble_define): New function.
 	Call it for every #define directive.
 
