@@ -1,4 +1,6 @@
 ## Process this file with automake to produce Makefile.in -*-Makefile-*-
+AUTOMAKE_OPTIONS = gnits 1.4
+
 bin_PROGRAMS = cppi
 
 cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
