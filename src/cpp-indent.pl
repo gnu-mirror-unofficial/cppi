@@ -13,6 +13,10 @@ exit ($exit_status);
 
 # ===============================
 
+sub IN_CODE {1}
+sub IN_COMMENT {2}
+sub IN_STRING {3}
+
 # Return 2 for syntax problems.
 # Return 1 for invalid indentation of CPP #-directives (only if $checking).
 # if checking
@@ -40,62 +44,82 @@ sub cpp_indent ($$)
   open (FILE, $file) || die "$0: couldn't open $file: $!\n";
 
   my $fail = 0;
+  my $state = IN_CODE;
   my $line;
   while (defined ($line = <FILE>))
     {
-      my $saved_line = $line;
-      if ($line =~ s/^\s*\#\s*//)
+      my $rest;
+
+      if ($state == IN_CODE)
 	{
-	  my $keyword;
-	  my $indent;
-	  if ($line =~ /^if(n?def)?\b/)
+	  my $saved_line = $line;
+	  if ($line =~ s/^\s*\#\s*//)
 	    {
-	      # Maintain stack of (line number, keyword) pairs to better
-	      # report any `unterminated #if...' errors.
-	      push @opener_stack, {LINE_NUMBER => $., KEYWORD => $&};
-	      $keyword = $&;
-	      $indent = $indent_incr x $depth;
-	      ++$depth;
-	    }
-	  elsif ($line =~ /^(else|elif)\b/)
-	    {
-	      if ($depth < 1)
+	      my $keyword;
+	      my $indent;
+	      my $pfx = "$0: $file: line $.";
+	      if ($line =~ /^if(n?def)?\b/)
 		{
-		  warn "$0: $file: line $.: found #$& without matching #if\n";
-		  $depth = 1;
-		  $fail = 2;
+		  # Maintain stack of (line number, keyword) pairs to better
+		  # report any `unterminated #if...' errors.
+		  push @opener_stack, {LINE_NUMBER => $., KEYWORD => $&};
+		  $keyword = $&;
+		  $indent = $indent_incr x $depth;
+		  ++$depth;
 		}
-	      $keyword = $&;
-	      $indent = $indent_incr x ($depth - 1);
-	    }
-	  elsif ($line =~ /^endif\b/)
-	    {
-	      if ($depth < 1)
+	      elsif ($line =~ /^(else|elif)\b/)
 		{
-		  warn "$0: $file: line $.: found #$& without matching #if\n";
-		  $depth = 1;
-		  $fail = 2;
+		  if ($depth < 1)
+		    {
+		      warn "$pfx: found #$& without matching #if\n";
+		      $depth = 1;
+		      $fail = 2;
+		    }
+		  $keyword = $&;
+		  $indent = $indent_incr x ($depth - 1);
 		}
-	      $keyword = $&;
-	      --$depth;
-	      $indent = $indent_incr x $depth;
-	      pop @opener_stack;
+	      elsif ($line =~ /^endif\b/)
+		{
+		  if ($depth < 1)
+		    {
+		      warn "$pfx: found #$& without matching #if\n";
+		      $depth = 1;
+		      $fail = 2;
+		    }
+		  $keyword = $&;
+		  --$depth;
+		  $indent = $indent_incr x $depth;
+		  pop @opener_stack;
+		}
+	      else
+		{
+		  $keyword = '';
+		  $indent = $indent_incr x $depth;
+		}
+
+	      if ($checking && $saved_line ne "#$indent$keyword$'")
+		{
+		  warn "$pfx: not properly indented\n";
+		  close FILE;
+		  return 1;
+		}
+
+	      $line = "#$indent$keyword$'";
+	      $rest = $';
+	      $state = update_state ($state, $rest);
 	    }
 	  else
 	    {
-	      $keyword = '';
-	      $indent = $indent_incr x $depth;
+	      $rest = $line;
 	    }
-
-	  if ($checking && $saved_line ne "#$indent$keyword$'")
-	    {
-	      warn "$0: $file: line $.: not properly indented\n";
-	      close FILE;
-	      return 1;
-	    }
-	  $line = "#$indent$keyword$'";
+	}
+      else
+	{
+	  $rest = $line;
 	}
       print $line if !$checking;
+
+      $state = update_state ($state, $rest);
     }
   close FILE;
 
@@ -111,4 +135,59 @@ sub cpp_indent ($$)
     }
 
   return $fail;
+}
+
+sub update_state ($$)
+{
+  my ($state, $rest) = @_;
+
+  while ($rest)
+    {
+      if ($state == IN_CODE)
+	{
+	  if ($rest =~ m!.*?(/\*|\")!g)
+	    {
+	      if ($1 eq '"')
+		{
+		  $state = IN_STRING
+		    if ($& eq '"' || $&[length ($&) - 2] ne '\\');
+		}
+	      else
+		{
+		  $state = IN_COMMENT;
+		}
+	      $rest = $';
+	    }
+	  else
+	    {
+	      $rest = '';
+	    }
+	}
+      elsif ($state == IN_COMMENT)
+	{
+	  if ($rest =~ m!.*?\*/!g)
+	    {
+	      $state = IN_CODE;
+	      $rest = $';
+	    }
+	  else
+	    {
+	      $rest = '';
+	    }
+	}
+      else # $state == IN_STRING
+	{
+	  if ($rest =~ m!^\"|.*?[^\\]\"!g)
+	    {
+	      $state = IN_CODE;
+	      $rest = $';
+	    }
+	  else
+	    {
+	      $rest = '';
+	    }
+	}
+    }
+
+  return $state;
 }
