@@ -19,7 +19,7 @@ check: cppi
 	  ./$$i; \
 	done
 
-cppi: cppi.o fatal.o strerror.o getopt.o getopt1.o
+cppi: cppi.o fatal.o strerror.o getopt.o getopt1.o obstack.o
 	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 cppi.o: cpp-cond-lookup.c
