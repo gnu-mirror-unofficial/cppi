@@ -74,12 +74,11 @@ extern int errno;
 	}								\
       else								\
 	{								\
+	  int i;							\
 	  ok = 1;							\
 	  fputc ('#', yyout);						\
-	  assert (0 <= i_depth && i_depth <= MAX_DEPTH);		\
-	  blanks[i_depth] = '\0';					\
-	  fputs (blanks, yyout);					\
-	  blanks[i_depth] = ' ';					\
+	  for (i = 0; i < i_depth; i++)					\
+	    fputc (' ', yyout);						\
 	  fputs (directive[T], yyout);					\
 	}								\
     }									\
@@ -179,7 +178,6 @@ static void
 emit_indented_cpp (enum eic_type t, char const *text,
 		   struct Stack *s, char const *in_file, int *exit_status)
 {
-  static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
   int ok = 0;
 
   switch (t)
