@@ -7,18 +7,14 @@
 #undef _ALL_SOURCE
 #endif
 
-
 /* Define to empty if the keyword does not work.  */
 #undef const
-
 
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
 
-
 /* Define if on MINIX.  */
 #undef _MINIX
-
 
 /* Define if the system does not provide POSIX.1 features except
    with this defined.  */
@@ -27,18 +23,14 @@
 /* Define if you need to in order for stat and other things to work.  */
 #undef _POSIX_SOURCE
 
-
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
-
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-
 /* Define if lex declares yytext as a char * by default, not a char[].  */
 #undef YYTEXT_POINTER
-
 
 /* The concatenation of the strings "GNU ", and PACKAGE.  */
 #undef GNU_PACKAGE
@@ -51,7 +43,6 @@
 
 /* Define to the version of the distribution.  */
 #undef VERSION
-
 
 /* Define if you have the strerror function.  */
 #undef HAVE_STRERROR
