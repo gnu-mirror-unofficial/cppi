@@ -20,7 +20,7 @@ LFLAGS = -I $(lex_debug)
 all: check
 
 check: $(qd) cppi
-	for i in e1 e2 e3 e4 e5 e6 e7; do echo $$i...; ./$$i; done
+	for i in e1 e2 e3 e4 e5 e6 e7 e8; do echo $$i...; ./$$i; done
 
 cppi: cppi.o fatal.o strerror.o
 	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
