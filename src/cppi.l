@@ -471,7 +471,7 @@ b [^a-zA-Z_\n]
 %%
 
 static int
-cpp_indent (const char *in_file)
+cpp_indent (const char *in_file, int cvs_mode)
 {
   FILE *in = NULL;
   int fail;
@@ -484,7 +484,16 @@ cpp_indent (const char *in_file)
   else
     {
       if ((in = fopen (in_file, "r")) == NULL)
-	fatal (3, errno, "%s: %s", program_name, in_file);
+	{
+	  if (cvs_mode && errno == ENOENT)
+	    {
+	      /* In CVS mode, it's ok if IN_FILE doesn't exist.  That
+		 happens when you commit a file after cvs-deleting it.  */
+	      return 0;
+	    }
+
+	  fatal (3, errno, "%s: %s", program_name, in_file);
+	}
       yyin = in;
     }
 
@@ -598,7 +607,7 @@ main (int argc, char** argv)
 			 && p[2] == '\0'))
 	continue;
 
-      err = cpp_indent (file_list[i]);
+      err = cpp_indent (file_list[i], cvs_mode);
       if (err > fail)
 	fail = err;
     }
