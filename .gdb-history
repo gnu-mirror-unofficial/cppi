@@ -23,3 +23,23 @@ q
 r b.I
 p in_file
 q
+b emit_indented_cpp 
+r e9.I
+p i_depth 
+c
+p i_depth 
+n
+n
+l
+n
+n
+c
+c
+r -c 9.I
+r -c e9.I
+c
+n
+p ok
+p text
+p text
+q

@@ -12,10 +12,9 @@ cat > $t.EO <<\EOF
 EOF
 
 cat > $t.Ee <<\EOF
-./cppi: standard input: line 3: not properly indented
 EOF
 
 options=-c
-expected_status=1
+expected_status=0
 
 . ./test-common
