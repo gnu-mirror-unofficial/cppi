@@ -16,41 +16,17 @@
 #include "config.h"
 
 #include <stdio.h>
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
 #include <assert.h>
 
-#if HAVE_STRING_H
-# if !STDC_HEADERS && HAVE_MEMORY_H
-#  include <memory.h>
-# endif
-# include <string.h>
-#else
-# include <strings.h>
-#endif
-
-#include <ctype.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <getopt.h>
-
-#include <errno.h>
-#ifndef errno
-extern int errno;
-#endif
 
 #include "gettext.h"
 
 #define _(msgid) gettext (msgid)
 #define N_(msgid) msgid
 
-#include "closeout.h"
-#include "fatal.h"
+#include "system.h"
 #include "obstack.h"
 #include "xstrtol.h"
 #include "cpp.h"
@@ -58,21 +34,11 @@ extern int errno;
 #define obstack_chunk_alloc malloc
 #define obstack_chunk_free free
 
-#ifndef EXIT_FAILURE
-# define EXIT_FAILURE 1
-#endif
-
-#ifndef EXIT_SUCCESS
-# define EXIT_SUCCESS 0
-#endif
-
 #ifdef MY_DEBUG
 # define PUT2(x,y) do { putchar (x); putchar (y); } while (0)
 #else
 # define PUT2(x,y) /* empty */
 #endif
-
-#define STREQ(A,B) (strcmp ((A), (B)) == 0)
 
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
@@ -625,7 +591,7 @@ cpp_indent (const char *in_file)
     {
       if ((in = fopen (in_file, "r")) == NULL)
 	{
-	  fatal (3, errno, "%s: %s", program_name, in_file);
+	  error (3, errno, "%s: %s", program_name, in_file);
 	}
       yyin = in;
     }
@@ -633,7 +599,7 @@ cpp_indent (const char *in_file)
   fail = cpp_i (in_file);
 
   if (in && fclose (in) == EOF)
-    fatal (3, errno, "%s: %s", program_name, in_file);
+    error (3, errno, "%s: %s", program_name, in_file);
 
   return fail;
 }
@@ -749,7 +715,7 @@ gobble_c_comment (const char *in_file, int *line_number)
 
       if (c == EOF)
 	{
-	  fatal (2, 0, "%s: %s: line %d: EOF in comment",
+	  error (2, 0, "%s: %s: line %d: EOF in comment",
 		 program_name, in_file, start_lineno);
 	  break;
 	}
@@ -855,7 +821,7 @@ main (int argc, char** argv)
 
   if (fclose (stdout) == EOF)
     {
-      fatal (3, errno, "%s: write error", program_name);
+      error (3, errno, "%s: write error", program_name);
     }
 
   exit (max_err);
