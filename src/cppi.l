@@ -201,7 +201,7 @@ lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
 }
 
 static inline struct KL_pair
-kth_entry (int k)
+kth_entry (unsigned int k)
 {
   struct KL_pair *s = (struct KL_pair *) obstack_base (&opener_stack);
   assert (0 <= k && k < OPENER_STACK_HEIGHT);
@@ -422,8 +422,8 @@ b [^a-zA-Z_\n]
 
   /* Count consecutive backslashes.  We'll need this number when
      a string of them immediately precedes a double quote.  */
-  int n_backslashes = 0;
-  int string_length = 0;
+  size_t n_backslashes = 0;
+  size_t string_length = 0;
   int fail = 0;
 
   PUT2 ('[', '\0');
@@ -586,7 +586,7 @@ b [^a-zA-Z_\n]
 	     diagnostic per unterminated #if* directive.
 	     Torture this code with a command like this:
 	     $ yes '#if FOO' |head -600 |cppi -c */
-	  int i;
+	  unsigned int i;
 	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
 	    {
 	      struct KL_pair x = kth_entry (i);
