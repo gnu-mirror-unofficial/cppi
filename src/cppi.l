@@ -16,6 +16,12 @@ extern int errno;
 
 #include "fatal.h"
 
+#ifdef MY_DEBUG
+# define PUT2(x,y) do { putchar (x); putchar (y); } while (0)
+#else
+# define PUT2(x,y) /* empty */
+#endif
+
 #define STREQ(A,B) (strcmp ((A), (B)) == 0)
 
 #undef YY_DECL
@@ -106,6 +112,7 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
 "/*"        {
   register int c;
 
+  PUT2 ('[', '\0');
   MY_ECHO;
   for ( ; ; )
     {
@@ -129,6 +136,7 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
 	  break;
 	}
     }
+  PUT2 ('\0', ']');
 }
 
 "'\"'" {
@@ -144,6 +152,7 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
      a string of them immediately precedes a double quote.  */
   int n_backslashes = 0;
 
+  PUT2 ('[', '\0');
   MY_ECHO;
 
   while (1)
@@ -162,16 +171,21 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
       if (c == '\n')
 	++lineno;
     }
+  PUT2 ('\0', ']');
 }
 
 ^[ \t]*#[ \t]*if/[ \t]		{ emit_indented_cpp (EIC_IF, "if", yyout); }
 ^[ \t]*#[ \t]*ifdef/[ \t]	{ emit_indented_cpp (EIC_IF, "ifdef", yyout); }
 ^[ \t]*#[ \t]*ifndef/[ \t]	{ emit_indented_cpp (EIC_IF, "ifndef", yyout); }
 
-^[ \t]*#[ \t]*elif[ \t]		{ emit_indented_cpp (EIC_ELSE, "elif", yyout); }
-^[ \t]*#[ \t]*else([ \t]|$)	{ emit_indented_cpp (EIC_ELSE, "else", yyout); }
+^[ \t]*#[ \t]*elif/[ \t]	{ emit_indented_cpp (EIC_ELSE, "elif", yyout); }
+^[ \t]*#[ \t]*else/[^a-zA-Z_\n]	{emit_indented_cpp (EIC_ELSE, "else", yyout); }
+^[ \t]*#[ \t]*else$		{emit_indented_cpp (EIC_ELSE, "else", yyout); }
 
-^[ \t]*#[ \t]*endif([ \t]|$)	{ emit_indented_cpp (EIC_ENDIF,"endif", yyout);}
+^[ \t]*#[ \t]*endif[^ \t\n]	{ MY_ECHO; }
+^[ \t]*#[ \t]*endif/[^a-zA-Z_\n] { emit_indented_cpp (EIC_ENDIF, "endif", yyout); }
+^[ \t]*#[ \t]*endif$	{ emit_indented_cpp (EIC_ENDIF, "endif", yyout); }
+^[ \t]*#[ \t]*endif	{ emit_indented_cpp (EIC_ENDIF, "endif", yyout); }
 
 ^[ \t]*#			{ emit_indented_cpp (EIC_OTHER, "", yyout); }
 
@@ -224,7 +238,7 @@ main (int argc, char** argv)
       --argc;
     }
 
-  in = (argc == 1 ? "-" : argv[2]);
+  in = (argc == 1 ? "-" : argv[1]);
   cpp_indent (in);
 
   if (fclose (stdout) == EOF)
