@@ -134,15 +134,14 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
-AUTOMAKE_OPTIONS = 1.5 gnits
+AUTOMAKE_OPTIONS = 1.7 gnits
 
 noinst_LIBRARIES = libgnulib.a
 
 libgnulib_a_SOURCES = closeout.h closeout.c exitfail.h exitfail.c __fpending.h gettext.h quotearg.h quotearg.c unlocked-io.h xalloc.h xmalloc.c xstrdup.c xstrtol.h xstrtol.c xstrtoul.c version-etc.h version-etc.c pathmax.h
 libgnulib_a_LIBADD = $(LIBOBJS)
 
-EXTRA_DIST = stdbool_.h stdbool_.h alloca_.h alloca_.h
-
+EXTRA_DIST = stdbool_.h stdbool_.h alloca_.h
 BUILT_SOURCES = $(STDBOOL_H) $(ALLOCA_H)
 SUFFIXES = 
 MOSTLYCLEANFILES = stdbool.h stdbool.ht alloca.h alloca.h-t
