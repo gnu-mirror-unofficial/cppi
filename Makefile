@@ -1,5 +1,5 @@
 CC = gcc
-optimize = -pipe #-O
+optimize = -pipe -g -O2
 CFLAGS = -I. -g $(optimize) -Wall -D__USE_FIXED_PROTOTYPES__
 LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
@@ -14,7 +14,7 @@ qO = $(addsuffix .qO,$t)
 
 LEX = flex
 lex_debug = #-d
-lex_optimize = -f -p -b
+lex_optimize = -Cfr -p -b
 LFLAGS = $(lex_debug) $(lex_optimize)
 
 # all: $(td) $(qd) cppi
