@@ -120,6 +120,14 @@ static struct obstack opener_stack;
 /* Current nesting level.  */
 static int i_depth;
 
+/* Initial indentation nesting depth.  May be negative.
+   Use a value of -1 to cause code (usually header files) to be indented
+   one level less than otherwise.  This is useful if you don't want file-
+   enclosing ifdefs (e.g., #ifdef FOO_H/#define FOO_H/ ... #endif) to
+   cause every enclosed cpp directive to have at least one space between
+   the `#' and the cpp keyword.  */
+static int initial_i_depth;
+
 /* Nonzero means don't generate diagnostics about indentation, and print
    to stdout only the names of files that aren't properly indented.  */
 static int list_files_only;
@@ -213,15 +221,16 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
   if (inhibit_output)
     {
       int n;
+      int depth = (i_depth < 0 ? 0 : i_depth);
       if ((text[0] == '#'
-	   && (n = strspn (text + 1, " ")) == i_depth
+	   && (n = strspn (text + 1, " ")) == depth
 	   && !isblank (text[1 + n]))
 	  /* This allows pragmas to have exactly one space before the `#'.
 	     E.g., ` #pragma alloca' or ` #  pragma alloca' .  */
 	  || (text[0] == ' '
 	      && text[1] == '#'
 	      && type == EIC_PRAGMA
-	      && (n = strspn (text + 2, " ")) == i_depth - 1
+	      && (n = strspn (text + 2, " ")) == depth - 1
 	      && text[n + 2] == 'p'))
 	{
 	  fail = 0;
@@ -281,7 +290,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 
     case EIC_ELSE:
     case EIC_ELIF:
-      if (i_depth <= 0)
+      if (i_depth <= initial_i_depth)
 	{
 	  if (!list_files_only)
 	    {
@@ -301,14 +310,14 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       break;
 
     case EIC_ENDIF:
-      if (i_depth <= 0)
+      if (i_depth <= initial_i_depth)
 	{
 	  if (!list_files_only)
 	    {
 	      warn (0, "%s: %s: line %d: found #%s without matching #if",
 		    program_name, in_file, line_number, directive[t]);
 	    }
-	  i_depth = 1;
+	  i_depth = initial_i_depth + 1;
 	  *fail = 2;
 	}
       else
@@ -355,7 +364,8 @@ b [^a-zA-Z_\n]
 %%
 
 %{
-  /* This section contains dcls and code local to the scanning routine.  */
+  /* This section contains dcls and code that is local to the
+     scanning routine.  */
 
   /* Current line number -- for diagnostics and errors.  */
   unsigned int lineno = 1;
@@ -364,7 +374,8 @@ b [^a-zA-Z_\n]
 
   obstack_init (&opener_stack);
 
-  i_depth = 0;
+  initial_i_depth = 0;
+  i_depth = initial_i_depth;
 
 %}
 
@@ -499,7 +510,7 @@ b [^a-zA-Z_\n]
 .                         { MY_ECHO; }
 
 <<EOF>> {
-  if (i_depth != 0)
+  if (i_depth != initial_i_depth)
     {
       if (!list_files_only)
 	{
