@@ -1,14 +1,31 @@
 1999-02-12  Jim Meyering  <meyering@ascend.com>
 
+	* Version 1.7.
+
+	* cppi.l (gobble_line): New function.
+	"//": New rule.  Handle C++ comments.
+	(#-directive-rule): Recognize C++ comments here, too.
+
+	* Makefile.am (distcheck-hook): Add hook to Makefile.maint.
+
+	* tests/test-common: Don't prepend .. to $PATH here.
+	* tests/Makefile.am (TESTS_ENVIRONMENT): Prepend .. to $PATH here.
+	(TESTS): Add cxx-1 and cxx-2.
+	* tests/cxx-1: New test.
+	* tests/cxx-2: New test.
+
+	* configure.in: Require autoconf-2.13.
+	* Makefile.am (AUTOMAKE_OPTIONS): Require automake-1.4.
+
 	* tests/ansi-6: New test.
 	* tests/Makefile.am (TESTS): Add it.
 
 1999-02-10  Jim Meyering  <meyering@ascend.com>
 
-	* cppi.l (gobble_comment): New function -- extracted from
+	* cppi.l (gobble_c_comment): New function -- extracted from
 	comment-processing rule.
 	(#-directive-rule): Detect text after #else and #endif.
-	Use gobble_comment here, too.
+	Use gobble_c_comment here, too.
 	New option: --ansi (-a).
 
 	* tests/Makefile.am (TESTS): Add new ansi-? tests.
