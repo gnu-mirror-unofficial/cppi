@@ -1,6 +1,11 @@
 #!@PERL@ -w
 # Filter C code so that CPP #-directives are indented to reflect nesting.
 # written by Jim Meyering
+
+# This code is included here solely to provide a little perspective
+# on the development process and evolution of the package.  The Lex/C
+# version is much more efficient.
+
 use strict;
 
 my $checking = 0;
