@@ -2,7 +2,7 @@
 
 /* When output is inhibited, exit with status:
    0 if all's ok
-   1 if indentation is wrong
+   1 if indentation is wrong, or if text follows #else/#endif
    2 if #if/#endif mismatch
    3 if file error
    */
@@ -106,6 +106,10 @@ static int initial_i_depth;
    to stdout only the names of files that aren't properly indented.  */
 static int list_files_only;
 
+/* Set to non-zero to enable ANSI-conformance check
+   (text after #else or #endif is non-ANSI).  */
+static int ansi_check = 0;
+
 /* Set to non-zero to inhibit non-error output.  */
 static int inhibit_output = 0;
 
@@ -121,6 +125,7 @@ static int show_version;
 
 static struct option const long_options[] =
 {
+  {"ansi", no_argument, NULL, 'a'},
   {"check", no_argument, NULL, 'c'},
   {"list-files-only", no_argument, NULL, 'l'},
   {"help", no_argument, &show_help, 1},
@@ -129,6 +134,7 @@ static struct option const long_options[] =
 };
 
 static void gobble_define (int*);
+static void gobble_comment (const char *, int *);
 
 /* Include gperf-generated hash function.  */
 #include "cpp-cond.c"
@@ -358,36 +364,9 @@ b [^a-zA-Z_\n]
 %}
 
 "/*"        {
-  register int c;
-  int start_lineno = lineno;
-
   PUT2 ('[', '\0');
   MY_ECHO;
-  for ( ; ; )
-    {
-      while ((c = INPUT_AND_ECHO ()) != '*' && c != EOF)
-	{
-	  if (c == '\n')
-	    ++lineno;
-	}
-
-      if (c == '*')
-	{
-	  while ((c = INPUT_AND_ECHO ()) == '*')
-	    ;
-	  if (c == '/')
-	    break;    /* found the end */
-	  if (c == '\n')
-	    ++lineno;
-	}
-
-      if (c == EOF)
-	{
-	  fatal (2, 0, "%s: %s: line %d: EOF in comment",
-		 program_name, in_file, start_lineno);
-	  break;
-	}
-    }
+  gobble_comment (in_file, &lineno);
   PUT2 ('\0', ']');
 }
 
@@ -481,6 +460,52 @@ b [^a-zA-Z_\n]
 	  gobble_define (&lineno);
 	}
     }
+  else if (ansi_check && (t == EIC_ELSE || t == EIC_ENDIF))
+    {
+      /* If requested, make sure there's nothing after an #else or #endif */
+      /* FIXME: add an option for this */
+      int found_non_ansi = 0;
+      int c;
+      while ((c = INPUT_AND_ECHO ()) != EOF)
+	{
+	  if (isblank (c))
+	    continue;
+	  if (c == '/')
+	    {
+	      c = INPUT_AND_ECHO ();
+	      if (c == EOF)
+		break;
+	      if (c == '*')
+		{
+		  gobble_comment (in_file, &lineno);
+		  continue;
+		}
+
+	      /* else, fall through to next if-stmt */
+	    }
+
+	  if (c == '\n')
+	    {
+	      ++lineno;
+	      break;
+	    }
+
+	  /* We've found a token after an #else or #endif.
+	     Continue reading to end of line.  */
+	  found_non_ansi = 1;
+	}
+
+      if (found_non_ansi)
+	{
+	  if (!list_files_only)
+	    warn (0,
+	      "%s: %s: line %d: text following `#%s' violates ANSI standard",
+		  program_name, in_file, lineno,
+		  (t == EIC_ELSE ? "else" : "endif"));
+	  if (fail < 1)
+	    fail = 1;
+	}
+    }
 
   if (fail > lex_fail)
     lex_fail = fail;
@@ -565,6 +590,7 @@ and ensure that there is exactly one space character between each #if,\n\
 #elif, #define directive and the following token, and write the result\n\
 to standard output.  With no FILE, or when FILE is -, read standard input.\n\
 \n\
+  -a, --ansi             when checking, fail if text follows #else or #endif\n\
   -c, --check            set exit code, but don't produce any output\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
 			   print to stdout only the names of files that\n\
@@ -576,13 +602,17 @@ With the -c option, don't write to stdout.  Instead, check the\n\
 indentation of the specified files giving diagnostics for preprocessor\n\
 lines that aren't properly indented or are otherwise invalid.\n\
 \n\
+Note that --ansi without --check does not correct the problem of\n\
+non-ANSI text following #else and #endif directives.\n\
+\n\
 The exit code will be one of these:\n\
   0 all directives properly indented\n\
   1 some cpp directive(s) improperly indented\n\
+  1 if text follows #else/#endif (enabled with --check --ansi)\n\
   2 #if/#endif mismatch\n\
   3 file (e.g. read/write) error\n\
 \n\
-Pragma directives may have their `#' indented.\n\
+A pragma directive may have its `#' indented.\n\
 ",
 	      program_name, program_name);
     }
@@ -616,6 +646,38 @@ gobble_define (int *line_number)
     }
 }
 
+static void
+gobble_comment (const char *in_file, int *line_number)
+{
+  int start_lineno = *line_number;
+  for ( ; ; )
+    {
+      int c;
+      while ((c = INPUT_AND_ECHO ()) != '*' && c != EOF)
+	{
+	  if (c == '\n')
+	    ++(*line_number);
+	}
+
+      if (c == '*')
+	{
+	  while ((c = INPUT_AND_ECHO ()) == '*')
+	    ;
+	  if (c == '/')
+	    break;    /* found the end */
+	  if (c == '\n')
+	    ++(*line_number);
+	}
+
+      if (c == EOF)
+	{
+	  fatal (2, 0, "%s: %s: line %d: EOF in comment",
+		 program_name, in_file, start_lineno);
+	  break;
+	}
+    }
+}
+
 int
 main (int argc, char** argv)
 {
@@ -626,11 +688,15 @@ main (int argc, char** argv)
 
   program_name = argv[0];
 
-  while ((c = getopt_long (argc, argv, "cl", long_options, NULL)) != -1)
+  while ((c = getopt_long (argc, argv, "acl", long_options, NULL)) != -1)
     {
       switch (c)
 	{
 	case 0:
+	  break;
+
+	case 'a':
+	  ansi_check = 1;
 	  break;
 
 	case 'c':
