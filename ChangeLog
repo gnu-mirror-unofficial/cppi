@@ -1,3 +1,10 @@
+1997-10-26  Jim Meyering  <meyering@na-net.ornl.gov>
+
+	* cppi.l: Don't pack keyword/line_number pairs into an int.
+	Instead, keep a stack of structs.
+	Update stack manipulation functions.
+	(nth_entry): New function.
+
 Thu Jun 26 23:27:31 1997  /  <meyering@na-net.ornl.gov>
 
 	* cppi.l (#<any-cpp-directive>): Don't try to return early when
