@@ -16,6 +16,8 @@ extern int errno;
 
 #include "fatal.h"
 
+#define STREQ(A,B) (strcmp ((A), (B)) == 0)
+
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
@@ -183,7 +185,7 @@ cpp_indent (const char *in_file)
 {
   FILE *in = NULL;
 
-  if (strcmp (in_file, "-") == 0)
+  if (STREQ (in_file, "-"))
     {
       yyin = stdin;
       in_file = "standard input";
@@ -208,6 +210,12 @@ main (int argc, char** argv)
   int inhibit_output = 0;
 
   program_name = argv[0];
+
+  if (argc > 3)
+    {
+      fprintf (stderr, "Usage: %s [-c] [FILE]", program_name);
+      exit (1);
+    }
 
   if (argc >= 2 && STREQ (argv[1], "-c"))
     {
