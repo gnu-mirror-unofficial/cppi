@@ -110,3 +110,163 @@ n
 p i_depth 
 p strspn (text + 1, " ")
 q
+r - < d3.I
+b main
+l
+r
+n
+p err
+b cpp_indent 
+r
+n
+c
+n
+p fail
+b cpp_i
+r
+q
+b emit_indented_cpp 
+r - < d3.I
+n
+n
+p *fail
+n
+p fail
+n
+p lex_fail 
+n
+l
+n
+i b
+c
+n
+p *fail
+n
+n
+p fail
+n
+p lex_fail 
+c
+n
+p *fail
+n
+p lex_fail 
+c
+n
+p *fail
+c
+n
+p *fail
+q
+b cpp_i
+r - < d8.I
+q
+b cpp_i
+r - < e8.I
+c
+b emit_indented_cpp 
+r - < e8.I
+c
+c
+n
+p tf
+n
+c
+r
+r -c - < e8.I
+c
+s
+n
+p prefix
+n
+fin
+n
+p i_depth 
+n
+p yytext
+p keyword 
+p t
+s
+n
+p text
+p strspn (text + 1, " ")
+p i_depth 
+n
+p n
+p (n = strspn (text + 1, " ")) == i_depth
+p i_depth 
+q
+b emit_indented_cpp 
+r -c - < e8.I
+c
+p lex_fail
+up
+p lex_fail
+do
+n
+n
+p fail
+n
+p lex_fail
+n
+n
+q
+b cpp_i
+r -l f7.I2 f7.I
+c
+c
+r
+y
+c
+n
+l
+n
+b emit_indented_cpp 
+c
+n
+q
+r -l f7.I2 f7.I
+b emit_indented_cpp 
+r -l f7.I2 f7.I
+c
+c
+q
+b emit_indented_cpp 
+b dummy
+r -l f7.I2 f7.I
+c
+c
+c
+n
+n
+p i_depth 
+b cpp_indent 
+r -l f7.I2 f7.I
+c
+disa 2 1
+c
+n
+s
+l
+i b
+ena 1
+c
+r
+c
+q
+b cpp_indent 
+r -l f7.I2 f7.I
+c
+n
+s
+l
+n
+n
+l
+b emit_indented_cpp 
+c
+c
+b emit_or_check 
+r -l f7.I2 f7.I
+c
+q
