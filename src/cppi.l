@@ -96,6 +96,8 @@ yywrap (void)
   }
 }
 
+#define MAX_DEPTH 40
+
 #define EMIT(T)								\
   do									\
     {									\
@@ -126,7 +128,6 @@ static void
 emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 		   char const *in_file)
 {
-#define MAX_DEPTH 40
   static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
   int ok = 0;
 
