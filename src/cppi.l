@@ -682,7 +682,8 @@ main (int argc, char** argv)
   /* Make `cppi -C' usable directly via CVS's commitinfo.
      Ignore the first command line argument if it is a directory and
      there is at least one other argument.  Also, process only files
-     ending in .c and .h.  */
+     ending in .c and .h.
+     FIXME: this whole -C option is a gross kludge -- remove it */
 
   if (argc >= 3 && cvs_mode)
     {
