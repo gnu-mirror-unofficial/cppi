@@ -102,3 +102,11 @@ b emit_or_check
 r
 n
 q
+b emit_or_check 
+r -c f4.I
+c
+c
+n
+p i_depth 
+p strspn (text + 1, " ")
+q
