@@ -49,3 +49,38 @@ p t
 b lookup_cpp_keyword 
 r
 q
+r -c . k
+b main
+r -c . k
+n
+q
+b main
+r -c . k
+n
+l
+n
+l
+n
+l
+n
+n
+l
+l
+p argc
+p file_list
+p file_list[0]
+n
+l
+n
+l
+r
+y
+n
+p file_list[0]
+n
+p file_list[0]
+n
+p file_list[0]
+p stat (file_list[0], &stats)
+n
+q
