@@ -27,9 +27,10 @@
 #define N_(msgid) msgid
 
 #include "system.h"
+#include "cpp.h"
+#include "error.h"
 #include "obstack.h"
 #include "xstrtol.h"
-#include "cpp.h"
 
 /* The official name of this program (e.g., no `g' prefix).  */
 #define PROGRAM_NAME "cppi"
