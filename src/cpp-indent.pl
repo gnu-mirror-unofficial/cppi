@@ -45,7 +45,7 @@ sub cpp_indent ($$)
     my $new_string_or_comment = 0;
     while ($line)
       {
-	warn "s: $state: line=$line";
+	#warn "s: $state: line=$line";
 	my $remainder = '';
 	if ($state == IN_CODE)
 	  {
