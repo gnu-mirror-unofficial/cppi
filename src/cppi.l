@@ -11,19 +11,15 @@
 # error This scanner must be made using flex, not lex.
 #endif
 
-#ifndef __GNUC__
-# error This scanner must be compiled with gcc.
-#endif
-
 #include "config.h"
 
 #include <stdio.h>
 
 #if HAVE_STDLIB_H
-#include <stdlib.h>
+# include <stdlib.h>
 #endif
 #if HAVE_UNISTD_H
-#include <unistd.h>
+# include <unistd.h>
 #endif
 #include <assert.h>
 
@@ -73,14 +69,25 @@ extern int errno;
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
-/* NOTE: this use of stmt-expression is another gcc-ism.  */
-#define INPUT_AND_ECHO()			\
+#ifdef __GNUC__
+/* this use of a statement-expression works only with gcc.  */
+# define INPUT_AND_ECHO()			\
  ({						\
    int _c_ = input ();				\
    if (_c_ != EOF && !inhibit_output)		\
      fputc (_c_, yyout);			\
    _c_;						\
  })
+#else
+static int
+INPUT_AND_ECHO (void)
+{
+  int _c_ = input ();
+  if (_c_ != EOF && !inhibit_output)
+    fputc (_c_, yyout);
+  return _c_;
+}
+#endif
 
 #ifndef isblank
 # define isblank(c) ((c) == ' ' || (c) == '\t')
