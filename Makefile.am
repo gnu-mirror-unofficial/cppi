@@ -38,7 +38,7 @@ cpp-cond.c: cpp.gp
 	chmod a-w $@-t2
 	mv $@-t2 $@
 
-flex_debug = #-d
+# flex_debug = #-d
 flex_debug = # -L # suppress #line directives
 
 # This is required to avoid an infloop on certain 8-bit inputs.
