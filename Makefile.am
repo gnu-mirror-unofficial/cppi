@@ -30,13 +30,12 @@ GPERF = gperf
 ACLOCAL_AMFLAGS = -I m4
 
 cpp-cond.c: cpp.gp
-	rm -f $@ $@-tmp $@-t2
+	rm -f $@ $@-tmp
 	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  > $@-tmp
-	sed 's/str\[/(unsigned char) str[/' $@-tmp > $@-t2
 	rm -f $@-tmp
-	chmod a-w $@-t2
-	mv $@-t2 $@
+	chmod a-w $@-tmp
+	mv $@-tmp $@
 
 # flex_debug = #-d
 flex_debug = # -L # suppress #line directives
