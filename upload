@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# FIXME:
+# Invoke like this:
+# ./upload coreutils 5.1.0 5.1.1 ALPHA-or-FTP
+
+# FIXME: these must come from command line, along with alpha-vs-ftp indicator
+pkg=coreutils
+prev_ver=5.1.0
+ver=5.1.1
+
+# FIXME: specify alpha or not.
+
+fail=0
+
+files=
+for f in $pkg-$ver.tar.gz $pkg-$ver.tar.bz2 $pkg-$prev_ver-$ver.xdelta; do
+  # Create the signed `directive' file.
+  echo 'directory: coreutils' \
+    | gpg --clearsign > $f.directive.asc
+
+  # Upload these three files to ftp-upload.gnu.org:/incoming/alpha
+  #                       or to ftp-upload.gnu.org:/incoming/ftp
+
+  for g in $f $f.sig $f.directive.asc; do
+    test -r $g || { echo "$0: $g: no such file" 1>&2; fail=1; }
+    files="$files $g"
+  done
+
+done
+
+echo ftp-upload --passive --host ftp-upload.gnu.org --dir /incoming/alpha \
+    --password jim@meyering.net \
+    $files
+
+exit $fail
