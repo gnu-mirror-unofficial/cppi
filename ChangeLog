@@ -1,3 +1,11 @@
+1998-11-12  Jim Meyering  <meyering@ascend.com>
+
+	* Makefile.am (cpp-cond.c): Rename from cpp-cond-lookup.c (was longer
+	than 14 chars).
+	Perform the gperf and sed in separate commands, not a pipe.
+	Otherwise, folks without gperf would end up with an empty
+	cpp-cond-lookup.c file that would evoke compile errors.
+
 1998-10-28  Jim Meyering  <meyering@ascend.com>
 
 	* Version 1.5.

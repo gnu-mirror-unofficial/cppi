@@ -72,15 +72,16 @@ cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
 
 noinst_HEADERS = fatal.h getopt.h obstack.h
 
-EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
+EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
   GNUmakefile Makefile.maint
 
 SUBDIRS = tests
 
-MAINTAINERCLEANFILES = cpp-cond-lookup.c
+MAINTAINERCLEANFILES = cpp-cond.c
 CLEANFILES = cpp.h lex.backup
 
 PERL = @PERL@
+GPERF = gperf
 
 flex_debug = #-d
 flex_debug = # -L # suppress #line directives
@@ -93,7 +94,7 @@ flex_8_bit = -8
 flex_optimize = -Cfr -p -b
 LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
 
-BUILT_SOURCES = cpp-cond-lookup.c cpp.h
+BUILT_SOURCES = cpp-cond.c cpp.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -126,8 +127,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/cpp-cond-lookup .deps/cppi.P .deps/fatal.P \
-.deps/getopt.P .deps/getopt1.P .deps/obstack.P
+DEP_FILES =  .deps/cpp-cond .deps/cppi.P .deps/fatal.P .deps/getopt.P \
+.deps/getopt1.P .deps/obstack.P
 SOURCES = $(cppi_SOURCES)
 OBJECTS = $(cppi_OBJECTS)
 
@@ -451,12 +452,14 @@ clean-generic maintainer-clean-generic clean mostlyclean distclean \
 maintainer-clean
 
 
-cpp-cond-lookup.c: cpp.gp
-	rm -f $@ $@-tmp
-	gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
-	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
-	chmod a-w $@-tmp
-	mv $@-tmp $@
+cpp-cond.c: cpp.gp
+	rm -f $@ $@-tmp $@-t2
+	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	  > $@-tmp
+	sed 's/str\[/(unsigned char) str[/' $@-tmp > $@-t2
+	rm -f $@-tmp
+	chmod a-w $@-t2
+	mv $@-t2 $@
 
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
