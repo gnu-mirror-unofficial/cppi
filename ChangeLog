@@ -2,7 +2,10 @@
 
 	* Makefile.am (cpp.h): Generate declarations of `enum Eic_type'
 	and the `directive' array of strings.
+	(BUILT_SOURCES): Add cpp.h.
+
 	* cppi.l: Include cpp.h here in place of hard-coded dcls.
+	(emit_indented_cpp): Don't use gcc extension for struct initialization.
 
 	* cppi.l: Remove and undocument kludgey --cvs (-C) option.
 	* tests/Makefile.am (TESTS): Remove f6 (used -C).
