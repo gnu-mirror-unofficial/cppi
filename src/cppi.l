@@ -155,6 +155,8 @@ static struct option const long_options[] =
   {NULL, 0, NULL, 0}
 };
 
+static void gobble_define (void);
+
 /* Include gperf-generated hash function.  */
 #include "cpp-cond-lookup.c"
 
@@ -498,6 +500,10 @@ b [^a-zA-Z_\n]
 	    }
 	}
       unput (c);
+      if (t == EIC_DEFINE)
+	{
+	  gobble_define ();
+	}
     }
 
   if (fail > lex_fail)
@@ -615,6 +621,28 @@ Pragma directives may have their `#' indented.\n\
 	      program_name, program_name);
     }
   exit (status == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
+}
+
+/* Read the body of a #define directive (echoing or not, as appropriate).
+   That is, read up to and including the first unescaped newline (or EOF).
+   This is necessary because otherwise, we could mistakenly interpret the
+   stringification of a macro argument as a cpp directive.  */
+
+static void
+gobble_define (void)
+{
+  int c;
+  int backslash_count = 0;
+  while ((c = INPUT_AND_ECHO ()) != EOF)
+    {
+      if (c == '\n' && backslash_count % 2 == 0)
+	break;
+
+      if (c == '\\')
+	++backslash_count;
+      else
+	backslash_count = 0;
+    }
 }
 
 int
