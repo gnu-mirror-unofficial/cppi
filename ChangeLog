@@ -1,5 +1,11 @@
 Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
+	* cppi.l (emit_or_check): Remove now-spurious exclusion:
+	type == EIC_OTHER.
+	(emit_indented_cpp): Handle EIC_DEFINE.
+
+	* cpp.gp: Add `define'.
+
 	* cppi.l (enum Eic_type): Add EIC_PRAGMA.
 	(emit_or_check): Treat ` #pragma' as a special case.
 	(emit_indented_cpp): Treat EIC_PRAGMA just like EIC_OTHER.
