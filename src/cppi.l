@@ -290,6 +290,7 @@ b [^a-zA-Z_\n]
   PUT2 ('\0', ']');
 }
 
+"'\\\"'" |
 "'\"'" {
   /* We need this rule so that the double quote in the character literal,
      '"', is not interpreted as the string opener.  */
