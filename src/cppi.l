@@ -357,7 +357,11 @@ b [^a-zA-Z_\n]
 ^[ \t]*#[ \t]*endif{w}    { MY_ECHO; }
 ^[ \t]*#[ \t]*endif/{b}   { EMIT_DIR (EIC_ENDIF); }
 ^[ \t]*#[ \t]*endif$      { EMIT_DIR (EIC_ENDIF); }
-^[ \t]*#[ \t]*endif       { EMIT_DIR (EIC_ENDIF); }
+^[ \t]*#[ \t]*endif       {
+  /* This happens when the #endif directive is at the end of file and
+     the `f' is the last byte of the file (i.e., there is no newline).  */
+  EMIT_DIR (EIC_ENDIF);
+  }
 
 ^[ \t]*#[ \t]*            { EMIT_DIR (EIC_OTHER); }
 
