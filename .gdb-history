@@ -386,3 +386,9 @@ b emit_or_check
 r -c /tmp/j.c
 n
 q
+q
+r -m 2 k
+r -m 2 k
+up
+p optarg
+q
