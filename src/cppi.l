@@ -629,10 +629,10 @@ to standard output.  With no FILE, or when FILE is -, read standard input.\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
 			   print to stdout only the names of files that\n\
 			   are not properly indented\n\
-  -m, --max-string-length=LEN\n\
+  -m, --max-string-length=LENGTH\n\
                          fail if there is a double-quoted string longer\n\
-                           than LEN;  if LEN is 0 (the default), then there\n\
-                           is no limit\n\
+                           than LENGTH;  if LENGTH is 0 (the default),\n\
+                           then there is no limit\n\
       --help             print this help, then exit\n\
       --version          print tar program version number, then exit\n\
 \n\
