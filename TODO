@@ -1,2 +1,2 @@
-give good diagnostics for losing code
+give better diagnostics for losing code
 convert to use automake/autoconf
