@@ -17,7 +17,7 @@ AC_AIX
 AC_MINIX
 
 dnl Checks for header files.
-AC_CHECK_HEADERS(stdlib.h string.h)
+AC_CHECK_HEADERS(memory.h stdlib.h string.h unistd.h)
 AC_HEADER_STDC
 
 dnl This test must precede tests of compiler characteristics like
