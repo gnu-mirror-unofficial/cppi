@@ -85,6 +85,7 @@ static unsigned int lineno = 1;
 static unsigned int i_depth = 0;
 static int inhibit_output = 0;
 static int g_fail = 0;
+static char *default_file_list[] = {"-", NULL};
 
 char *program_name;
 
@@ -329,6 +330,7 @@ main (int argc, char** argv)
 {
   int i;
   int fail;
+  char **file_list;
 
   program_name = argv[0];
 
@@ -350,11 +352,12 @@ main (int argc, char** argv)
       usage (1);
     }
 
+  file_list = (argc == 1 ? default_file_list : argv + 1);
+
   fail = 0;
-  for (i = 1; i < argc; i++)
+  for (i = 0; file_list[i]; i++)
     {
-      char *in = (argc == 1 ? "-" : argv[i]);
-      int err = cpp_indent (in);
+      int err = cpp_indent (file_list[i]);
       if (err > fail)
 	fail = err;
     }
