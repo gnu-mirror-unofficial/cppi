@@ -1,2 +1,6 @@
+cppi
 cpp-indent
 *.O
+*.qO
+*.qd
+*.d
