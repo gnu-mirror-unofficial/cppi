@@ -84,3 +84,21 @@ p file_list[0]
 p stat (file_list[0], &stats)
 n
 q
+r f4.I
+up
+up
+b emit_indented_cpp 
+r
+c
+c
+r
+c
+n
+p t
+n
+l
+q
+b emit_or_check 
+r
+n
+q
