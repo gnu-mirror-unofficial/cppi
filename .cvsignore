@@ -1,6 +1,6 @@
 .deps
 Makefile
-autom4te
+autom4te.cache
 config.cache
 config.h
 config.hin
