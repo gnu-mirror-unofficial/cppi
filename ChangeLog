@@ -2,6 +2,10 @@
 
 	* Version 1.11.
 
+	* tests/version-check: New file.
+	* tests/Makefile.am (TESTS): Add version-check.
+	(PACKAGE_VERSION): Add PACKAGE_VERSION.
+
 	* src/cppi.l (main): Now that we use close_stdout, don't close
 	stdout explicitly.
 	Now that we're using `error' instead of `fatal' and `warn',
