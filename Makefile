@@ -1,5 +1,5 @@
 CC = gcc
-optimize = -O -pipe
+optimize = -pipe #-O
 CFLAGS = -I. -g $(optimize) -Wall -D__USE_FIXED_PROTOTYPES__
 LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
@@ -14,7 +14,8 @@ qO = $(addsuffix .qO,$t)
 
 LEX = flex
 lex_debug = #-d
-LFLAGS = -I $(lex_debug)
+lex_optimize = -f -p -b
+LFLAGS = $(lex_debug) $(lex_optimize)
 
 # all: $(td) $(qd) cppi
 all: check
@@ -24,6 +25,12 @@ check: $(qd) cppi
 
 cppi: cppi.o fatal.o strerror.o
 	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+cppi.o: cpp-cond-lookup.c
+
+cpp-cond-lookup.c: cpp.gp
+	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< > $@-tmp
+	mv $@-tmp $@
 
 $(td): %.d: %.E %.O
 	-diff -u $^ > $@-tmp
