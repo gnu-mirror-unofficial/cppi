@@ -1,3 +1,5 @@
+%option noyywrap
+
 %{ /* -*- C -*- */
 
 /* When output is inhibited, exit with status:
@@ -196,12 +198,6 @@ lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
 	}
       assert (len > 0);
     }
-}
-
-int
-yywrap (void)
-{
-  return 1;
 }
 
 static inline struct KL_pair
