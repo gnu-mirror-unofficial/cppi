@@ -1,5 +1,7 @@
 1998-04-08  Jim Meyering  <meyering@ascend.com>
 
+	* configure.in: Bump version from 1.1a to 1.1b.
+
 	ADMIN EOI 19316: FreeBSD portability fixes
 	* Makefile.am (cpp-cond-lookup.c): Don't use gperf's -E option:
 	some older versions don't support it and we don't need it.
