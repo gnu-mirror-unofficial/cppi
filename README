@@ -15,7 +15,9 @@ See file `NEWS' for a list of major changes in the current release.
 See file `THANKS' for a list of contributors.
 
 For comprehensive modifications to GNU cppi, you might need tools beyond
-those used in simple installations.  FIXME: say more...
+those used in simple installations.  For example, you'll need gperf if
+you modify or remove cpp.gp.  Likewise, if you modify cppi.l, you'll
+need GNU flex to regenerate cppi.c.
 
 Send bug reports to `bug-cppi@gnu.org'.
 
