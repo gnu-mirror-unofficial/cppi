@@ -258,6 +258,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
   const char *keyword;
   enum Eic_type t = lookup_cpp_keyword (text, len, &keyword);
 
+  *fail = 0;
+
   switch (t)
     {
     case EIC_IF:
