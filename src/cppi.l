@@ -17,6 +17,14 @@ extern int errno;
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
+#define input_and_echo()			\
+ ({						\
+   int _c_ = input ();				\
+   if (_c_ != EOF)				\
+     fputc (_c_, yyout);			\
+   _c_;						\
+ })
+
 static int lineno = 1;
 static int i_depth = 0;
 static int inhibit_output = 0;
@@ -57,7 +65,7 @@ emit_indented_cpp (char const *directive, FILE *out)
     ECHO;
   for ( ; ; )
     {
-      while ((c = input()) != '*' && c != EOF)
+      while ((c = input_and_echo ()) != '*' && c != EOF)
 	{
 	  if (c == '\n')
 	    ++lineno;
@@ -65,7 +73,7 @@ emit_indented_cpp (char const *directive, FILE *out)
 
       if (c == '*')
 	{
-	  while ((c = input ()) == '*')
+	  while ((c = input_and_echo ()) == '*')
 	    ;
 	  if (c == '/')
 	    break;    /* found the end */
@@ -98,7 +106,7 @@ emit_indented_cpp (char const *directive, FILE *out)
 
   while (1)
     {
-      c = input ();
+      c = input_and_echo ();
 
       if (c == EOF)
 	fatal (0, "%s: %s: ERROR: EOF in string", program_name, in_file);
