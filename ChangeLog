@@ -3,6 +3,7 @@
 	* Version 1.12.
 
 	* src/cppi.l: Check white space after #ifndef, too.
+	* tests/e6: Adjust to reflect the above.
 
 2003-08-15  Jim Meyering  <jim@meyering.net>
 
