@@ -66,7 +66,8 @@ extern int errno;
 	  int n;							\
 	  if (text[0] == '#'						\
 	      && (n = strspn (text + 1, " ")) == i_depth		\
-	      && (text[1 + n] == 'e' || text[1 + n] == 'i'))		\
+	      && ((T == EIC_OTHER && text[1 + n] == '\0') ||		\
+		  text[1 + n] == 'e' || text[1 + n] == 'i'))		\
 	    {								\
 	      ok = 1;							\
 	    }								\
