@@ -76,6 +76,7 @@ enum Eic_type
   EIC_ELIF,
   EIC_ENDIF,
   EIC_PRAGMA,
+  EIC_DEFINE,
   EIC_OTHER
 };
 
@@ -88,6 +89,7 @@ static char const *const directive[] =
   [EIC_ELIF]	"elif",
   [EIC_ENDIF]	"endif",
   [EIC_PRAGMA]	"pragma",
+  [EIC_DEFINE]	"define",
   [EIC_OTHER]	""
 };
 
@@ -187,8 +189,7 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
       int n;
       if ((text[0] == '#'
 	   && (n = strspn (text + 1, " ")) == i_depth
-	   && (type == EIC_OTHER || !isblank (text[1 + n])))
-
+	   && !isblank (text[1 + n]))
 	  /* This allows pragmas to have at least one space before the `#'.
 	     E.g., ` #pragma alloca'.  */
 	  || (text[0] == ' '
@@ -282,6 +283,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       break;
 
     case EIC_PRAGMA:
+    case EIC_DEFINE:
     case EIC_OTHER:
       fail = emit_or_check (t, yytext, keyword);
       break;
@@ -407,7 +409,7 @@ b [^a-zA-Z_\n]
   enum Eic_type t;
   t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &g_fail);
 
-  if (t == EIC_IF || t == EIC_ELIF)
+  if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
     {
       int c;
       if (inhibit_output)
@@ -418,8 +420,8 @@ b [^a-zA-Z_\n]
 	  if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
 	    {
 	      warn (0, "%s: %s: line %d: not properly formatted\n"
-		    "There must be exactly one SPACE character after each "
-		    "#if and #elif directive.",
+		    "There must be exactly one SPACE character after each\n"
+		    "#if, #elif, and #define directive.",
 		    program_name, in_file, lineno);
 	      if (g_fail < 1)
 		g_fail = 1;
@@ -438,8 +440,8 @@ b [^a-zA-Z_\n]
       unput (c);
     }
 }
-^[ \t]*#[ \t]*                { MY_ECHO; }
-^[ \t]*                       { MY_ECHO; }
+^[ \t]*#[ \t]*            { MY_ECHO; }
+^[ \t]*                   { MY_ECHO; }
 
 \n                        { MY_ECHO; ++lineno; }
 .                         { MY_ECHO; }
