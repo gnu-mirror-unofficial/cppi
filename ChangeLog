@@ -2,6 +2,9 @@
 
 	* Version 1.10.
 
+	* obstack.c (__attribute__): Define it to be empty for compilers
+	that don't support that syntax.
+
 	* Makefile.maint (rel-files): Define and factor.
 	(emit-rsync-commands): Also emit code to rsync the .bz2 files.
 
