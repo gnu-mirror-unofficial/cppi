@@ -3,6 +3,7 @@
 	* Version 1.11.
 
 	* m4/po.m4: Change SPACE-TAB sequence to TAB-SPACE in sed range.
+	* tests/f5: Change SPACE-TAB sequence to TAB-SPACE.
 
 2003-08-12  Jim Meyering  <jim@meyering.net>
 
