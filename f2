@@ -10,8 +10,8 @@ cat > $t.I <<\EOF
 EOF
 
 cat > $t.EO <<\EOF
-#if(FOO)
-#elif(NO_BLANK_AFTER_ELIF)
+#if (FOO)
+#elif (NO_BLANK_AFTER_ELIF)
 # error
 #endif
 EOF

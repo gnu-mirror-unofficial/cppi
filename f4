@@ -4,7 +4,9 @@ t=`basename $0`
 
 cat > $t.I <<\EOF
 #ifdef _AIX
+# include "foo"
  #pragma alloca
+# pragma alloca
 #endif
 EOF
 

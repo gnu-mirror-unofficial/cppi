@@ -10,7 +10,7 @@ EOF
 
 cat > $t.EO <<\EOF
 int c = '\"';
-#if(FOO)
+#if (FOO)
 #endif
 EOF
 

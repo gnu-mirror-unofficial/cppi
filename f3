@@ -3,8 +3,8 @@
 t=`basename $0`
 
 cat > $t.I <<\EOF
-#if(FOO)
-#elif(NO_BLANK_AFTER_ELIF)
+#if (FOO)
+#elif (NO_BLANK_AFTER_ELIF)
 # undef FOOBAR
 #endif
 EOF

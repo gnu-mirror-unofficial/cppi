@@ -3,7 +3,7 @@
 t=`basename $0`
 
 cat > $t.I <<\EOF
-#if(FOO)
+#if (FOO)
 # error ick
 #endif(THIS_IS_NON_ANSI)
 EOF
