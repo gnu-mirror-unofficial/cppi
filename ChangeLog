@@ -2,7 +2,8 @@
 
 	* Version 1.8.
 
-	* Makefile.am (cpp.h): Don't use GNU make's $< variable.
+	* Makefile.am: Add the framework required to build a library.
+	(cpp.h): Don't use GNU make's $< variable.
 
 	* cppi.l (INPUT_AND_ECHO): Define only after declaration of
 	inhibit_output.
