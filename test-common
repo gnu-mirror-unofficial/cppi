@@ -27,5 +27,5 @@ else
   fail=1
 fi
 
-test $fail = 0 && rm -f $t.I $t.O $t.e $t.EO $t.Ee
+test $fail = 0 && rm -f $t.I $t.O $t.e $t.EO $t.Ee $extra_temps
 exit $fail

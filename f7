@@ -20,6 +20,9 @@ EOF
 cat > $t.Ee <<\EOF
 EOF
 
+# Arrange for this additional temp file to be deleted.
+extra_temps=$t.I2
+
 redirect_stdin=no
 options="-l $t.I2"
 expected_status=1
