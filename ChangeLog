@@ -1,3 +1,12 @@
+2001-01-07  Jim Meyering  <meyering@lucent.com>
+
+	* cppi.l (emit_indented_cpp): Ignore return value from a call to
+	emit_or_check since the next statment sets *fail unconditionally.
+	("\""): Don't fatal upon finding first EOF in string.  Instead,
+	warn, set `fail', and break out of the loop.
+	Don't fatal upon finding string that's too long;  record the failure
+	and continue on, in case there are other problems.
+
 2000-12-06  Jim Meyering  <meyering@lucent.com>
 
 	* Version 1.8.
