@@ -45,13 +45,13 @@ flex_debug = # -L # suppress #line directives
 flex_8_bit = -8
 
 flex_optimize = -Cfr -p -b
-LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
+AM_LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
 
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
 cppi.c: cppi.l
 	rm -f $@
-	$(LEX) $(LFLAGS) $(srcdir)/cppi.l
+	$(LEXCOMPILE) $(srcdir)/cppi.l
 	chmod a-w $(LEX_OUTPUT_ROOT).c
 	mv $(LEX_OUTPUT_ROOT).c $@
 
