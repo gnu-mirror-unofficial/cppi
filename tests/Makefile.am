@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in -*-Makefile-*-
+
 EXTRA_DIST = test-common
 TESTS = \
    d1 d2 d3 d4 \
