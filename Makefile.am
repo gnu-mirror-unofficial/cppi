@@ -29,3 +29,5 @@ SUFFIXES = .l
 	$(FLEX) $(FLEX_FLAGS) -t $< > $@-tmp
 	chmod u-w $@-tmp
 	mv $@-tmp $@
+
+BUILT_SOURCES = cpp-cond-lookup.c
