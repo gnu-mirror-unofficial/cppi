@@ -7,6 +7,7 @@ AM_CONFIG_HEADER(config.h:config.hin)
 
 AM_INIT_AUTOMAKE([1.6b gnits dist-bzip2])
 
+AM_MISSING_PROG(HELP2MAN, help2man)
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -50,6 +51,5 @@ gl_FUNC_ALLOCA
 
 AM_STDBOOL_H
 
-
 AC_OUTPUT([Makefile lib/Makefile m4/Makefile po/Makefile
-	   src/Makefile tests/Makefile])
+	   src/Makefile tests/Makefile man/Makefile])
