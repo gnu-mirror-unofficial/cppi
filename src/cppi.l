@@ -448,8 +448,6 @@ b [^a-zA-Z_\n]
   int fail;
 
   t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &fail);
-  if (fail && list_files_only)
-    return fail;
 
   if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
     {
@@ -484,9 +482,6 @@ b [^a-zA-Z_\n]
 	}
       unput (c);
     }
-
-  if (fail && list_files_only)
-    return fail;
 
   if (fail > lex_fail)
     lex_fail = fail;
