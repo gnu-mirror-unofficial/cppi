@@ -43,3 +43,9 @@ p ok
 p text
 p text
 q
+b emit_indented_cpp 
+r e1.I
+p t
+b lookup_cpp_keyword 
+r
+q
