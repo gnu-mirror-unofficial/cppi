@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in.
 
-AUTOMAKE_OPTIONS = 1.5 foreign
+AUTOMAKE_OPTIONS = 1.7 gnits
 
 SUBDIRS = lib m4 po src tests
 
