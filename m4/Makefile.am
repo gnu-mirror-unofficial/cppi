@@ -10,6 +10,7 @@ EXTRA_DIST += exitfail.m4
 EXTRA_DIST += extensions.m4
 EXTRA_DIST += fatal.m4
 EXTRA_DIST += fpending.m4
+EXTRA_DIST += getopt.m4
 EXTRA_DIST += gettext.m4
 EXTRA_DIST += glibc21.m4
 EXTRA_DIST += iconv.m4
