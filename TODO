@@ -1,2 +1,5 @@
-give better diagnostics for losing code
 convert to use automake/autoconf
+
+use getopt, maybe the GNU version
+
+add -h (help), -v (version) options
