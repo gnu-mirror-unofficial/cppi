@@ -19,8 +19,14 @@ cpp-cond-lookup.c: cpp.gp
 	mv $@-tmp $@
 
 flex_debug = #-d
+
+# This is required to avoid an infloop on certain 8-bit inputs.
+# Without this option, the generated scanner would infloop on e.g.,
+#   perl -e 'print "\300"' |./cppi
+flex-8-bit = -8
+
 flex_optimize = -Cfr -p -b
-LFLAGS = $(flex_debug) $(flex_optimize)
+LFLAGS = $(flex_debug) $(flex_optimize) $(flex-8-bit)
 
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
