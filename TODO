@@ -29,3 +29,12 @@ Likewise with cpp.gp and gperf (do this via the `missing' script).
 
 
 Add gettext support.
+
+Currently, the indentation width is hard-coded
+at one space per nesting level.  Add an option to change that.
+
+Add an option to tell cppi to ignore file-spanning directives like these:
+#ifndef FOO_H
+#define FOO_H
+...
+#endif FOO_H
