@@ -297,6 +297,7 @@ b [^a-zA-Z_\n]
       /* FIXME */
       warn (0, "%s: %s: unterminated #if, #ifdef, or #ifndef",
 	    program_name, in_file);
+      g_fail = 2;
     }
 
   return g_fail;
