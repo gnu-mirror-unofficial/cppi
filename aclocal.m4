@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.2f
+dnl aclocal.m4 generated automatically by aclocal 1.2h
 
 dnl Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 dnl This Makefile.in is free software; the Free Software Foundation
@@ -135,10 +135,19 @@ fi
 AC_SUBST($1)])
 
 
+dnl AM_PROG_LEX
+dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
+AC_DEFUN(AM_PROG_LEX,
+[AC_CHECK_PROGS(LEX, flex lex, "$1/missing flex")
+AC_PROG_LEX
+AC_DECL_YYTEXT])
+
+
 # serial 1
 
 AC_DEFUN(AM_C_PROTOTYPES,
 [AC_REQUIRE([AM_PROG_CC_STDC])
+AC_REQUIRE([AC_PROG_CPP])
 AC_MSG_CHECKING([for function prototypes])
 if test "$am_cv_prog_cc_stdc" != no; then
   AC_MSG_RESULT(yes)
