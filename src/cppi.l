@@ -147,7 +147,6 @@ static int show_version;
 
 static struct option const long_options[] =
 {
-  {"cvs", no_argument, NULL, 'C'},
   {"check", no_argument, NULL, 'c'},
   {"list-files-only", no_argument, NULL, 'l'},
   {"help", no_argument, &show_help, 1},
@@ -543,7 +542,7 @@ b [^a-zA-Z_\n]
 %%
 
 static int
-cpp_indent (const char *in_file, int cvs_mode)
+cpp_indent (const char *in_file)
 {
   FILE *in = NULL;
   int fail;
@@ -557,13 +556,6 @@ cpp_indent (const char *in_file, int cvs_mode)
     {
       if ((in = fopen (in_file, "r")) == NULL)
 	{
-	  if (cvs_mode && errno == ENOENT)
-	    {
-	      /* In CVS mode, it's ok if IN_FILE doesn't exist.  That
-		 happens when you commit a file after cvs-deleting it.  */
-	      return 0;
-	    }
-
 	  fatal (3, errno, "%s: %s", program_name, in_file);
 	}
       yyin = in;
@@ -653,9 +645,6 @@ main (int argc, char** argv)
   char **file_list;
   int c;
 
-  /* Make `cppi -C' usable directly via CVS's commitinfo (see below).  */
-  int cvs_mode = 0;
-
   program_name = argv[0];
 
   while ((c = getopt_long (argc, argv, "cCl", long_options, NULL)) != -1)
@@ -667,11 +656,6 @@ main (int argc, char** argv)
 
 	case 'c':
 	  inhibit_output = 1;
-	  break;
-
-	case 'C':
-	  inhibit_output = 1;
-	  cvs_mode = 1;
 	  break;
 
 	case 'l':
@@ -701,24 +685,11 @@ main (int argc, char** argv)
     }
 
   /* This is the back door.  Set this environment variable to disable
-     all checks.  It is useful only with -c or -C.  */
+     all checks.  It is useful only with -c.  */
   if (inhibit_output && getenv ("DISABLE_CPP_INDENT_CHECK"))
     exit (0);
 
   file_list = (optind == argc ? default_file_list : argv + optind);
-
-  /* Make `cppi -C' usable directly via CVS's commitinfo.
-     Ignore the first command line argument if it is a directory and
-     there is at least one other argument.  Also, process only files
-     ending in .c and .h.
-     FIXME: this whole -C option is a gross kludge -- remove it */
-
-  if (argc >= 3 && cvs_mode)
-    {
-      struct stat stats;
-      if (stat (file_list[0], &stats) == 0 && S_ISDIR (stats.st_mode))
-	++file_list;
-    }
 
   max_err = 0;
   for (i = 0; file_list[i]; i++)
@@ -726,13 +697,7 @@ main (int argc, char** argv)
       int err;
       char *p;
 
-      /* Skip files that don't match *.[ch].  */
-      if (cvs_mode && ! ((p = strrchr (file_list[i], '.')) != NULL
-			 && (p[1] == 'c' || p[1] == 'h')
-			 && p[2] == '\0'))
-	continue;
-
-      err = cpp_indent (file_list[i], cvs_mode);
+      err = cpp_indent (file_list[i]);
       if (err > max_err)
 	max_err = err;
 
