@@ -1,5 +1,12 @@
 1998-03-27  Jim Meyering  <meyering@eng.ascend.com>
 
+	* cppi.l (initial_i_depth): New variable.
+	(%{%}-block): Initialize initial_i_depth, and i_depth from that.
+	(emit_or_check): Accommodate possibility that i_depth may now be
+	negative.
+	(emit_indented_cpp): Likewise.
+	(<<EOF>>): Likewise.
+
 	* configure.in: Use AM_PROG_LEX in place of the (AC_PROG_LEX,
 	AC_DECL_YYTEXT) pair.
 
