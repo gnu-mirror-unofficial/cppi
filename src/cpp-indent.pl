@@ -20,6 +20,7 @@ my $file = shift @ARGV;
 
 open (FILE, $file) || die "$0: couldn't open $file: $!\n";
 
+my $exit_status = 0;
 my $line;
 while (defined ($line = <FILE>))
   {
@@ -38,15 +39,23 @@ while (defined ($line = <FILE>))
 	  }
 	elsif ($line =~ /^(else|elif)\b/)
 	  {
-	    die "$0: $file: line $.: found #$& without matching #if\n"
-	      if $depth < 1;
+	    if ($depth < 1)
+	      {
+		warn "$0: $file: line $.: found #$& without matching #if\n";
+		$depth = 1;
+		$exit_status = 1;
+	      }
 	    $keyword = $&;
 	    $indent = $indent_incr x ($depth - 1);
 	  }
 	elsif ($line =~ /^endif\b/)
 	  {
-	    die "$0: $file: line $.: found #$& without matching #if\n"
-	      if $depth < 1;
+	    if ($depth < 1)
+	      {
+		warn "$0: $file: line $.: found #$& without matching #if\n";
+		$depth = 1;
+		$exit_status = 1;
+	      }
 	    $keyword = $&;
 	    --$depth;
 	    $indent = $indent_incr x $depth;
@@ -62,8 +71,7 @@ while (defined ($line = <FILE>))
       }
     print $line;
   }
-
-my $exit_status = 0;
+close FILE;
 
 if ($depth != 0)
   {
