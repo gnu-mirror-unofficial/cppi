@@ -17,7 +17,6 @@ cat > $t.Ee <<\EOF
 ./cppi: standard input: line 3: not properly formatted
 There must be exactly one SPACE character after each
 #if, #elif, and #define directive.
-./cppi: standard input: line 4: not properly indented
 EOF
 
 options=-c
