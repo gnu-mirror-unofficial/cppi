@@ -5,7 +5,7 @@ cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
 
 noinst_HEADERS = fatal.h getopt.h obstack.h
 
-EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l
+EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c
 
 SUBDIRS = tests
 
@@ -16,18 +16,8 @@ cpp-cond-lookup.c: cpp.gp
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
 	mv $@-tmp $@
 
-FLEX = flex
 flex_debug = #-d
 flex_optimize = -Cfr -p -b
-FLEX_FLAGS = $(flex_debug) $(flex_optimize)
-
-# FIXME: is this necessary?
-SUFFIXES = .l
-
-.l.c:
-	rm -f $@-tmp $@
-	$(FLEX) $(FLEX_FLAGS) -t $< > $@-tmp
-	chmod u-w $@-tmp
-	mv $@-tmp $@
+LFLAGS = $(flex_debug) $(flex_optimize)
 
 BUILT_SOURCES = cpp-cond-lookup.c
