@@ -20,7 +20,7 @@ cat > $t.EO <<\EOF
 #  define cppi_converts_the_tab_on_this_line_to_a_space
 #  define cppi_converts_the_tabs_and_spaces_on_this_line_to_a_space
 #  include "foo"
-  #pragma alloca
+ # pragma alloca
 #  pragma alloca
 # endif
 #endif
