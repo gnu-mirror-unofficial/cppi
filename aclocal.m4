@@ -1,4 +1,4 @@
-# aclocal.m4 generated automatically by aclocal 1.4a
+# aclocal.m4 generated automatically by aclocal 1.4b
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
 # Free Software Foundation, Inc.
@@ -259,6 +259,9 @@ AC_SUBST([$1]DEPMODE)
 AC_DEFUN([AM_SET_DEPDIR],[
 if test -d .deps || mkdir .deps 2> /dev/null || test -d .deps; then
   DEPDIR=.deps
+  # We redirect because .deps might already exist and be populated.
+  # In this situation we don't want to see an error.
+  rmdir .deps > /dev/null 2>&1
 else
   DEPDIR=_deps
 fi
@@ -341,11 +344,10 @@ done
 ], [AMDEP="$AMDEP"
 ac_aux_dir="$ac_aux_dir"])])
 
-#serial 1
-# AM_PROG_LEX
+#serial 2
+#
 # This macro must have the name it has in order to appease automake.
 # Require flex.  If not found, set LEX to `missing flex'.
-undefine([AM_PROG_LEX])
 AC_DEFUN([AM_PROG_LEX],
 [
   AC_REQUIRE([AM_MISSING_HAS_RUN])
@@ -369,10 +371,10 @@ if test "$am_cv_prog_cc_stdc" != no; then
 else
   AC_MSG_RESULT(no)
   U=_ ANSI2KNR=./ansi2knr
-  # Ensure some checks needed by ansi2knr itself.
-  AC_HEADER_STDC
-  AC_CHECK_HEADERS(string.h)
 fi
+# Ensure some checks needed by ansi2knr itself.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(string.h)
 AC_SUBST(U)dnl
 AC_SUBST(ANSI2KNR)dnl
 ])
