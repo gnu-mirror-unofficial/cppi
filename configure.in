@@ -3,7 +3,7 @@ AC_INIT(cppi.l)
 AM_CONFIG_HEADER(config.h)
 AC_PREREQ(2.13)dnl               dnl Minimum Autoconf version required.
 
-AM_INIT_AUTOMAKE([cppi], [1.7])
+AM_INIT_AUTOMAKE([cppi], [1.8])
 
 dnl Checks for programs.
 
