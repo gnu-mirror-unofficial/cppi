@@ -4,7 +4,7 @@ AM_CONFIG_HEADER(config.h)
 AC_PREREQ(2.13)dnl               dnl Minimum Autoconf version required.
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE([cppi], [1.10])
+AM_INIT_AUTOMAKE([cppi], [1.9.1])
 
 dnl Checks for programs.
 
