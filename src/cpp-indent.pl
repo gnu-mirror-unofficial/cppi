@@ -10,34 +10,33 @@ my $depth = 0;
 
 while (<>)
   {
-    if (/^\s*#/)
+    if (s/^\s*\#\s*//)
       {
-	if (/^\s*#\s*(if(n?def)?)\b/)
+	my $keyword;
+	my $indent;
+	if (/^if(n?def)?\b/)
 	  {
-	    my $indent = $indent_incr x $depth;
-	    print "#$indent$1$'";
+	    $keyword = $&;
+	    $indent = $indent_incr x $depth;
 	    ++$depth;
 	  }
-	elsif (/^\s*#\s*(else|elif)\b/)
+	elsif (/^(else|elif)\b/)
 	  {
-	    my $indent = $indent_incr x ($depth - 1);
-	    print "#${indent}$1$'";
+	    $keyword = $&;
+	    $indent = $indent_incr x ($depth - 1);
 	  }
-	elsif (/^\s*#\s*endif\b/)
+	elsif (/^endif\b/)
 	  {
+	    $keyword = $&;
 	    --$depth;
-	    my $indent = $indent_incr x $depth;
-	    print "#${indent}endif$'";
-	  }
-	elsif (/^\s*#\s*/)
-	  {
-	    my $indent = $indent_incr x $depth;
-	    print "#$indent$1$'";
+	    $indent = $indent_incr x $depth;
 	  }
 	else
 	  {
-	    die;
+	    $keyword = '';
+	    $indent = $indent_incr x $depth;
 	  }
+	print "#$indent$keyword$'";
       }
     else
       {
