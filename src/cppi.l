@@ -102,9 +102,6 @@ struct Stack
   int top;
 };
 
-/* The maximum exit status.  */
-static int g_fail = 0;
-
 /* Current nesting level.  */
 static int i_depth;
 
@@ -256,9 +253,8 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
 static enum Eic_type
 emit_indented_cpp (char const *in_file, unsigned int line_number,
 		   char const *text, size_t len,
-		   struct Stack *s, int *exit_status)
+		   struct Stack *s, int *fail)
 {
-  int fail;
   const char *keyword;
   enum Eic_type t = lookup_cpp_keyword (text, len, &keyword);
 
@@ -272,7 +268,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	 on the stack.  */
       push (s, kl_pack (t, line_number));
 
-      fail = emit_or_check (t, yytext, keyword);
+      *fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
       break;
 
@@ -280,16 +276,17 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
     case EIC_ELIF:
       if (i_depth <= 0)
 	{
-	  warn (0, "%s: %s: line %d: found #%s without matching #if",
-	    program_name, in_file, line_number, directive[t]);
+	  if (!list_files_only)
+	    warn (0, "%s: %s: line %d: found #%s without matching #if",
+		  program_name, in_file, line_number, directive[t]);
 	  i_depth = 0;
-	  fail = emit_or_check (t, yytext, keyword);
-	  *exit_status = 2;
+	  *fail = emit_or_check (t, yytext, keyword);
+	  *fail = 2;
 	}
       else
 	{
 	  --i_depth;
-	  fail = emit_or_check (t, yytext, keyword);
+	  *fail = emit_or_check (t, yytext, keyword);
 	  ++i_depth;
 	}
       break;
@@ -297,10 +294,11 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
     case EIC_ENDIF:
       if (i_depth <= 0)
 	{
-	  warn (0, "%s: %s: line %d: found #%s without matching #if",
-	    program_name, in_file, line_number, directive[t]);
+	  if (!list_files_only)
+	    warn (0, "%s: %s: line %d: found #%s without matching #if",
+		  program_name, in_file, line_number, directive[t]);
 	  i_depth = 1;
-	  *exit_status = 2;
+	  *fail = 2;
 	}
       else
 	{
@@ -311,25 +309,28 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	}
 
       --i_depth;
-      fail = emit_or_check (t, yytext, keyword);
+      {
+	int tf = emit_or_check (t, yytext, keyword);
+	if (tf > *fail)
+	  *fail = tf;
+      }
       break;
 
     case EIC_PRAGMA:
     case EIC_DEFINE:
     case EIC_OTHER:
-      fail = emit_or_check (t, yytext, keyword);
+      *fail = emit_or_check (t, yytext, keyword);
       break;
 
     default:
       abort ();
     }
 
-  if (fail)
+  if (*fail == 1)
     {
-      if (*exit_status == 0)
-	*exit_status = 1;
-      warn (0, "%s: %s: line %d: not properly indented",
-	    program_name, in_file, line_number);
+      if (!list_files_only)
+	warn (0, "%s: %s: line %d: not properly indented",
+	      program_name, in_file, line_number);
     }
 
   return t;
@@ -343,6 +344,7 @@ b [^a-zA-Z_\n]
 %%
 
 %{
+  /* This section contains dcls and code local to the scanning routine.  */
 
   /* Stack of (opening-keyword, line number) pairs.  This lets us report
      the line numbers of any unmatched #if, #ifdef, or #ifndef directives.  */
@@ -350,6 +352,8 @@ b [^a-zA-Z_\n]
 
   /* Current line number -- for diagnostics and errors.  */
   unsigned int lineno = 1;
+
+  int lex_fail = 0;
 
   kl_stack.top = 0;
   i_depth = 0;
@@ -439,7 +443,10 @@ b [^a-zA-Z_\n]
 
 ^[ \t]*#[ \t]*[a-zA-Z0-9_]+   {
   enum Eic_type t;
-  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &g_fail);
+
+  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &lex_fail);
+  if (lex_fail && list_files_only)
+    return lex_fail;
 
   if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
     {
@@ -458,8 +465,8 @@ b [^a-zA-Z_\n]
 			"#if, #elif, and #define directive.",
 			program_name, in_file, lineno);
 		}
-	      if (g_fail < 1)
-		g_fail = 1;
+	      if (lex_fail < 1)
+		lex_fail = 1;
 	    }
 	}
       else
@@ -475,10 +482,8 @@ b [^a-zA-Z_\n]
       unput (c);
     }
 
-  if (g_fail && list_files_only)
-    {
-      return g_fail;
-    }
+  if (lex_fail && list_files_only)
+    return lex_fail;
 }
 ^[ \t]*#[ \t]*            { MY_ECHO; }
 ^[ \t]*                   { MY_ECHO; }
@@ -498,14 +503,15 @@ b [^a-zA-Z_\n]
 	  unsigned int line_number;
 
 	  kl_unpack (kl_stack.vec[i], &t, &line_number);
-	  warn (0, "%s: %s: line %d: unterminated #%s",
-		program_name, in_file, line_number, directive[t]);
+	  if (!list_files_only)
+	    warn (0, "%s: %s: line %d: unterminated #%s",
+		  program_name, in_file, line_number, directive[t]);
 	}
 
-      g_fail = 2;
+      lex_fail = 2;
     }
 
-  return g_fail;
+  return lex_fail;
 }
 
 %%
@@ -588,7 +594,7 @@ int
 main (int argc, char** argv)
 {
   int i;
-  int fail;
+  int max_err;
   char **file_list;
   int c;
 
@@ -611,6 +617,11 @@ main (int argc, char** argv)
 	case 'C':
 	  inhibit_output = 1;
 	  cvs_mode = 1;
+	  break;
+
+	case 'l':
+	  inhibit_output = 1;
+	  list_files_only = 1;
 	  break;
 
 	default:
@@ -653,7 +664,7 @@ main (int argc, char** argv)
 	++file_list;
     }
 
-  fail = 0;
+  max_err = 0;
   for (i = 0; file_list[i]; i++)
     {
       int err;
@@ -666,10 +677,11 @@ main (int argc, char** argv)
 	continue;
 
       err = cpp_indent (file_list[i], cvs_mode);
+      if (err > max_err)
+	max_err = err;
+
       if (err && list_files_only)
 	puts (file_list[i]);
-      if (err > fail)
-	fail = err;
     }
 
   if (fclose (stdout) == EOF)
@@ -677,5 +689,5 @@ main (int argc, char** argv)
       fatal (3, errno, "%s: write error", program_name);
     }
 
-  exit (fail);
+  exit (max_err);
 }
