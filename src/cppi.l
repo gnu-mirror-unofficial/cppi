@@ -453,7 +453,7 @@ b [^a-zA-Z_\n]
 
   t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &fail);
 
-  if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
+  if (t == EIC_IF || t == EIC_IFNDEF || t == EIC_ELIF || t == EIC_DEFINE)
     {
       int c;
       if (inhibit_output)
