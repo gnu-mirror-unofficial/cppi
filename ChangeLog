@@ -1,5 +1,8 @@
 1998-03-15  Jim Meyering  <meyering@eng.ascend.com>
 
+	autoconfiscate and automakify
+	* Add associated new files.
+
 	* fatal.c: Remove duplicate code.  Use #ifdefs instead.
 
 	* tests/: New directory.
