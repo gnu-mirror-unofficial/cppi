@@ -9,7 +9,7 @@ cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c xstrtol.c \
 noinst_HEADERS = fatal.h getopt.h obstack.h xstrtol.h
 
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
-  GNUmakefile Makefile.maint
+  GNUmakefile Makefile.maint .prev-version
 
 SUBDIRS = . m4 tests
 
