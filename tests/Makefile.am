@@ -8,4 +8,4 @@ TESTS = \
    cxx-1
 
 EXTRA_DIST = test-common $(TESTS)
-TESTS_ENVIRONMENT = srcdir=@srcdir@
+TESTS_ENVIRONMENT = srcdir=@srcdir@ PATH=..:$$PATH
