@@ -20,4 +20,4 @@ EOF
 options='-c --ansi'
 expected_status=1
 
-. ./$srcdir/test-common
+. $srcdir/test-common

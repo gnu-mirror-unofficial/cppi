@@ -21,4 +21,4 @@ EOF
 redirect_stdin=no
 expected_status=0
 
-. ./$srcdir/test-common
+. $srcdir/test-common

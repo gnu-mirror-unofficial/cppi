@@ -21,4 +21,4 @@ redirect_stdin=no
 options="-c"
 expected_status=2
 
-. ./$srcdir/test-common
+. $srcdir/test-common
