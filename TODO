@@ -8,6 +8,13 @@ Write documentation
 
 Add overwrite option -- maybe use GNU-style backup code.
 
+Suggestion from Ulrich Drepper:
+Add an option to convert code like this, removing unnecessary
+parentheses and adding any spaces required to replace them:
+  #if defined(FOO) || !defined (BAR)
+to this:
+  #if defined FOO || !defined BAR
+
 Allow regex filtering (use Henry Spencer's new perl-like regexps)
    rather than hard-coding test for .c and .h suffixes
 
