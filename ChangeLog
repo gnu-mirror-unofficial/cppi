@@ -1,3 +1,8 @@
+1998-03-15  Jim Meyering  <meyering@eng.ascend.com>
+
+	* tests/: New directory.
+	Move test scripts into it.
+
 1997-12-29  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (usage): Add `\n\' at end of last line of message.
