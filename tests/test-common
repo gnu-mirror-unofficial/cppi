@@ -1,7 +1,9 @@
+PATH=..:$PATH
+
 if test "$redirect_stdin" = no; then
-  ./cppi $options $t.I > $t.O 2> $t.e
+  cppi $options $t.I > $t.O 2> $t.e
 else
-  ./cppi $options - < $t.I > $t.O 2> $t.e
+  cppi $options - < $t.I > $t.O 2> $t.e
 fi
 status=$?
 

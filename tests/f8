@@ -12,7 +12,7 @@ cat > $t.EO <<\EOF
 EOF
 
 cat > $t.Ee <<\EOF
-./cppi: f8.I: line 2: not properly indented
+cppi: f8.I: line 2: not properly indented
 EOF
 
 redirect_stdin=no

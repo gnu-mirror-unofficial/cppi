@@ -14,9 +14,10 @@ all: check
 
 tests = d1 d2 d3 d4 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6 f7 f8 f9
 check: cppi
+	cd tests && \
 	for i in $(tests); do \
 	  echo $$i...; \
-	  tests/$$i; \
+	  ./$$i; \
 	done
 
 cppi: cppi.o fatal.o strerror.o getopt.o getopt1.o obstack.o

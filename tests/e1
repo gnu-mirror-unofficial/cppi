@@ -11,7 +11,7 @@ cat > $t.EO <<\EOF
 EOF
 
 cat > $t.Ee <<\EOF
-./cppi: standard input: line 1: found #endif without matching #if
+cppi: standard input: line 1: found #endif without matching #if
 EOF
 
 expected_status=2
