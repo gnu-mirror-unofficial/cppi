@@ -6,3 +6,4 @@ ifndef, EIC_IFNDEF
 elif, EIC_ELIF
 else, EIC_ELSE
 endif, EIC_ENDIF
+pragma, EIC_PRAGMA
