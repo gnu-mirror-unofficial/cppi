@@ -1,5 +1,7 @@
 1998-09-01  Jim Meyering  <meyering@ascend.com>
 
+	* configure.in (VERSION): Bump to 1.3.
+
 	* Makefile.am (flex_8_bit): New variable.
 	(LFLAGS): Include it here.
 	* tests/8-bit: New file.
