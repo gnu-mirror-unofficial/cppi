@@ -3,8 +3,16 @@ AUTOMAKE_OPTIONS = gnits 1.4
 
 bin_PROGRAMS = cppi
 
-cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c xstrtol.c \
+cppi_SOURCES = cppi.l
+
+noinst_LIBRARIES = libcppi.a
+libcppi_a_SOURCES = \
+  fatal.c getopt.c getopt1.c obstack.c xstrtol.c \
   xstrtoul.c
+
+libcppi_a_LIBADD = @LIBOBJS@
+libcppi_a_DEPENDENCIES = $(libcppi_a_LIBADD)
+LDADD = libcppi.a
 
 noinst_HEADERS = fatal.h getopt.h obstack.h xstrtol.h
 
