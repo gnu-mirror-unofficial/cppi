@@ -1,5 +1,9 @@
 2000-08-03  Jim Meyering  <meyering@lucent.com>
 
+	* config.sub: New file.
+	* config.guess: New file.
+	* configure.in: Add AC_CANONICAL_HOST.
+
 	* Makefile.am (cppi_SOURCES): Add xstrtoul.c and xstrtol.c
 	(noinst_HEADERS): Add xstrtol.h.
 	(SUBDIRS): Prepend `.' and m4.
