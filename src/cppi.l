@@ -118,7 +118,7 @@ char *program_name;
 enum Eic_type
 lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
 {
-  /* Find beginning of the keyword.  */
+  /* Find the beginning of the keyword.  */
   const char *p;
   for (p = prefix; ; ++p, --len)
     {
