@@ -92,9 +92,14 @@ static char const *const directive[] =
   [EIC_OTHER]	""
 };
 
+/* An entry on the stack of opener (keyword/line_number) specs.  */
 struct KL_pair
 {
-  enum Eic_type keyword_type;
+  /* The type of cpp directive opening a block: one of
+     EIC_IF, EIC_IFDEF, EIC_IFNDEF.  */
+  enum Eic_type opener_type;
+
+  /* The line number of the directive.  */
   unsigned int line_number;
 };
 
@@ -267,7 +272,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	 on the stack.  */
       {
 	struct KL_pair x;
-	x.keyword_type = t;
+	x.opener_type = t;
 	x.line_number = line_number;
 	push (s, x);
       }
@@ -510,7 +515,7 @@ b [^a-zA-Z_\n]
 	      struct KL_pair x = nth_entry (&kl_stack, i);
 	      warn (0, "%s: %s: line %d: unterminated #%s",
 		    program_name, in_file, x.line_number,
-		    directive[x.keyword_type]);
+		    directive[x.opener_type]);
 	    }
 	}
 
