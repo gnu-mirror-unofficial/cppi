@@ -34,6 +34,8 @@ libgnulib_a_SOURCES += version-etc.h version-etc.c
 
 libgnulib_a_SOURCES += pathmax.h
 
+libgnulib_a_SOURCES += getopt.h getopt.c getopt1.c
+
 EXTRA_DIST += stdbool_.h
 
 EXTRA_DIST += stdbool_.h
