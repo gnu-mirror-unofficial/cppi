@@ -2,6 +2,8 @@
 
 	* Version 1.11.
 
+	* m4/Makefile.am.in: New file.
+
 	* lib/Makefile.am (BUILT_SOURCES): Add $(ALLOCA_H) and $(STDBOOL_H).
 	Otherwise, those files aren't created when needed.
 
