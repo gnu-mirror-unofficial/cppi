@@ -5,7 +5,7 @@ LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 PERL = /p/bin/perl
 
-t = empty a b c
+t = a b c
 td = $(addsuffix .d,$t)
 tO = $(addsuffix .O,$t)
 
@@ -21,7 +21,7 @@ LFLAGS = $(lex_debug) $(lex_optimize)
 all: check
 
 check: $(qd) cppi
-	for i in e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6; do \
+	for i in d1 e1 e2 e3 e4 e5 e6 e7 e8 e9 f1 f2 f3 f4 f5 f6; do \
 	  echo $$i...; \
 	  ./$$i; \
 	done
