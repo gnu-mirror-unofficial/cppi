@@ -1,3 +1,10 @@
+Mon Jun 23 06:59:06 1997  /  <meyering@na-net.ornl.gov>
+
+	* Makefile (cppi): Add getopt.o and getopt1.o.
+
+	* cppi.l (main): Add --list-files-only (-l) option.
+	Use getopt.
+
 Sun Jun 15 08:16:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (emit_or_check): Handle leading-space #pragmas a little
