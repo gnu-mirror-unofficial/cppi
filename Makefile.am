@@ -3,20 +3,23 @@ AUTOMAKE_OPTIONS = gnits 1.4
 
 bin_PROGRAMS = cppi
 
-cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
+cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c xstrtol.c \
+  xstrtoul.c
 
-noinst_HEADERS = fatal.h getopt.h obstack.h
+noinst_HEADERS = fatal.h getopt.h obstack.h xstrtol.h
 
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
   GNUmakefile Makefile.maint
 
-SUBDIRS = tests
+SUBDIRS = . m4 tests
 
 MAINTAINERCLEANFILES = cpp-cond.c
 CLEANFILES = cpp.h lex.backup
 
 PERL = @PERL@
 GPERF = gperf
+
+ACLOCAL_AMFLAGS = -I m4
 
 cpp-cond.c: cpp.gp
 	rm -f $@ $@-tmp $@-t2
@@ -68,6 +71,7 @@ cpp.h: cpp.gp Makefile.am
 	@mv $@-tmp $@
 
 BUILT_SOURCES = cpp-cond.c cpp.h
+Makefile: $(BUILT_SOURCES)
 
 distcheck-hook:
 	$(MAKE) my-distcheck
