@@ -1,6 +1,10 @@
-2003-08-12  Jim Meyering  <jim@meyering.net>
+2003-08-13  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.11.
+
+	* m4/po.m4: Change SPACE-TAB sequence to TAB-SPACE in sed range.
+
+2003-08-12  Jim Meyering  <jim@meyering.net>
 
 	* src/cppi.l: Include config.h from a %top{...} block so config.h
 	precede flex's inclusion of <stdio.h>, thus permitting the _GNU_SOURCE
