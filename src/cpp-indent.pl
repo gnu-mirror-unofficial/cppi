@@ -45,6 +45,7 @@ sub cpp_indent ($$)
     my $new_string_or_comment = 0;
     while ($line)
       {
+	warn "s: $state: line=$line";
 	my $remainder = '';
 	if ($state == IN_CODE)
 	  {
@@ -86,9 +87,9 @@ sub cpp_indent ($$)
 	  }
 	else # $state == IN_STRING
 	  {
-	    if ($line =~ m!\\*\"! && length ($&) % 2 == 1)
+	    if ($line =~ m!\\*\"!)
 	      {
-                $state = IN_CODE;
+		$state = IN_CODE if (length ($&) % 2 == 1);
 		$remainder = $';
 	      }
 	  }
