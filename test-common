@@ -15,7 +15,7 @@ if cmp -s $t.O $t.EO; then
   :
 else
   echo "unexpected results on standard output"
-  echo "compare the output files (actual expected): $t.O $t.EO"
+  echo "compare the output files (expected actual): $t.EO $t.O"
   fail=1
 fi
 
@@ -23,7 +23,7 @@ if cmp -s $t.e $t.Ee; then
   :
 else
   echo "unexpected results on standard error"
-  echo "compare the error files (actual expected): $t.e $t.Ee"
+  echo "compare the error files (expected actual): $t.Ee $t.e"
   fail=1
 fi
 
