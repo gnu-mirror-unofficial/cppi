@@ -4,6 +4,9 @@
    declares uintmax_t. */
 #undef HAVE_INTTYPES_H
 
+/* Define if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
 /* Define if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
@@ -24,6 +27,9 @@
 
 /* Define if you have the unsigned long long type. */
 #undef HAVE_UNSIGNED_LONG_LONG
+
+/* Define to 1 if assertions should be disabled. */
+#undef NDEBUG
 
 /* Name of package */
 #undef PACKAGE

@@ -341,14 +341,19 @@ done
 ], [AMDEP="$AMDEP"
 ac_aux_dir="$ac_aux_dir"])])
 
-
+#serial 1
 # AM_PROG_LEX
-# Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
+# This macro must have the name it has in order to appease automake.
+# Require flex.  If not found, set LEX to `missing flex'.
+undefine([AM_PROG_LEX])
 AC_DEFUN([AM_PROG_LEX],
-[AC_REQUIRE([AM_MISSING_HAS_RUN])
-AC_CHECK_PROGS(LEX, flex lex, [${am_missing_run}flex])
-AC_PROG_LEX
-AC_DECL_YYTEXT])
+[
+  AC_REQUIRE([AM_MISSING_HAS_RUN])
+  AC_PROG_LEX
+  if test "$LEX" != flex; then
+    LEX="${am_missing_run}flex"
+  fi
+])
 
 
 # serial 1
@@ -559,5 +564,19 @@ AC_DEFUN(jm_AC_TYPE_UNSIGNED_LONG_LONG,
     AC_DEFINE(HAVE_UNSIGNED_LONG_LONG, 1,
       [Define if you have the unsigned long long type.])
   fi
+])
+
+#serial 2
+dnl based on code from Eleftherios Gkioulekas
+
+AC_DEFUN(jm_ASSERT,
+[
+  AC_MSG_CHECKING(whether to enable assertions)
+  AC_ARG_ENABLE(assert,
+	[  --disable-assert        turn off assertions],
+	[ AC_MSG_RESULT(no)
+	  AC_DEFINE(NDEBUG,1,[Define to 1 if assertions should be disabled.]) ],
+	[ AC_MSG_RESULT(yes) ]
+               )
 ])
 

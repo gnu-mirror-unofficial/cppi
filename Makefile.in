@@ -163,8 +163,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in  m4/inttypes_h.m4 m4/uintmax_t.m4 \
-		m4/ulonglong.m4 m4/xstrtoumax.m4
+$(ACLOCAL_M4):  configure.in  m4/assert.m4 m4/inttypes_h.m4 m4/lex.m4 \
+		m4/uintmax_t.m4 m4/ulonglong.m4 m4/xstrtoumax.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
