@@ -1,4 +1,4 @@
-/* C code produced by gperf version 2.7 (C++ version) */
+/* C code produced by gperf version 2.7 */
 /* Command-line: gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k * cpp.gp  */
 struct KW {char *name; int code;};
 
