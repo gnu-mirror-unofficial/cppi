@@ -17,7 +17,10 @@ lex_debug = #-d
 LFLAGS = -I $(lex_debug)
 
 # all: $(td) $(qd) cppi
-all: $(qd) cppi
+all: check
+
+check: $(qd) cppi
+	for i in e1 e2 e3 e3; do echo $$i...; ./$$i; done
 
 cppi: cppi.o fatal.o strerror.o
 	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
