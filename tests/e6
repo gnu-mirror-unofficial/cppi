@@ -7,7 +7,7 @@ cat > $t.I <<\EOF
 EOF
 
 cat > $t.EO <<\EOF
-#ifndef(FOO)
+#ifndef (FOO)
 EOF
 
 cat > $t.Ee <<\EOF
