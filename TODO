@@ -7,3 +7,5 @@ Put under GPL and release.  Ask Tom.
 
 Uli's suggestion for setting initial indentation level to e.g. -1
 for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
+
+Remove and undocument kludgey -C option

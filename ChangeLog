@@ -53,7 +53,7 @@ Mon Jun 23 06:59:06 1997  /  <meyering@na-net.ornl.gov>
 	* Makefile (cppi): Add getopt.o and getopt1.o.
 
 	* cppi.l (main): Add --list-files-only (-l) option.
-	Suggestion from Ignacio Goyret <igoyret@ascend.com>.
+	Suggestion from Ignacio Goyret.
 	Use GNU getopt.
 
 Sun Jun 15 08:16:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
