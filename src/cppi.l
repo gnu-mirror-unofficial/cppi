@@ -134,7 +134,8 @@ static struct option const long_options[] =
 };
 
 static void gobble_define (int*);
-static void gobble_comment (const char *, int *);
+static void gobble_c_comment (const char *, int *);
+static void gobble_line (int *);
 
 /* Include gperf-generated hash function.  */
 #include "cpp-cond.c"
@@ -366,8 +367,13 @@ b [^a-zA-Z_\n]
 "/*"        {
   PUT2 ('[', '\0');
   MY_ECHO;
-  gobble_comment (in_file, &lineno);
+  gobble_c_comment (in_file, &lineno);
   PUT2 ('\0', ']');
+}
+
+"//"        {
+  MY_ECHO;
+  gobble_line (&lineno);
 }
 
 "'"\\?"\"'" {
@@ -477,7 +483,12 @@ b [^a-zA-Z_\n]
 		break;
 	      if (c == '*')
 		{
-		  gobble_comment (in_file, &lineno);
+		  gobble_c_comment (in_file, &lineno);
+		  continue;
+		}
+	      if (c == '/')
+		{
+		  gobble_line (&lineno);
 		  continue;
 		}
 
@@ -638,7 +649,6 @@ gobble_define (int *line_number)
 	    break;
 	}
 
-
       if (c == '\\')
 	++backslash_count;
       else
@@ -646,8 +656,11 @@ gobble_define (int *line_number)
     }
 }
 
+/* We've read the C comment opener.  Read up to and including
+   the closing delimiter.  */
+
 static void
-gobble_comment (const char *in_file, int *line_number)
+gobble_c_comment (const char *in_file, int *line_number)
 {
   int start_lineno = *line_number;
   for ( ; ; )
@@ -673,6 +686,22 @@ gobble_comment (const char *in_file, int *line_number)
 	{
 	  fatal (2, 0, "%s: %s: line %d: EOF in comment",
 		 program_name, in_file, start_lineno);
+	  break;
+	}
+    }
+}
+
+/* Read up to and including any newline.  */
+
+static void
+gobble_line (int *line_number)
+{
+  int c;
+  while ((c = INPUT_AND_ECHO ()) != EOF)
+    {
+      if (c == '\n')
+	{
+	  ++(*line_number);
 	  break;
 	}
     }
