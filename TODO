@@ -9,3 +9,12 @@ Uli's suggestion for setting initial indentation level to e.g. -1
 for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
 
 Remove and undocument kludgey -C option
+
+Make sure we get a reasonable failure when cppi.l is modified
+and flex is not available.
+
+Likewise with cpp.gp and gperf.
+
+Add gettext support.
+
+Remove dependency on gcc -- see FIXMEs in cppi.l.
