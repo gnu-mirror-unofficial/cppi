@@ -61,4 +61,4 @@ cpp.h: cpp.gp Makefile.am
 	@chmod -w $@-tmp
 	@mv $@-tmp $@
 
-BUILT_SOURCES = cpp-cond-lookup.c
+BUILT_SOURCES = cpp-cond-lookup.c cpp.h
