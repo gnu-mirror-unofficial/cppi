@@ -260,7 +260,7 @@ b [^a-zA-Z_\n]
 ^[ \t]*#[ \t]*endif$      { EMIT_DIR (EIC_ENDIF); }
 ^[ \t]*#[ \t]*endif       { EMIT_DIR (EIC_ENDIF); }
 
-^[ \t]*#                  { EMIT_DIR (EIC_OTHER); }
+^[ \t]*#[ \t]*            { EMIT_DIR (EIC_OTHER); }
 
 \n                        { MY_ECHO; ++lineno; }
 .                         { MY_ECHO; }
