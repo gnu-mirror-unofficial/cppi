@@ -572,12 +572,19 @@ usage (int status)
     {
       printf ("\
 Usage: %s [FILE]\n\
-  or:  %s [-c] [FILE]...\n\
+  or:  %s -c [OPTION] [FILE]...\n\
 \n\
 Indent the C preprocessor directives in FILE to reflect their nesting\n\
 and ensure that there is exactly one space character between each #if,\n\
 #elif, #define directive and the following token, and write the result\n\
 to standard output.  With no FILE, or when FILE is -, read standard input.\n\
+\n\
+  -c, --check            set exit code, but don't produce any output\n\
+  -l, --list-files-only  don't generate diagnostics about indentation;\n\
+			   print to stdout only the names of files that\n\
+			   are not properly indented\n\
+      --help             print this help, then exit\n\
+      --version          print tar program version number, then exit\n\
 \n\
 With the -c option, don't write to stdout.  Instead, check the\n\
 indentation of the specified files giving diagnostics for preprocessor\n\
