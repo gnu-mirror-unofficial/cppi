@@ -14,6 +14,8 @@ This scanner must be made using flex, not lex.
 extern int errno;
 #endif
 
+#include "fatal.h"
+
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
@@ -127,9 +129,9 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
     }
 }
 
-/* We need this so that the double quote in the character literal, '"',
-   is not interpreted as the string opener.  */
 "'\"'" {
+  /* We need this rule so that the double quote in the character literal,
+     '"', is not interpreted as the string opener.  */
   MY_ECHO;
 }
 
@@ -167,7 +169,7 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
 ^[ \t]*#[ \t]*elif[ \t]		{ emit_indented_cpp (EIC_ELSE, "elif", yyout); }
 ^[ \t]*#[ \t]*else([ \t]|$)	{ emit_indented_cpp (EIC_ELSE, "else", yyout); }
 
-^[ \t]*#[ \t]*endif([ \t]|$)	{ emit_indented_cpp (EIC_ENDIF "endif", yyout);}
+^[ \t]*#[ \t]*endif([ \t]|$)	{ emit_indented_cpp (EIC_ENDIF,"endif", yyout);}
 
 ^[ \t]*#			{ emit_indented_cpp (EIC_OTHER, "", yyout); }
 
@@ -182,7 +184,7 @@ cpp_indent (const char *in_file, const char *out_file)
   FILE *out_stream;
   FILE *in = NULL;
 
-  if (STREQ (in_file, "-"))
+  if (strcmp (in_file, "-") == 0)
     {
       yyin = stdin;
       in_file = "standard input";
@@ -206,24 +208,27 @@ cpp_indent (const char *in_file, const char *out_file)
     fatal (errno, "%s: %s", program_name, out_file);
 }
 
-#ifdef TESTING_ERR_TO_HDL
-
 int
 main (int argc, char** argv)
 {
   char *in, *out;
+  int inhibit_output = 0;
 
   program_name = argv[0];
 
-  assert (argc == 3);
-  in = argv[1];
+  if (argc >= 2 && STREQ (argv[1], "-c"))
+    {
+      inhibit_output = 1;
+      ++argv;
+      --argc;
+    }
+
+  in = (argc == 1 ? "-" : argv[2]);
   out = argv[2];
-  err_to_hdl (in, out);
+  cpp_indent (in, out);
 
   if (fclose (stdout) == EOF)
     fatal (errno, "%s: write error", program_name);
 
   exit (0);
 }
-
-#endif
