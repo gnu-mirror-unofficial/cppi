@@ -1,5 +1,8 @@
 1997-11-01  Jim Meyering  <meyering@na-net.ornl.gov>
 
+	* obstack.c: New file.
+	* obstack.h: New file.
+
 	* cppi.l: Remove hard-coded limit: use an obstack for
 	keyword/line_number pairs.
 
