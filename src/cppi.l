@@ -253,7 +253,7 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 
 %}
 
-w [^/ \t\n]
+w [a-zA-Z_]
 b [^a-zA-Z_\n]
 
 %%
