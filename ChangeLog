@@ -10,6 +10,7 @@
 	Add block of string.h/strings.h/memory.h includes.
 	(usage): Also print the bug-reporting address.
 	* configure.in: Add memory.h and unistd.h.
+	Use jm_ASSERT.
 
 2000-08-03  Jim Meyering  <meyering@lucent.com>
 
