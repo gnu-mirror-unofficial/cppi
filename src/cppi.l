@@ -44,6 +44,12 @@
 extern int errno;
 #endif
 
+#include "gettext.h"
+
+#define _(msgid) gettext (msgid)
+#define N_(msgid) msgid
+
+#include "closeout.h"
 #include "fatal.h"
 #include "obstack.h"
 #include "xstrtol.h"
@@ -305,7 +311,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	{
 	  if (!list_files_only)
 	    {
-	      warn (0, "%s: %s: line %d: found #%s without matching #if",
+	      warn (0, _("%s: %s: line %d: found #%s without matching #if"),
 		    program_name, in_file, line_number, directive[t]);
 	    }
 	  i_depth = 0;
@@ -325,7 +331,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	{
 	  if (!list_files_only)
 	    {
-	      warn (0, "%s: %s: line %d: found #%s without matching #if",
+	      warn (0, _("%s: %s: line %d: found #%s without matching #if"),
 		    program_name, in_file, line_number, directive[t]);
 	    }
 	  i_depth = initial_i_depth + 1;
@@ -360,7 +366,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
   if (*fail == 1)
     {
       if (!list_files_only)
-	warn (0, "%s: %s: line %d: not properly indented",
+	warn (0, _("%s: %s: line %d: not properly indented"),
 	      program_name, in_file, line_number);
     }
 
@@ -435,7 +441,7 @@ b [^a-zA-Z_\n]
 
       if (c == EOF)
 	{
-	  warn (0, "%s: %s: line %d: EOF in string",
+	  warn (0, _("%s: %s: line %d: EOF in string"),
 		program_name, in_file, start_lineno);
 	  fail = 1;
 	  break;
@@ -463,7 +469,7 @@ b [^a-zA-Z_\n]
 
   if (0 < max_string_length && max_string_length < string_length)
     {
-      warn (0, "%s: %s: line %d: string (%d) longer than maximum of %lu",
+      warn (0, _("%s: %s: line %d: string (%d) longer than maximum of %lu"),
 	    program_name, in_file, start_lineno, string_length,
 	    max_string_length);
       fail = 1;
@@ -491,9 +497,9 @@ b [^a-zA-Z_\n]
 	    {
 	      if (!list_files_only)
 		{
-		  warn (0, "%s: %s: line %d: not properly formatted\n"
-			"There must be exactly one SPACE character after each\n"
-			"#if, #elif, and #define directive.",
+		  warn (0, _("%s: %s: line %d: not properly formatted\n\
+There must be exactly one SPACE character after each\n\
+#if, #elif, and #define directive."),
 			program_name, in_file, lineno);
 		}
 	      if (fail < 1)
@@ -560,7 +566,7 @@ b [^a-zA-Z_\n]
 	{
 	  if (!list_files_only)
 	    warn (0,
-	      "%s: %s: line %d: text following `#%s' violates ANSI standard",
+	      _("%s: %s: line %d: text following `#%s' violates ANSI standard"),
 		  program_name, in_file, cpp_directive_lineno,
 		  (t == EIC_ELSE ? "else" : "endif"));
 	  if (fail < 1)
@@ -590,7 +596,7 @@ b [^a-zA-Z_\n]
 	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
 	    {
 	      struct KL_pair x = kth_entry (i);
-	      warn (0, "%s: %s: line %d: unterminated #%s",
+	      warn (0, _("%s: %s: line %d: unterminated #%s"),
 		    program_name, in_file, x.line_number,
 		    directive[x.opener_type]);
 	    }
@@ -777,6 +783,8 @@ main (int argc, char** argv)
 
   program_name = argv[0];
 
+  atexit (close_stdout);
+
   while ((c = getopt_long (argc, argv, "aclm:", long_options, NULL)) != -1)
     {
       switch (c)
@@ -801,7 +809,7 @@ main (int argc, char** argv)
 	  if (xstrtoul (optarg, NULL, 0, &max_string_length, NULL)
 	      != LONGINT_OK)
 	    {
-	      warn (0, "invalid maximum string length %s", optarg);
+	      warn (0, _("invalid maximum string length %s"), optarg);
 	      fail = 1;
 	    }
 	  break;
@@ -826,7 +834,7 @@ main (int argc, char** argv)
 
   if (!inhibit_output && argc - optind > 2)
     {
-      warn (0, "too many arguments");
+      warn (0, _("too many arguments"));
       usage (1);
     }
 
