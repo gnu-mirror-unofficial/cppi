@@ -5,10 +5,10 @@ Allow regex filtering (use Henry Spencer's new perl-like regexps)
 
 Put under GPL and release.  Ask Tom.
 
-Uli's suggestion for setting initial indentation level to e.g. -1
-for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
+Add an option to enable this (there's already support for it):
+  Uli's suggestion for setting initial indentation level to e.g. -1
+  for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
 
-Remove and undocument kludgey -C option
 Remove and undocument DISABLE_CPP_INDENT_CHECK envvar support.
 
 Make sure we get a reasonable failure when cppi.l is modified

@@ -1,3 +1,8 @@
+1998-09-08  Jim Meyering  <meyering@ascend.com>
+
+	* cppi.l: Remove and undocument kludgey --cvs (-C) option.
+	* tests/Makefile.am (TESTS): Remove f6 (used -C).
+
 1998-09-02  Jim Meyering  <meyering@ascend.com>
 
 	* Makefile.maint: New file.
