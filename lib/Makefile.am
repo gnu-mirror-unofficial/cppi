@@ -36,7 +36,7 @@ libgnulib_a_SOURCES += pathmax.h
 
 libgnulib_a_SOURCES += getopt.h getopt.c getopt1.c
 
-EXTRA_DIST += stdbool_.h
+libgnulib_a_SOURCES += exit.h
 
 EXTRA_DIST += stdbool_.h
 BUILT_SOURCES += $(STDBOOL_H)
