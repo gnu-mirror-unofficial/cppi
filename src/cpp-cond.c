@@ -1,5 +1,5 @@
-/* C code produced by gperf version 2.7 */
-/* Command-line: gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k * cpp.gp  */
+/* C code produced by gperf version 2.7.2 */
+/* Command-line: gperf -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' cpp.gp  */
 struct KW {char *name; int code;};
 
 #define TOTAL_KEYWORDS 8
@@ -11,6 +11,10 @@ struct KW {char *name; int code;};
 
 #ifdef __GNUC__
 __inline
+#else
+#ifdef __cplusplus
+inline
+#endif
 #endif
 static unsigned int
 hash (str, len)
@@ -52,17 +56,17 @@ hash (str, len)
     {
       default:
       case 6:
-        hval += asso_values[(unsigned char)(unsigned char) str[5]];
+        hval += asso_values[(unsigned char)str[5]];
       case 5:
-        hval += asso_values[(unsigned char)(unsigned char) str[4]];
+        hval += asso_values[(unsigned char)str[4]];
       case 4:
-        hval += asso_values[(unsigned char)(unsigned char) str[3]];
+        hval += asso_values[(unsigned char)str[3]];
       case 3:
-        hval += asso_values[(unsigned char)(unsigned char) str[2]];
+        hval += asso_values[(unsigned char)str[2]];
       case 2:
-        hval += asso_values[(unsigned char)(unsigned char) str[1]];
+        hval += asso_values[(unsigned char)str[1]];
       case 1:
-        hval += asso_values[(unsigned char)(unsigned char) str[0]];
+        hval += asso_values[(unsigned char)str[0]];
         break;
     }
   return hval;
