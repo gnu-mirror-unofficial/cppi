@@ -3,7 +3,6 @@ Makefile
 config.h config.cache
 config.log
 config.status
-cpp-cond-lookup.c
 cpp-indent
 cppi
 cppi.c
