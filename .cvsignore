@@ -4,3 +4,7 @@ cpp-indent
 *.qO
 *.qd
 *.d
+e*.EO
+e*.Ee
+e*.I
+e*.e
