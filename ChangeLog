@@ -2,6 +2,15 @@
 
 	* Version 1.12.
 
+	* src/cppi.l: Don't include stdlib.h, unistd.h, string.h, ctype.h, etc.
+	Those are included via system.h.
+	Include system.h.
+	(EXIT_FAILURE, EXIT_SUCCESS, STREQ): Don't define.
+	Use error, not fatal.
+	(PROGRAM_NAME, AUTHORS): Define.
+	(GETOPT_HELP_OPTION_DECL, GETOPT_VERSION_OPTION_DECL): Use these.
+	(main): Use case_GETOPT_HELP_CHAR and case_GETOPT_VERSION_CHAR.
+
 2003-08-11  Jim Meyering  <jim@meyering.net>
 
 	* cppi.l: Include "gettext.h" and "closeout.h".
