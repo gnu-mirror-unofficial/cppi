@@ -2,7 +2,9 @@
 
 	* Version 1.9.
 
+	* Makefile.cfg: New file.
 	* Makefile.am (EXTRA_DIST): Add Makefile.cfg.
+	* GNUmakefile: Include Makefile.cfg.
 
 2001-07-07  Jim Meyering  <meyering@lucent.com>
 
