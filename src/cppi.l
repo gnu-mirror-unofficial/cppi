@@ -714,7 +714,7 @@ gobble_c_comment (const char *in_file, int *line_number)
 
       if (c == EOF)
 	{
-	  error (2, 0, "%s: %s: line %d: EOF in comment",
+	  error (2, 0, _("%s: %s: line %d: EOF in comment"),
 		 program_name, in_file, start_lineno);
 	  break;
 	}
