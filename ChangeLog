@@ -2,6 +2,10 @@
 
 	* Version 1.11.
 
+	* src/cppi.l: Include config.h from a %top{...} block so config.h
+	precede flex's inclusion of <stdio.h>, thus permitting the _GNU_SOURCE
+	definition in config.h to take effect.
+
 	* tests/Makefile.am: Change notation: e.g. use $(srcdir), not @srcdir@.
 
 	* src/Makefile.am: Revamp, now that we're using separate
