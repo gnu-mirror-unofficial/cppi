@@ -37,6 +37,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = @host@
 ACLOCAL = @ACLOCAL@
+ALLOCA = @ALLOCA@
+ALLOCA_H = @ALLOCA_H@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -58,6 +60,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 GMSGFMT = @GMSGFMT@
+HAVE__BOOL = @HAVE__BOOL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -90,6 +93,7 @@ POSUB = @POSUB@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+STDBOOL_H = @STDBOOL_H@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -130,7 +134,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
-AUTOMAKE_OPTIONS = 1.5 foreign
+AUTOMAKE_OPTIONS = 1.7 gnits
 
 SUBDIRS = lib m4 po src tests
 
@@ -167,7 +171,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  Makefile
+	  $(AUTOMAKE) --gnits  Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)
 
@@ -176,7 +180,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4):  configure.ac m4/check-decl.m4 m4/closeout.m4 m4/codeset.m4 m4/error.m4 m4/exitfail.m4 m4/extensions.m4 m4/fatal.m4 m4/fpending.m4 m4/gettext.m4 m4/glibc21.m4 m4/iconv.m4 m4/intdiv0.m4 m4/intmax_t.m4 m4/inttypes-pri.m4 m4/inttypes.m4 m4/inttypes_h.m4 m4/isc-posix.m4 m4/lcmessage.m4 m4/lib-ld.m4 m4/lib-link.m4 m4/lib-prefix.m4 m4/longlong.m4 m4/malloc.m4 m4/mbrtowc.m4 m4/mbstate_t.m4 m4/nls.m4 m4/obstack.m4 m4/onceonly_2_57.m4 m4/po.m4 m4/progtest.m4 m4/quotearg.m4 m4/realloc.m4 m4/stdint_h.m4 m4/strerror_r.m4 m4/uintmax_t.m4 m4/ulonglong.m4 m4/unlocked-io.m4 m4/xalloc.m4 m4/xstrtol.m4
+$(ACLOCAL_M4):  configure.ac m4/alloca.m4 m4/check-decl.m4 m4/closeout.m4 m4/codeset.m4 m4/error.m4 m4/exitfail.m4 m4/extensions.m4 m4/fatal.m4 m4/fpending.m4 m4/gettext.m4 m4/glibc21.m4 m4/iconv.m4 m4/intdiv0.m4 m4/intmax_t.m4 m4/inttypes-pri.m4 m4/inttypes.m4 m4/inttypes_h.m4 m4/isc-posix.m4 m4/lcmessage.m4 m4/lib-ld.m4 m4/lib-link.m4 m4/lib-prefix.m4 m4/longlong.m4 m4/malloc.m4 m4/mbrtowc.m4 m4/mbstate_t.m4 m4/nls.m4 m4/obstack.m4 m4/onceonly_2_57.m4 m4/po.m4 m4/progtest.m4 m4/quotearg.m4 m4/realloc.m4 m4/stdbool.m4 m4/stdint_h.m4 m4/strerror_r.m4 m4/uintmax_t.m4 m4/ulonglong.m4 m4/unlocked-io.m4 m4/xalloc.m4 m4/xstrtol.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1
@@ -335,6 +339,12 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 
 distdir: $(DISTFILES)
+	@case `sed 15q $(srcdir)/NEWS` in \
+	*"$(VERSION)"*) : ;; \
+	*) \
+	  echo "NEWS not updated; not releasing" 1>&2; \
+	  exit 1;; \
+	esac
 	$(am__remove_distdir)
 	mkdir $(distdir)
 	$(mkinstalldirs) $(distdir)/config
