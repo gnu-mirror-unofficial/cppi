@@ -64,8 +64,8 @@ extern int errno;
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
-#define EMIT_DIR(Tok) \
-    emit_indented_cpp (in_file, lineno, (Tok), yytext, &kl_stack, &g_fail)
+#define EMIT_DIRECTIVE \
+    emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &g_fail)
 
 enum Eic_type
 {
@@ -108,6 +108,36 @@ static char *default_file_list[] = {"-", NULL};
 
 char *program_name;
 
+#include "cpp-cond-lookup.c"
+
+/* PREFIX is the cpp line from beginning of line to end of the keyword
+   following the `#'.  */
+
+enum Eic_type
+lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
+{
+  /* Find beginning of the keyword.  */
+  const char *p;
+  for (p = prefix; ; ++p, --len)
+    {
+      switch (*p)
+	{
+	case '#':
+	case ' ':
+	case '\t':
+	  break;
+
+	default:
+	  {
+	    struct KW const *ent = cpp_cond_lookup (p, len);
+	    *kw = p;
+	    return (ent ? ent->code : EIC_OTHER);
+	  }
+	}
+      assert (len > 0);
+    }
+}
+
 int
 yywrap (void)
 {
@@ -146,7 +176,7 @@ push (struct Stack *s, int packed_pair)
 }
 
 static int
-emit_or_check (enum Eic_type type, const char *text)
+emit_or_check (enum Eic_type type, const char *text, const char *other)
 {
   int fail = 1;
 
@@ -155,8 +185,7 @@ emit_or_check (enum Eic_type type, const char *text)
       int n;
       if (text[0] == '#'
 	  && (n = strspn (text + 1, " ")) == i_depth
-	  && ((type == EIC_OTHER && text[1 + n] == '\0')
-	      || text[1 + n] == 'e' || text[1 + n] == 'i'))
+	  && (type == EIC_OTHER || text[1 + n] == 'e' || text[1 + n] == 'i'))
 	{
 	  fail = 0;
 	}
@@ -164,11 +193,12 @@ emit_or_check (enum Eic_type type, const char *text)
   else
     {
       int i;
+      const char *dir = (type == EIC_OTHER ? other : directive[type]);
       fail = 0;
       fputc ('#', yyout);
       for (i = 0; i < i_depth; i++)
 	fputc (' ', yyout);
-      fputs (directive[type], yyout);
+      fputs (dir, yyout);
     }
 
   return fail;
@@ -176,10 +206,12 @@ emit_or_check (enum Eic_type type, const char *text)
 
 static void
 emit_indented_cpp (char const *in_file, unsigned int line_number,
-		   enum Eic_type t, char const *text,
+		   char const *text, size_t len,
 		   struct Stack *s, int *exit_status)
 {
   int fail;
+  const char *keyword;
+  enum Eic_type t = lookup_cpp_keyword (text, len, &keyword);
 
   switch (t)
     {
@@ -191,7 +223,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	 on the stack.  */
       push (s, kl_pack (t, line_number));
 
-      fail = emit_or_check (t, yytext);
+      fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
       break;
 
@@ -202,13 +234,13 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	  warn (0, "%s: %s: line %d: found #%s without matching #if",
 	    program_name, in_file, line_number, directive[t]);
 	  i_depth = 0;
-	  fail = emit_or_check (t, yytext);
+	  fail = emit_or_check (t, yytext, keyword);
 	  *exit_status = 2;
 	}
       else
 	{
 	  --i_depth;
-	  fail = emit_or_check (t, yytext);
+	  fail = emit_or_check (t, yytext, keyword);
 	  ++i_depth;
 	}
       break;
@@ -230,11 +262,11 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	}
 
       --i_depth;
-      fail = emit_or_check (t, yytext);
+      fail = emit_or_check (t, yytext, keyword);
       break;
 
     case EIC_OTHER:
-      fail = emit_or_check (t, yytext);
+      fail = emit_or_check (t, yytext, keyword);
       break;
 
     default:
@@ -349,18 +381,9 @@ b [^a-zA-Z_\n]
   PUT2 ('\0', ']');
 }
 
-^[ \t]*#[ \t]*if/{b}      { EMIT_DIR (EIC_IF); }
-^[ \t]*#[ \t]*ifdef/{b}   { EMIT_DIR (EIC_IFDEF); }
-^[ \t]*#[ \t]*ifndef/{b}  { EMIT_DIR (EIC_IFNDEF); }
-
-^[ \t]*#[ \t]*elif/{b}    { EMIT_DIR (EIC_ELIF); }
-^[ \t]*#[ \t]*else{w}     { MY_ECHO; }
-^[ \t]*#[ \t]*else        { EMIT_DIR (EIC_ELSE); }
-
-^[ \t]*#[ \t]*endif{w}    { MY_ECHO; }
-^[ \t]*#[ \t]*endif       { EMIT_DIR (EIC_ENDIF); }
-
-^[ \t]*#[ \t]*            { EMIT_DIR (EIC_OTHER); }
+^[ \t]*#[ \t]*[a-zA-Z0-9_]+   { EMIT_DIRECTIVE; }
+^[ \t]*#[ \t]*                { MY_ECHO; }
+^[ \t]*                       { MY_ECHO; }
 
 \n                        { MY_ECHO; ++lineno; }
 .                         { MY_ECHO; }
