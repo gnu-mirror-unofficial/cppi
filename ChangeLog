@@ -1,5 +1,7 @@
 2001-07-09  Jim Meyering  <meyering@lucent.com>
 
+	* Version 1.9.
+
 	* Makefile.am (EXTRA_DIST): Add Makefile.cfg.
 
 2001-07-07  Jim Meyering  <meyering@lucent.com>
