@@ -1,3 +1,10 @@
+2000-11-04  Jim Meyering  <meyering@lucent.com>
+
+	* cppi.l: Include unistd.h.
+	Add block of string.h/strings.h/memory.h includes.
+	(usage): Also print the bug-reporting address.
+	* configure.in: Add memory.h and unistd.h.
+
 2000-08-03  Jim Meyering  <meyering@lucent.com>
 
 	* config.sub: New file.
