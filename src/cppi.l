@@ -31,6 +31,11 @@
 #include "xstrtol.h"
 #include "cpp.h"
 
+/* The official name of this program (e.g., no `g' prefix).  */
+#define PROGRAM_NAME "cppi"
+
+#define AUTHORS "Jim Meyering"
+
 #define obstack_chunk_alloc malloc
 #define obstack_chunk_free free
 
@@ -98,20 +103,14 @@ static char *default_file_list[] = {"-", NULL};
 
 char *program_name;
 
-/* If nonzero, display usage information and exit.  */
-static int show_help;
-
-/* If nonzero, print the version on standard output then exit.  */
-static int show_version;
-
 static struct option const long_options[] =
 {
   {"ansi", no_argument, NULL, 'a'},
   {"check", no_argument, NULL, 'c'},
   {"list-files-only", no_argument, NULL, 'l'},
   {"max-string-length", required_argument, NULL, 'm'},
-  {"help", no_argument, &show_help, 1},
-  {"version", no_argument, &show_version, 1},
+  {GETOPT_HELP_OPTION_DECL},
+  {GETOPT_VERSION_OPTION_DECL},
   {NULL, 0, NULL, 0}
 };
 
@@ -780,20 +779,15 @@ main (int argc, char** argv)
 	    }
 	  break;
 
+	case_GETOPT_HELP_CHAR;
+
+	case_GETOPT_VERSION_CHAR (PROGRAM_NAME, AUTHORS);
+
 	default:
 	  usage (2);
 	  break;
 	}
     }
-
-  if (show_version)
-    {
-      printf ("cppi %s\n", VERSION);
-      exit (EXIT_SUCCESS);
-    }
-
-  if (show_help)
-    usage (0);
 
   if (fail)
     exit (1);
@@ -821,7 +815,7 @@ main (int argc, char** argv)
 
   if (fclose (stdout) == EOF)
     {
-      error (3, errno, "%s: write error", program_name);
+      error (3, errno, _("%s: write error"), program_name);
     }
 
   exit (max_err);
