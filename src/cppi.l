@@ -313,7 +313,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 		    program_name, in_file, line_number, directive[t]);
 	    }
 	  i_depth = 0;
-	  *fail = emit_or_check (t, yytext, keyword);
+	  emit_or_check (t, yytext, keyword);
 	  *fail = 2;
 	}
       else
@@ -428,6 +428,7 @@ b [^a-zA-Z_\n]
      a string of them immediately precedes a double quote.  */
   int n_backslashes = 0;
   int string_length = 0;
+  int fail = 0;
 
   PUT2 ('[', '\0');
   MY_ECHO;
@@ -438,8 +439,10 @@ b [^a-zA-Z_\n]
 
       if (c == EOF)
 	{
-	  fatal (2, 0, "%s: %s: line %d: EOF in string",
-		 program_name, in_file, start_lineno);
+	  warn (0, "%s: %s: line %d: EOF in string",
+		program_name, in_file, start_lineno);
+	  fail = 1;
+	  break;
 	}
 
       /* If the number of preceding backslashes is even, then this is
@@ -464,10 +467,14 @@ b [^a-zA-Z_\n]
 
   if (0 < max_string_length && max_string_length < string_length)
     {
-      fatal (4, 0, "%s: %s: line %d: string (%d) longer than maximum of %lu",
-	     program_name, in_file, start_lineno, string_length,
-	     max_string_length);
+      warn (0, "%s: %s: line %d: string (%d) longer than maximum of %lu",
+	    program_name, in_file, start_lineno, string_length,
+	    max_string_length);
+      fail = 1;
     }
+
+  if (fail)
+    lex_fail = 1;
 }
 
 ^[ \t]*#[ \t]*[a-zA-Z0-9_]+   {
