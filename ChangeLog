@@ -1,7 +1,13 @@
 1998-10-02  Jim Meyering  <meyering@ascend.com>
 
+	Line numbers in diagnostics were off -- sometimes by a lot.
+	Reported by Tim Lynch.
+	* cppi.l (gobble_define): Count newlines.
+	Adjust caller.
 	* tests/Makefile.am (TESTS): Add d5.
-	* tests/d5: New file.
+	* tests/d5: New file -- test for the above fix.
+
+	* tests/stringify-2: Adjust line numbers.
 
 1998-09-09  Jim Meyering  <meyering@ascend.com>
 
