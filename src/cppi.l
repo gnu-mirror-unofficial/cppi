@@ -66,8 +66,8 @@ extern int errno;
 	  int n;							\
 	  if (text[0] == '#'						\
 	      && (n = strspn (text + 1, " ")) == i_depth		\
-	      && ((T == EIC_OTHER && text[1 + n] == '\0') ||		\
-		  text[1 + n] == 'e' || text[1 + n] == 'i'))		\
+	      && ((T == EIC_OTHER && text[1 + n] == '\0')		\
+		  || text[1 + n] == 'e' || text[1 + n] == 'i'))		\
 	    {								\
 	      ok = 1;							\
 	    }								\
@@ -75,12 +75,12 @@ extern int errno;
       else								\
 	{								\
 	  ok = 1;							\
-	  fputc ('#', out);						\
+	  fputc ('#', yyout);						\
 	  assert (0 <= i_depth && i_depth <= MAX_DEPTH);		\
 	  blanks[i_depth] = '\0';					\
-	  fputs (blanks, out);						\
+	  fputs (blanks, yyout);					\
 	  blanks[i_depth] = ' ';					\
-	  fputs (directive[T], out);					\
+	  fputs (directive[T], yyout);					\
 	}								\
     }									\
   while (0)
@@ -92,7 +92,7 @@ extern int errno;
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
 #define EMIT_DIR(Tok) \
-    emit_indented_cpp (yyout, (Tok), yytext, &kl_stack, in_file, &g_fail)
+    emit_indented_cpp ((Tok), yytext, &kl_stack, in_file, &g_fail)
 
 enum eic_type
 {
@@ -176,7 +176,7 @@ push (struct Stack *s, int packed_pair)
 }
 
 static void
-emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
+emit_indented_cpp (enum eic_type t, char const *text,
 		   struct Stack *s, char const *in_file, int *exit_status)
 {
   static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
