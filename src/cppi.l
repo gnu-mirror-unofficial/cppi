@@ -508,7 +508,9 @@ b [^a-zA-Z_\n]
       if (!list_files_only)
 	{
 	  /* Iterate the opener stack from bottom to top, giving a
-	     diagnostic per unterminated #if* directive.  */
+	     diagnostic per unterminated #if* directive.
+	     Torture this code with a command like this:
+	     $ yes '#if FOO' |head -600 |cppi -c */
 	  int i;
 	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
 	    {
