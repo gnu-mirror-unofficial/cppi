@@ -10,19 +10,8 @@ use strict;
 # TODO: allow these to be overridden by command-line options
 my $indent_incr = ' ';
 
-sub cpp_indent ($$)
-{
-  my ($file, $check_only) = @_;
-  if (!open (IN, "<$file"))
-    {
-      warn "$0: $file: $!\n";
-      return 0;
-    }
-}
-
 my @opener_stack;
 my $depth = 0;
-my $check_only = 0;
 
 my $line;
 while (defined ($line = <>))
@@ -60,17 +49,9 @@ while (defined ($line = <>))
 	    $indent = $indent_incr x $depth;
 	  }
 
-	my $new_line = "#$indent$keyword$'";
-	if ($check_only)
-	  {
-	    return 1 if $new_line ne $line;
-	  }
-	else
-	  {
-	    $line = $new_line;
-	  }
+	$line = "#$indent$keyword$'";
       }
-    print $line if !$check_only;
+    print $line;
   }
 
 my $exit_status = 0;
