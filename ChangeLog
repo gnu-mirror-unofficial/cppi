@@ -2,6 +2,11 @@
 
 	* Version 1.11.
 
+	* lib/Makefile.am (BUILT_SOURCES): Add $(ALLOCA_H) and $(STDBOOL_H).
+	Otherwise, those files aren't created when needed.
+
+	* configure.ac: Add stdbool and alloca things.
+
 	* tests/version-check: New file.
 	* tests/Makefile.am (TESTS): Add version-check.
 	(PACKAGE_VERSION): Add PACKAGE_VERSION.
