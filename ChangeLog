@@ -1,3 +1,7 @@
+2003-08-18  Jim Meyering  <jim@meyering.net>
+
+	* src/cppi.l: Check white space after #ifndef, too.
+
 2003-08-15  Jim Meyering  <jim@meyering.net>
 
 	* man/Makefile.am, man/cppi.x: New files.
