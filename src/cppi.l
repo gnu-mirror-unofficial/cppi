@@ -312,6 +312,10 @@ b [^a-zA-Z_\n]
   MY_ECHO;
 }
 
+"'\\"/"\"" {MY_ECHO;}
+"'\\" {MY_ECHO;}
+"'"/"\"" {MY_ECHO;}
+
 "\"" {
   register int c;
   int start_lineno = lineno;
@@ -351,17 +355,10 @@ b [^a-zA-Z_\n]
 
 ^[ \t]*#[ \t]*elif/{b}    { EMIT_DIR (EIC_ELIF); }
 ^[ \t]*#[ \t]*else{w}     { MY_ECHO; }
-^[ \t]*#[ \t]*else/{b}    { EMIT_DIR (EIC_ELSE); }
-^[ \t]*#[ \t]*else$       { EMIT_DIR (EIC_ELSE); }
+^[ \t]*#[ \t]*else        { EMIT_DIR (EIC_ELSE); }
 
 ^[ \t]*#[ \t]*endif{w}    { MY_ECHO; }
-^[ \t]*#[ \t]*endif/{b}   { EMIT_DIR (EIC_ENDIF); }
-^[ \t]*#[ \t]*endif$      { EMIT_DIR (EIC_ENDIF); }
-^[ \t]*#[ \t]*endif       {
-  /* This happens when the #endif directive is at the end of file and
-     the `f' is the last byte of the file (i.e., there is no newline).  */
-  EMIT_DIR (EIC_ENDIF);
-  }
+^[ \t]*#[ \t]*endif       { EMIT_DIR (EIC_ENDIF); }
 
 ^[ \t]*#[ \t]*            { EMIT_DIR (EIC_OTHER); }
 
