@@ -11,5 +11,5 @@ strerror(int n)
   return (sys_errlist[n]);
 }
 #else
-static int hdl_not_used;
+static int _not_used;
 #endif
