@@ -369,3 +369,21 @@ n
 p yy_c_buf_p
 p  &yy_current_buffer->yy_ch_buf[yy_n_chars]
 q
+r -c /tmp/j.c
+b main
+r
+n
+complete b emit
+complete b emit_or
+b emit_or_check
+r
+c
+r
+n
+s
+s
+fin
+n
+c
+n
+q
