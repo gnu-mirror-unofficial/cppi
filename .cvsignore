@@ -2,11 +2,4 @@ cppi
 cpp-cond-lookup.c
 cppi.c
 cpp-indent
-*.O
-*.qO
-*.qd
-*.d
-e*.EO
-e*.Ee
-e*.I
-e*.e
+lex.backup
