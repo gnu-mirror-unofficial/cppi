@@ -180,7 +180,7 @@ yywrap (void)
   return 1;
 }
 
-static __inline struct KL_pair
+static inline struct KL_pair
 kth_entry (int k)
 {
   struct KL_pair *s = (struct KL_pair *) obstack_base (&opener_stack);
@@ -188,14 +188,14 @@ kth_entry (int k)
   return s[k];
 }
 
-static __inline void
+static inline void
 pop (void)
 {
   assert (OPENER_STACK_HEIGHT > 0);
   obstack_blank (&opener_stack, -(sizeof (struct KL_pair)));
 }
 
-static __inline void
+static inline void
 push (enum Eic_type opener_type, unsigned int line_number)
 {
   struct KL_pair pair;
