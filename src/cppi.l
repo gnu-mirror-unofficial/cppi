@@ -20,6 +20,8 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <errno.h>
 #ifndef errno
@@ -337,16 +339,19 @@ b [^a-zA-Z_\n]
   PUT2 ('\0', ']');
 }
 
-"'\\\"'" |
-"'\"'" {
+"'"\\?"\"'" {
   /* We need this rule so that the double quote in the character literal,
-     '"', is not interpreted as the string opener.  */
+     '"' (also written as '\"'), is not interpreted as a string opener.  */
   MY_ECHO;
 }
 
-"'\\"/"\"" {MY_ECHO;}
-"'\\" {MY_ECHO;}
-"'"/"\"" {MY_ECHO;}
+"'\\"/"\"" {
+  /* This rule is included to make flex's scanner more efficient
+     by avoiding backup states.  */
+  MY_ECHO;
+}
+"'\\"    { /* Likewise.  */ MY_ECHO;}
+"'"/"\"" { /* Likewise.  */ MY_ECHO; }
 
 "\"" {
   register int c;
@@ -479,6 +484,9 @@ main (int argc, char** argv)
   int fail;
   char **file_list;
 
+  /* Make `cppi -C' usable directly via CVS's commitinfo (see below).  */
+  int cvs_mode = 0;
+
   program_name = argv[0];
 
   if (argc >= 2 && (STREQ (argv[1], "-h") || STREQ (argv[1], "-help")))
@@ -489,6 +497,13 @@ main (int argc, char** argv)
   if (argc >= 2 && STREQ (argv[1], "-c"))
     {
       inhibit_output = 1;
+      ++argv;
+      --argc;
+    }
+  else if (argc >= 2 && STREQ (argv[1], "-C"))
+    {
+      inhibit_output = 1;
+      cvs_mode = 1;
       ++argv;
       --argc;
     }
@@ -506,10 +521,31 @@ main (int argc, char** argv)
 
   file_list = (argc == 1 ? default_file_list : argv + 1);
 
+  /* Make `cppi -C' usable directly via CVS's commitinfo.
+     Ignore the first command line argument if it is a directory and
+     there is at least one other argument.  Also, process only files
+     ending in .c and .h.  */
+
+  if (argc >= 3 && cvs_mode)
+    {
+      struct stat stats;
+      if (stat (file_list[0], &stats) == 0 && S_ISDIR (stats.st_mode))
+	++file_list;
+    }
+
   fail = 0;
   for (i = 0; file_list[i]; i++)
     {
-      int err = cpp_indent (file_list[i]);
+      int err;
+      char *p;
+
+      /* Skip files that don't match *.[ch].  */
+      if (cvs_mode && ! ((p = strrchr (file_list[i], '.')) != NULL
+			 && (p[1] == 'c' || p[1] == 'h')
+			 && p[2] == '\0'))
+	continue;
+
+      err = cpp_indent (file_list[i]);
       if (err > fail)
 	fail = err;
     }
