@@ -305,6 +305,25 @@ cpp_indent (const char *in_file)
   return fail;
 }
 
+static void
+usage (int status)
+{
+  if (status != 0)
+    {
+      fprintf (stderr, "Try `%s --help' for more information.\n",
+	       program_name);
+    }
+  else
+    {
+      printf ("\
+Usage: %s [FILE]\n\
+  or:  %s [-c] [FILE]...\n\
+",
+		program_name, program_name);
+    }
+  exit (status == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
+}
+
 int
 main (int argc, char** argv)
 {
@@ -312,6 +331,11 @@ main (int argc, char** argv)
   int fail;
 
   program_name = argv[0];
+
+  if (argc >= 2 && (STREQ (argv[1], "-h") || STREQ (argv[1], "-help")))
+    {
+      usage (0);
+    }
 
   if (argc >= 2 && STREQ (argv[1], "-c"))
     {
@@ -322,10 +346,8 @@ main (int argc, char** argv)
 
   if (!inhibit_output && argc > 2)
     {
-      fprintf (stderr, "\
-Usage: %s [FILE]\n\
-  or:  %s [-c] [FILE]...", program_name, program_name);
-      exit (1);
+      warn (0, "too many arguments");
+      usage (1);
     }
 
   fail = 0;
@@ -338,7 +360,9 @@ Usage: %s [FILE]\n\
     }
 
   if (fclose (stdout) == EOF)
-    fatal (3, errno, "%s: write error", program_name);
+    {
+      fatal (3, errno, "%s: write error", program_name);
+    }
 
   exit (fail);
 }
