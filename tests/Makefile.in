@@ -139,7 +139,7 @@ TESTS = \
 
 
 EXTRA_DIST = test-common $(TESTS)
-TESTS_ENVIRONMENT = srcdir=$(srcdir) PATH=..$(PATH_SEPARATOR)$$PATH
+TESTS_ENVIRONMENT = srcdir=$(srcdir) PATH=../src$(PATH_SEPARATOR)$$PATH
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
