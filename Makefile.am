@@ -68,3 +68,6 @@ cpp.h: cpp.gp Makefile.am
 	@mv $@-tmp $@
 
 BUILT_SOURCES = cpp-cond.c cpp.h
+
+distcheck-hook:
+        $(MAKE) my-distcheck
