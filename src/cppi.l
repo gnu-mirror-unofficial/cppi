@@ -223,7 +223,9 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
 	}
       else
 	{
-	  /* Pop the keyword,line-number stack and discard the result.  */
+	  /* We've just found an #endif.  Pop off and discard the
+	     keyword,line-number pair that's on the top of the stack.
+	     That pair identifies the matching #if, #ifdef, or #ifndef.  */
 	  pop (s);
 	}
 
