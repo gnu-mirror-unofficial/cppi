@@ -31,7 +31,6 @@ AM_C_PROTOTYPES
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
-AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 
 dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
@@ -39,6 +38,5 @@ AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(strerror)
-AC_FUNC_ALLOCA
 
 AC_OUTPUT([Makefile tests/Makefile])
