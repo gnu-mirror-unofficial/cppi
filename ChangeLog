@@ -1,5 +1,7 @@
 1998-10-02  Jim Meyering  <meyering@ascend.com>
 
+	* Version 1.4.
+
 	Line numbers in diagnostics were off -- sometimes by a lot.
 	Reported by Tim Lynch.
 	* cppi.l (gobble_define): Count newlines.
