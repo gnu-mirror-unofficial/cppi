@@ -2,7 +2,7 @@
 
 # Bootstrap this package from CVS.
 
-# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Copyright (C) 2005 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,8 +20,10 @@
 # 02111-1307, USA.
 
 # Written by Paul Eggert.
+# Adapted for use by cppi by Jim Meyering
 
-package=bison
+package=cppi
+SKIP_PO=t
 
 # Ensure file names are sorted consistently across platforms;
 # e.g., m4/ulonglong_gl.m4 should follow m4/ulonglong.m4.
@@ -235,38 +237,44 @@ EOF
 }
 
 # Put bug-reporting address into po/Makevars.
-echo "$0: sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-bison@gnu.org/' po/Makevars.template >po/Makevars ..."
-sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-bison@gnu.org/' po/Makevars.template >po/Makevars
+if test -d po; then
+  echo "$0: sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-$package@gnu.org/'" \
+      "po/Makevars.template >po/Makevars ..."
+  sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/' \
+      po/Makevars.template >po/Makevars
+fi
 
 
-# if src/parse-gram.[ch] are out of date, rebuild them.
-parse_gram_y=`find src/parse-gram.y \
-		 '(' -newer src/parse-gram.c -o -newer src/parse-gram.h ')' \
-		 -print` || exit
-case $parse_gram_y in
-?*)
-  echo "$0: warning: bootstrapping with old src/parse-gram.[ch] files."
+if test -f src/parse-gram.c; then
+  # if src/parse-gram.[ch] are out of date, rebuild them.
+  parse_gram_y=`find src/parse-gram.y \
+		   '(' -newer src/parse-gram.c -o -newer src/parse-gram.h ')' \
+		   -print` || exit
+  case $parse_gram_y in
+  ?*)
+    echo "$0: warning: bootstrapping with old src/parse-gram.[ch] files."
 
-  echo "$0: touch -c src/parse-gram.[ch] ... "
-  touch -c src/parse-gram.[ch] || exit
+    echo "$0: touch -c src/parse-gram.[ch] ... "
+    touch -c src/parse-gram.[ch] || exit
 
-  echo "$0: ./configure --disable-nls ..."
-  ./configure --disable-nls || exit
+    echo "$0: ./configure --disable-nls ..."
+    ./configure --disable-nls || exit
 
-  echo "$0: (cd lib && make) ..."
-  (cd lib && make) || exit
+    echo "$0: (cd lib && make) ..."
+    (cd lib && make) || exit
 
-  echo "$0: (cd src && make) ..."
-  (cd src && make) || exit
+    echo "$0: (cd src && make) ..."
+    (cd src && make) || exit
 
-  echo "$0: rm -f src/parse-gram.c src/parse-gram.h ..."
-  rm -f src/parse-gram.c src/parse-gram.h || exit
+    echo "$0: rm -f src/parse-gram.c src/parse-gram.h ..."
+    rm -f src/parse-gram.c src/parse-gram.h || exit
 
-  echo "$0: (cd src && make parse-gram.c parse-gram.h) ..."
-  (cd src && make parse-gram.c parse-gram.h) || exit
+    echo "$0: (cd src && make parse-gram.c parse-gram.h) ..."
+    (cd src && make parse-gram.c parse-gram.h) || exit
 
-  echo "$0: make distclean ..."
-  make distclean || exit;;
-esac
+    echo "$0: make distclean ..."
+    make distclean || exit;;
+  esac
+fi
 
 echo "$0: done.  Now you can run './configure'."
