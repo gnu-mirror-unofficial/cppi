@@ -443,10 +443,11 @@ b [^a-zA-Z_\n]
 
 ^[ \t]*#[ \t]*[a-zA-Z0-9_]+   {
   enum Eic_type t;
+  int fail;
 
-  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &lex_fail);
-  if (lex_fail && list_files_only)
-    return lex_fail;
+  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &fail);
+  if (fail && list_files_only)
+    return fail;
 
   if (t == EIC_IF || t == EIC_ELIF || t == EIC_DEFINE)
     {
@@ -465,8 +466,8 @@ b [^a-zA-Z_\n]
 			"#if, #elif, and #define directive.",
 			program_name, in_file, lineno);
 		}
-	      if (lex_fail < 1)
-		lex_fail = 1;
+	      if (fail < 1)
+		fail = 1;
 	    }
 	}
       else
@@ -482,8 +483,10 @@ b [^a-zA-Z_\n]
       unput (c);
     }
 
-  if (lex_fail && list_files_only)
-    return lex_fail;
+  if (fail && list_files_only)
+    return fail;
+
+  lex_fail = fail;
 }
 ^[ \t]*#[ \t]*            { MY_ECHO; }
 ^[ \t]*                   { MY_ECHO; }
