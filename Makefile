@@ -53,4 +53,4 @@ clean:
 	rm -f cpp-indent cppi *.o
 
 realclean: clean
-	rm -f cpp-cond-lookup.c
+	rm -f cpp-cond-lookup.c cppi.c
