@@ -1,4 +1,4 @@
-#if(FOO)
+#if (FOO)
 #endif
 
 " /* make sure comment in quote is ignored "
