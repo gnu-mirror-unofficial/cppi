@@ -14,7 +14,7 @@ EOF
 cat > $t.Ee <<\EOF
 EOF
 
-options=-c
+options='-c --ansi'
 expected_status=0
 
 . ./$srcdir/test-common

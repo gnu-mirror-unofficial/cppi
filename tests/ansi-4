@@ -17,7 +17,7 @@ cppi: standard input: line 4: text following `#else' violates ANSI standard
 cppi: standard input: line 5: text following `#endif' violates ANSI standard
 EOF
 
-options=-c
+options='-c --ansi'
 expected_status=1
 
 . ./$srcdir/test-common
