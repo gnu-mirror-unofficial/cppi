@@ -278,6 +278,8 @@ b [^a-zA-Z_\n]
 	    ;
 	  if (c == '/')
 	    break;    /* found the end */
+	  if (c == '\n')
+	    ++lineno;
 	}
 
       if (c == EOF)
