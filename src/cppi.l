@@ -69,26 +69,6 @@ extern int errno;
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
-#ifdef __GNUC__
-/* this use of a statement-expression works only with gcc.  */
-# define INPUT_AND_ECHO()			\
- ({						\
-   int _c_ = input ();				\
-   if (_c_ != EOF && !inhibit_output)		\
-     fputc (_c_, yyout);			\
-   _c_;						\
- })
-#else
-static int
-INPUT_AND_ECHO (void)
-{
-  int _c_ = input ();
-  if (_c_ != EOF && !inhibit_output)
-    fputc (_c_, yyout);
-  return _c_;
-}
-#endif
-
 #ifndef isblank
 # define isblank(c) ((c) == ' ' || (c) == '\t')
 #endif
@@ -167,6 +147,28 @@ static void gobble_line (int *);
 
 /* Include gperf-generated hash function.  */
 #include "cpp-cond.c"
+
+#ifdef __GNUC__
+/* this use of a statement-expression works only with gcc.  */
+# define INPUT_AND_ECHO()			\
+ ({						\
+   int _c_ = input ();				\
+   if (_c_ != EOF && !inhibit_output)		\
+     fputc (_c_, yyout);			\
+   _c_;						\
+ })
+#else
+/* Although the above is a macro, this function definition must
+   follow the declaration of inhibit_output, above.  */
+static int
+INPUT_AND_ECHO (void)
+{
+  int _c_ = input ();
+  if (_c_ != EOF && !inhibit_output)
+    fputc (_c_, yyout);
+  return _c_;
+}
+#endif
 
 /* PREFIX is the cpp line from beginning of line to end of the keyword
    following the `#'.  */
