@@ -10,4 +10,4 @@ t=`basename $0`
 options=
 expected_status=0
 
-. ./test-common
+. $srcdir/test-common

@@ -82,4 +82,4 @@ EOF
 options=
 expected_status=0
 
-. ./test-common
+. ./$srcdir/test-common

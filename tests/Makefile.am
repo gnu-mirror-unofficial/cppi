@@ -5,3 +5,4 @@ TESTS = \
    f1 f2 f3 f4 f5 f6 f7 f8 f9
 
 EXTRA_DIST = test-common $(TESTS)
+TESTS_ENVIRONMENT = srcdir=@srcdir@

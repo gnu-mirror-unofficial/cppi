@@ -16,4 +16,4 @@ EOF
 
 expected_status=2
 
-. ./test-common
+. ./$srcdir/test-common
