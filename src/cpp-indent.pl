@@ -89,7 +89,7 @@ sub cpp_indent ($$)
 
 	  if ($checking && $saved_line ne "#$indent$keyword$'")
 	    {
-	      warn "foo: $saved_line ne #$indent$keyword$'\n";
+	      warn "$0: $file: line $.: not properly indented\n";
 	      close FILE;
 	      return 1;
 	    }
