@@ -1,3 +1,7 @@
+2003-08-12  Jim Meyering  <jim@meyering.net>
+
+	* Version 1.12.
+
 2003-08-11  Jim Meyering  <jim@meyering.net>
 
 	* cppi.l: Include "gettext.h" and "closeout.h".
@@ -375,7 +379,7 @@
 	* cppi.l (#<any-cpp-directive>): Don't try to return early when
 	detecting improper indentation and -l was specified.
 
-Tue Jun 24 08:31:36 1997-06-24  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-06-24  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (emit_indented_cpp): Initialize *fail to zero.
 
