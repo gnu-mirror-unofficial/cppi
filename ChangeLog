@@ -1,5 +1,8 @@
 Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
+	* Makefile: Remove old cpp-indent rules.
+	Begin converting empty, a, b, c tests to new format.
+
 	* cppi.l (emit_or_check): Remove now-spurious exclusion:
 	type == EIC_OTHER.
 	(emit_indented_cpp): Handle EIC_DEFINE.
