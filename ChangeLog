@@ -1,0 +1,5 @@
+Thu May  8 09:05:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+
+	* cppi.l (main): Add back door: DISABLE_CPP_INDENT_CHECK.
+	(usage): Flesh out.
+
