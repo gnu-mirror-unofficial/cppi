@@ -1,11 +1,12 @@
 .deps
 Makefile
 autom4te.cache
+config-log
 config.cache
 config.h
 config.hin
 config.log
-config-log
 config.status
 stamp-h
 stamp-h.in
+stamp-h1
