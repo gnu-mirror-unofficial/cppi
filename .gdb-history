@@ -370,119 +370,19 @@ p yy_c_buf_p
 p  &yy_current_buffer->yy_ch_buf[yy_n_chars]
 q
 r -c /tmp/j.c
-b main
-r
+q
+b emit_or_check 
+r -c /tmp/j.c
 n
-complete b emit
-complete b emit_or
-b emit_or_check
-r
-c
-r
 n
-s
-s
-fin
 n
-c
+n
+n
+n
+n
 n
 q
-r -c /tmp/j.c
-complete b emit_or
 b emit_or_check 
 r -c /tmp/j.c
 n
-complete p i_dep
-p i_depth 
-n
-p c
-p (char)c
-n
-p t
-n
-c
-c
-n
-complete echo $li
-complete echo $li
-complete echo $lin
-complete p lin
-complete p line_n
-p line_number 
-p linenum
-up
-complete p line_n
-p line_number 
-dow
-n
-p text[0]
-p strspn (text + 1, " ")
-complete p dep
-p depth
-complete p i_de
-p i_depth 
-p lineno
-up
-n
-g 1506
-b 1506
-b 1516
-r
-c
-p lineno
-up
-p lineno
-up
-p lineno
-r
-fin
-c
-fin
-c
-c
-r
-n
-fin
-n
-p (char)c
-n
-n
-p lineno
-n
-s
-n
-c
-c
-n
-p *fail
-complete p line_n
-p line_number 
-p lineno
-up
-p lineno
-complete watch lin
-complete watch linn
-complete watch linen
-complete watch linen
-complete watch lineno
-watch lineno 
-r
-c
-c
-b 1516
-l 1515
-b 1516
-l 1500
-b 1506
-r
-disa 1
-c
-r
-b warn
-complete b emi
-complete b emit_o
-b emit_or_check 
-r
-c
-c
-c
+q
