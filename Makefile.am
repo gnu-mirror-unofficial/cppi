@@ -52,17 +52,17 @@ cppi.c: cppi.l
 cpp.h: cpp.gp Makefile.am
 	@rm -f $@-tmp $@
 	@(								\
-	 echo '/* This file is generated automatically from $<.  */';	\
+	 echo '/* This file is generated automatically from cpp.gp.  */'; \
 	 echo;								\
 	 echo 'enum Eic_type';						\
 	 echo '{';							\
-	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $<;			\
+	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $(srcdir)/cpp.gp;		\
 	 echo '  EIC_OTHER';						\
 	 echo '};';							\
 	 echo;								\
 	 echo 'static char const *const directive[] =';			\
 	 echo '{';							\
-	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $<;			\
+	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $(srcdir)/cpp.gp;	\
 	 echo '  ""';							\
 	 echo '};';							\
 	)								\
