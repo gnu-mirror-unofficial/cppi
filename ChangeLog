@@ -1,6 +1,6 @@
 2003-08-12  Jim Meyering  <jim@meyering.net>
 
-	* Version 1.12.
+	* Version 1.11.
 
 	* src/cppi.l: Don't include stdlib.h, unistd.h, string.h, ctype.h, etc.
 	Those are included via system.h.
@@ -27,8 +27,6 @@
 	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
 
 2003-02-19  Jim Meyering  <jim@meyering.net>
-
-	* Version 1.11.
 
 	* tests/Makefile.am (TESTS_ENVIRONMENT): Use @PATH_SEPARATOR@, not `;'.
 
