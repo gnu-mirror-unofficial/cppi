@@ -1,6 +1,12 @@
-2002-02-25  Jim Meyering  <meyering@lucent.com>
+2002-10-16  Jim Meyering  <meyering@lucent.com>
 
 	* Version 1.11.
+
+	Avoid warnings from gcc.
+	* cppi.l (kth_entry): Change type of parameter to unsigned int.
+	("\""): Change counter types from int to size_t.
+
+2002-02-25  Jim Meyering  <meyering@lucent.com>
 
 	* configure.ac (AC_CONFIG_AUX_DIR): New macro invocation.
 
