@@ -1,8 +1,5 @@
 convert to use automake/autoconf
 
-Add a -l option to print just the names of files
-with improper indentation.  Suggestion from Ignacio Goyret <igoyret@ascend.com>.
-
 Add overwrite option -- maybe use GNU-style backup code.
 
 Allow glob or regex filtering rather than hard-coding test
