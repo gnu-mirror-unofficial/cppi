@@ -26,7 +26,7 @@ fprintf(out, "#line 1 \"%s\"\n", argv[1]);
 char *s = "\"";
 
 #if 1
-#error
+#        error
 #else
 #include "foo"
 #endif
