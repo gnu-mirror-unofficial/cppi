@@ -4,4 +4,5 @@
 #if
 #error
 #else
+#include "foo"
 #endif
