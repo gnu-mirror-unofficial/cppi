@@ -15,9 +15,7 @@
 # error This scanner must be compiled with gcc.
 #endif
 
-/* FIXME: Use autoconf, and then include config.h rather than hard-coding
-   something like this.  */
-#define HAVE_STRING_H
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
