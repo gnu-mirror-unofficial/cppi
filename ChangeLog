@@ -1,3 +1,15 @@
+1998-08-01  Jim Meyering  <meyering@ascend.com>
+
+	* cppi.l (gobble_define): New function.
+	Call it for every #define directive.
+
+	Tests for the above.
+	* tests/stringify-1: New file.
+	* tests/stringify-2: New file.
+	* tests/stringify-3: New file.
+	* tests/stringify-4: New file.
+	* tests/Makefile.am (TESTS): Add new tests.
+
 1998-04-08  Jim Meyering  <meyering@ascend.com>
 
 	* configure.in: Bump version from 1.1a to 1.1b.

@@ -4,7 +4,6 @@
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
-
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
@@ -307,7 +306,7 @@ dist-all: distdir
 distdir: $(DISTFILES)
 	-rm -rf $(distdir)
 	mkdir $(distdir)
-	-chmod 777 $(distdir)
+	-chmod u+rwx,go+rx $(distdir)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
@@ -323,7 +322,7 @@ distdir: $(DISTFILES)
 	  test -d $(distdir)/$$subdir \
 	  || mkdir $(distdir)/$$subdir \
 	  || exit 1; \
-	  chmod 777 $(distdir)/$$subdir; \
+	  chmod u+rwx,go+rx $(distdir)/$$subdir; \
 	  (cd $$subdir && $(MAKE) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
 	    || exit 1; \
 	done
