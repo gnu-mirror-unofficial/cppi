@@ -190,12 +190,12 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
       if ((text[0] == '#'
 	   && (n = strspn (text + 1, " ")) == i_depth
 	   && !isblank (text[1 + n]))
-	  /* This allows pragmas to have at least one space before the `#'.
-	     E.g., ` #pragma alloca'.  */
+	  /* This allows pragmas to have exactly one space before the `#'.
+	     E.g., ` #pragma alloca' or ` #  pragma alloca' .  */
 	  || (text[0] == ' '
+	      && text[1] == '#'
 	      && type == EIC_PRAGMA
-	      && (n = strspn (text + 1, " ")) == i_depth - 1
-	      && text[n + 1] == '#'
+	      && (n = strspn (text + 2, " ")) == i_depth - 1
 	      && text[n + 2] == 'p'))
 	{
 	  fail = 0;
