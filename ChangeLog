@@ -1,3 +1,7 @@
+1998-10-28  Jim Meyering  <meyering@ascend.com>
+
+	* Version 1.5.
+
 1998-10-09  Jim Meyering  <meyering@ascend.com>
 
 	* cppi.l (main, usage): Remove and undocument DISABLE_CPP_INDENT_CHECK
@@ -204,4 +208,3 @@ Thu May  8 09:05:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (main): Add back door: DISABLE_CPP_INDENT_CHECK.
 	(usage): Flesh out.
-
