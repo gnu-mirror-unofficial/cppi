@@ -16,8 +16,16 @@ cpp-cond-lookup.c: cpp.gp
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
 	mv $@-tmp $@
 
-%.c: %.l
+FLEX = flex
+flex_debug = #-d
+flex_optimize = -Cfr -p -b
+FLEX_FLAGS = $(flex_debug) $(flex_optimize)
+
+# FIXME: is this necessary?
+SUFFIXES = .l
+
+.c.l:
 	rm -f $@-tmp $@
-	$(LEX) $(LFLAGS) -t $< > $@-tmp
+	$(FLEX) $(FLEX_FLAGS) -t $< > $@-tmp
 	chmod u-w $@-tmp
 	mv $@-tmp $@
