@@ -12,12 +12,22 @@ SUBDIRS = tests
 MAINTAINERCLEANFILES = cpp-cond-lookup.c
 
 cpp-cond-lookup.c: cpp.gp
+	rm -f $@ $@-tmp
 	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
+	chmod a-w $@-tmp
 	mv $@-tmp $@
 
 flex_debug = #-d
 flex_optimize = -Cfr -p -b
 LFLAGS = $(flex_debug) $(flex_optimize)
+
+# Don't use automake's default .l.c rule.
+# I prefer to make generated .c files unwritable.
+cppi.c: cppi.l
+	rm -f $@
+	$(LEX) $(LFLAGS) $(srcdir)/cppi.l
+	chmod a-w $(LEX_OUTPUT_ROOT).c
+	mv $(LEX_OUTPUT_ROOT).c $@
 
 BUILT_SOURCES = cpp-cond-lookup.c
