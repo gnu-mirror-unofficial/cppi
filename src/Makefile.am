@@ -3,8 +3,7 @@
 bin_PROGRAMS = cppi
 cppi_SOURCES = \
   cppi.l \
-  system.h \
-  sys2.h
+  system.h
 
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c
 MAINTAINERCLEANFILES = cpp-cond.c
