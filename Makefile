@@ -1,10 +1,18 @@
 PERL = /p/bin/perl
 editpl = sed -e 's,@''PERL''@,$(PERL),g'
 
-all: a.O
-	diff -u a.E a.O
+t = empty a b c
+td = $(addsuffix .d,$t)
+tO = $(addsuffix .O,$t)
 
-a.O: a.I cpp-indent
+all: $(td)
+
+$(td): %.d: %.E %.O
+	-diff -u $^ > $@-tmp
+	@mv $@-tmp $@
+	@test -s $@ && cat $@ || :
+
+$(tO): %.O: %.I cpp-indent
 	./cpp-indent $< > $@-tmp
 	mv $@-tmp $@
 
@@ -19,4 +27,4 @@ perl_in = $(wildcard *.pl)
 perl = $(patsubst %.pl,%,$(perl_in))
 
 clean:
-	rm -f cpp-indent *.O
+	rm -f cpp-indent *.O *.d
