@@ -33,7 +33,6 @@ cpp-cond.c: cpp.gp
 	rm -f $@ $@-tmp
 	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  > $@-tmp
-	rm -f $@-tmp
 	chmod a-w $@-tmp
 	mv $@-tmp $@
 
