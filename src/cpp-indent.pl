@@ -1,8 +1,10 @@
 #! @PERL@
 
-$depth = 0;
-$indent_incr = '  ';
+# TODO: allow these to be overridden by command-line options
+$indent_incr = ' ';
 $do_comments = 0;
+
+$depth = 0;
 
 while (<>)
   {
