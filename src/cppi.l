@@ -179,9 +179,8 @@ emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
 %%
 
 void
-cpp_indent (const char *in_file, const char *out_file)
+cpp_indent (const char *in_file)
 {
-  FILE *out_stream;
   FILE *in = NULL;
 
   if (strcmp (in_file, "-") == 0)
@@ -196,22 +195,16 @@ cpp_indent (const char *in_file, const char *out_file)
       yyin = in;
     }
 
-  if ((out_stream = fopen (out_file, "w")) == NULL)
-    fatal (errno, "%s: %s", program_name, out_file);
-
-  yyout = out_stream;
   cpp_i (in_file);
 
   if (in && fclose (in) == EOF)
     fatal (errno, "%s: %s", program_name, in_file);
-  if (fclose (out_stream) == EOF)
-    fatal (errno, "%s: %s", program_name, out_file);
 }
 
 int
 main (int argc, char** argv)
 {
-  char *in, *out;
+  char *in;
   int inhibit_output = 0;
 
   program_name = argv[0];
@@ -224,8 +217,7 @@ main (int argc, char** argv)
     }
 
   in = (argc == 1 ? "-" : argv[2]);
-  out = argv[2];
-  cpp_indent (in, out);
+  cpp_indent (in);
 
   if (fclose (stdout) == EOF)
     fatal (errno, "%s: write error", program_name);
