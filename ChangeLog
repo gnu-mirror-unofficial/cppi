@@ -4,7 +4,10 @@
 	was off by one or more.
 	(--ansi): Break out of the loop (rather than continuing it) after
 	reading a C++ comment.
+	* tests/ansi-4: Adjust line numbers accordingly.
+	* tests/ansi-5: Likewise.
 
+	Add tests for the above-fixed bugs.
 	* tests/Makefile.am (TESTS): Add ansi-7 and ansi-8.
 	* tests/ansi-8: New file.
 	* tests/ansi-7: New file.
