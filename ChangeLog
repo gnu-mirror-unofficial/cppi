@@ -1,5 +1,10 @@
 2001-07-07  Jim Meyering  <meyering@lucent.com>
 
+	* cppi.l (--ansi): Report the line number of the offending directive --
+	was off by one or more.
+	(--ansi): Break out of the loop (rather than continuing it) after
+	reading a C++ comment.
+
 	* tests/Makefile.am (TESTS): Add ansi-7 and ansi-8.
 	* tests/ansi-8: New file.
 	* tests/ansi-7: New file.
