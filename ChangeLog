@@ -1,5 +1,7 @@
 2003-08-18  Jim Meyering  <jim@meyering.net>
 
+	* Version 1.12.
+
 	* src/cppi.l: Check white space after #ifndef, too.
 
 2003-08-15  Jim Meyering  <jim@meyering.net>
