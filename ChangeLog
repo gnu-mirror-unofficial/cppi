@@ -1,5 +1,7 @@
 1998-03-15  Jim Meyering  <meyering@eng.ascend.com>
 
+	* cppi.l (VERSION): Remove definition.
+
 	autoconfiscate and automakify
 	* Add associated new files.
 
