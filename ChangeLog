@@ -8,6 +8,7 @@ Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 	[all tests]: Update for required space after #if/#elif.
 	(emit_or_check): Allow either of two formats for #pragma.
 	Sometimes, portability dictates that the `#' be indented.
+	(emit_or_check): Fix to preserve `#'-or-` '-first for pragmas.
 
 	* cpp.gp: Add `pragma'.
 
