@@ -38,6 +38,7 @@
 	negative.
 	(emit_indented_cpp): Likewise.
 	(<<EOF>>): Likewise.
+	Suggestion from Ulrich Drepper.
 
 	* configure.in: Use AM_PROG_LEX in place of the (AC_PROG_LEX,
 	AC_DECL_YYTEXT) pair.
@@ -83,16 +84,16 @@
 	Update stack manipulation functions.
 	(nth_entry): New function.
 
-Thu Jun 26 23:27:31 1997  /  <meyering@na-net.ornl.gov>
+Thu Jun 26 23:27:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (#<any-cpp-directive>): Don't try to return early when
 	detecting improper indentation and -l was specified.
 
-Tue Jun 24 08:31:36 1997  /  <meyering@na-net.ornl.gov>
+Tue Jun 24 08:31:36 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (emit_indented_cpp): Initialize *fail to zero.
 
-Mon Jun 23 06:59:06 1997  /  <meyering@na-net.ornl.gov>
+Mon Jun 23 06:59:06 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* Makefile (cppi): Add getopt.o and getopt1.o.
 
