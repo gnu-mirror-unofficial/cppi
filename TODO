@@ -5,7 +5,7 @@ Add overwrite option -- maybe use GNU-style backup code.
 Allow glob or regex filtering rather than hard-coding test
   for .c and .h suffixes
 
-Put under GPL?  ask Tom
+Put under GPL and release.  Ask Tom.
 
 Uli's suggestion for setting initial indentation level to e.g. -1
 for header files bracketed with #ifdef FOO_H/#define FOO_H...#endif.
