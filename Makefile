@@ -25,7 +25,8 @@ cppi: cppi.o fatal.o strerror.o getopt.o getopt1.o obstack.o
 cppi.o: cpp-cond-lookup.c
 
 cpp-cond-lookup.c: cpp.gp
-	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< > $@-tmp
+	gperf -a -C -E -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	  | sed 's/str\[/(unsigned char) str[/' > $@-tmp
 	mv $@-tmp $@
 
 .SUFFIXES:
@@ -49,3 +50,6 @@ perl = $(patsubst %.pl,%,$(perl_in))
 
 clean:
 	rm -f cpp-indent cppi *.o
+
+realclean: clean
+	rm -f cpp-cond-lookup.c
