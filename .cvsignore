@@ -3,3 +3,6 @@ cpp-cond-lookup.c
 cppi.c
 cpp-indent
 lex.backup
+config.log
+stamp.h.in
+.deps
