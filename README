@@ -1,1 +1,25 @@
-FIXME
+Please glance through *all* sections of this
+`README' file before starting configuration.  Also make sure you read files
+`ABOUT-NLS' and `INSTALL' if you are not familiar with them already.
+
+If you got the `cppi' distribution in `shar' format, time stamps ought to be
+properly restored; do not ignore such complaints at `unshar' time.
+
+GNU `cppi' adjusts or checks the indentation of C and C++ preprocessor
+directives in a file.
+
+See file `ABOUT-NLS' for how to customize this program to your language.
+See file `COPYING' for copying conditions.
+See file `INSTALL' for compilation and installation instructions.
+See file `NEWS' for a list of major changes in the current release.
+See file `THANKS' for a list of contributors.
+
+For comprehensive modifications to GNU cppi, you might need tools beyond
+those used in simple installations.  FIXME: say more...
+
+Send bug reports to `bug-cppi@gnu.org'.
+
+Your feedback will help us to make a better and more portable package.
+Consider documentation errors as bugs, and report them as such.  If you
+develop anything pertaining to `cppi' or have suggestions, let us know
+and share your findings by writing to <bug-cppi@gnu.org>.
