@@ -3,7 +3,7 @@ AC_INIT(cppi.l)
 AM_CONFIG_HEADER(config.h)
 AC_PREREQ(2.12)dnl               dnl Minimum Autoconf version required.
 
-AM_INIT_AUTOMAKE([cppi], [1.4a])
+AM_INIT_AUTOMAKE([cppi], [1.5])
 GNU_PACKAGE="GNU $PACKAGE"
 AC_DEFINE_UNQUOTED(GNU_PACKAGE, "$GNU_PACKAGE")
 
