@@ -4,7 +4,6 @@
 	* cppi.l (INPUT_AND_ECHO) [!defined __GNUC__]: Provide a function.
 
 	* Makefile.am (EXTRA_DIST): Add .prev-version.
-
 	* Makefile.maint: Update from fileutils.
 
 	* cppi.l: Include unistd.h.
