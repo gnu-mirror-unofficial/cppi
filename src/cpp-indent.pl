@@ -1,4 +1,4 @@
-#!/p/bin/perl5.000
+#! @PERL@
 
 $depth = 0;
 $indent_incr = '  ';
