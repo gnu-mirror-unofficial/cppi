@@ -45,8 +45,6 @@ extern int errno;
 # define EXIT_SUCCESS 0
 #endif
 
-#define VERSION "1.1"
-
 #ifdef MY_DEBUG
 # define PUT2(x,y) do { putchar (x); putchar (y); } while (0)
 #else
