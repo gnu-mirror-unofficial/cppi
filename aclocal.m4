@@ -236,7 +236,7 @@ if test -z "$AMDEP"; then
     if depmode="$depmode" \
        source=conftest.c object=conftest.o \
        depfile=conftest.Po tmpdepfile=conftest.TPo \
-       $SHELL $am_depcomp $depcc -c conftest.c -o conftest.o 2>/dev/null &&
+       $SHELL $am_depcomp $depcc -c conftest.c -o conftest.o >/dev/null 2>&1 &&
        grep conftest.h conftest.Po > /dev/null 2>&1; then
       am_cv_[$1]_dependencies_compiler_type="$depmode"
       break
@@ -405,7 +405,7 @@ dnl like #elif.
 dnl FIXME: can't do this because then AC_AIX won't work due to a
 dnl circular dependency.
 dnl AC_BEFORE([$0], [AC_PROG_CPP])
-AC_MSG_CHECKING(for ${CC-cc} option to accept ANSI C)
+AC_MSG_CHECKING([for ${CC-cc} option to accept ANSI C])
 AC_CACHE_VAL(am_cv_prog_cc_stdc,
 [am_cv_prog_cc_stdc=no
 ac_save_CC="$CC"
@@ -458,7 +458,7 @@ CC="$ac_save_CC"
 if test -z "$am_cv_prog_cc_stdc"; then
   AC_MSG_RESULT([none needed])
 else
-  AC_MSG_RESULT($am_cv_prog_cc_stdc)
+  AC_MSG_RESULT([$am_cv_prog_cc_stdc])
 fi
 case "x$am_cv_prog_cc_stdc" in
   x|xno) ;;
