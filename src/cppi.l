@@ -131,7 +131,7 @@ static struct option const long_options[] =
 static void gobble_define (int*);
 
 /* Include gperf-generated hash function.  */
-#include "cpp-cond-lookup.c"
+#include "cpp-cond.c"
 
 /* PREFIX is the cpp line from beginning of line to end of the keyword
    following the `#'.  */
