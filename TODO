@@ -1,2 +1,8 @@
 give better diagnostics for losing code
 convert to use automake/autoconf
+
+maybe find a way to allow this improper but portability-dictated indentation:
+
+  #ifdef _AIX
+   #pragma alloca
+  #endif
