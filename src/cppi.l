@@ -44,6 +44,9 @@ extern int errno;
 
 #define STREQ(A,B) (strcmp ((A), (B)) == 0)
 
+/* Suppress generation of unused yyunput function.  */
+#define YY_NO_UNPUT
+
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
