@@ -58,4 +58,4 @@ perl = $(patsubst %.pl,%,$(perl_in))
 	mv $@-tmp $@
 
 clean:
-	rm -f cpp-indent *.O *.d
+	rm -f cpp-indent cppi *.o *.O *.d *.qO *.qd
