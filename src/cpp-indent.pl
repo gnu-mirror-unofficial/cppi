@@ -33,6 +33,7 @@ exit ($exit_status);
 sub cpp_indent ($$)
 {
   my ($file, $checking) = @_;
+  my $start_of_last_comment_or_string;
 
   sub IN_CODE {1}
   sub IN_COMMENT {2}
@@ -41,6 +42,7 @@ sub cpp_indent ($$)
   {
     my ($state, $line) = @_;
 
+    my $new_string_or_comment = 0;
     while ($line)
       {
 	my $remainder = '';
@@ -72,6 +74,7 @@ sub cpp_indent ($$)
 	      }
 	    $state = ($k == $i ? IN_STRING : IN_COMMENT);
 	    $remainder = substr ($line, $k + 1);
+	    $new_string_or_comment = 1;
 	  }
 	elsif ($state == IN_COMMENT)
 	  {
@@ -92,7 +95,7 @@ sub cpp_indent ($$)
 	$line = $remainder;
       }
 
-    return $state;
+    return ($state, $new_string_or_comment);
   }
   # ===============================================================
 
@@ -183,7 +186,10 @@ sub cpp_indent ($$)
       #print $state if !$checking;
       print $line if !$checking;
 
-      $state = update_state ($state, $rest);
+      my $new_non_code;
+      ($state, $new_non_code) = update_state ($state, $rest);
+      $start_of_last_comment_or_string = $.
+	if $new_non_code;
     }
   close FILE;
 
@@ -195,6 +201,14 @@ sub cpp_indent ($$)
 	  warn "$0: $file: line $x->{LINE_NUMBER}: "
 	    . "unterminated #$x->{KEYWORD}\n";
 	}
+      $fail = 2;
+    }
+
+  if ($state != IN_CODE)
+    {
+      my $type = ($state == IN_COMMENT && 'comment' || 'string');
+      warn "$0: $file: line $start_of_last_comment_or_string "
+	. "unterminated $type\n";
       $fail = 2;
     }
 
