@@ -1,5 +1,5 @@
 CC = gcc
-optimize = -pipe -g -O2
+optimize = -pipe -O2
 CFLAGS = -I. -g $(optimize) -Wall -D__USE_FIXED_PROTOTYPES__
 LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
