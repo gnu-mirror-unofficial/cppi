@@ -27,6 +27,14 @@ extern int errno;
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
+enum eic_type
+{
+  EIC_IF,
+  EIC_ELSE,
+  EIC_ENDIF,
+  EIC_OTHER
+};
+
 static int lineno = 1;
 static int i_depth = 0;
 static int inhibit_output = 0;
@@ -39,21 +47,52 @@ yywrap (void)
   return 1;
 }
 
+#define EMIT					\
+  do						\
+    {						\
+      if (!inhibit_output)			\
+	{					\
+	  fputc ('#', out);			\
+	  assert (i_depth <= MAX_DEPTH);	\
+	  blanks[i_depth] = '\0';		\
+	  fputs (blanks, out);			\
+	  blanks[i_depth] = ' ';		\
+	  fputs (directive, out);		\
+	}					\
+    }						\
+  while (0)
+
 static void
-emit_indented_cpp (char const *directive, FILE *out)
+emit_indented_cpp (enum eic_type t, char const *directive, FILE *out)
 {
 #define MAX_DEPTH 40
   static char blanks[] = { [0 ... MAX_DEPTH] = ' ' };
 
-  if (inhibit_output)
-    return;
+  switch (t)
+    {
+    case EIC_IF:
+      EMIT;
+      ++i_depth;
+      break;
 
-  fputc ('#', out);
-  assert (i_depth <= MAX_DEPTH);
-  blanks[i_depth] = '\0';
-  fputs (blanks, out);
-  blanks[i_depth] = ' ';
-  fputs (directive, out);
+    case EIC_ELSE:
+      --i_depth;
+      EMIT;
+      ++i_depth;
+      break;
+
+    case EIC_ENDIF:
+      --i_depth;
+      EMIT;
+      break;
+
+    case EIC_OTHER:
+      EMIT;
+      break;
+
+    default:
+      abort ();
+    }
 }
 
 %}
@@ -112,7 +151,7 @@ emit_indented_cpp (char const *directive, FILE *out)
 
       /* If the number of preceding backslashes is even, then this is
 	 an unescaped double quote, and it marks the end of the string.  */
-      if (c == '"' && n_backslashes % 2 == 0))
+      if (c == '"' && n_backslashes % 2 == 0)
 	break;
 
       n_backslashes = (c == '\\' ? n_backslashes + 1 : 0);
@@ -121,16 +160,16 @@ emit_indented_cpp (char const *directive, FILE *out)
     }
 }
 
-^[ \t]*#[ \t]*if/[ \t]		{ emit_indented_cpp ("if", yyout); }
-^[ \t]*#[ \t]*ifdef/[ \t]	{ emit_indented_cpp ("ifdef", yyout); }
-^[ \t]*#[ \t]*ifndef/[ \t]	{ emit_indented_cpp ("ifndef", yyout); }
+^[ \t]*#[ \t]*if/[ \t]		{ emit_indented_cpp (EIC_IF, "if", yyout); }
+^[ \t]*#[ \t]*ifdef/[ \t]	{ emit_indented_cpp (EIC_IF, "ifdef", yyout); }
+^[ \t]*#[ \t]*ifndef/[ \t]	{ emit_indented_cpp (EIC_IF, "ifndef", yyout); }
 
-^[ \t]*#[ \t]*elif[ \t]		{ emit_indented_cpp ("elif", yyout); }
-^[ \t]*#[ \t]*else([ \t]|$)	{ emit_indented_cpp ("else", yyout); }
+^[ \t]*#[ \t]*elif[ \t]		{ emit_indented_cpp (EIC_ELSE, "elif", yyout); }
+^[ \t]*#[ \t]*else([ \t]|$)	{ emit_indented_cpp (EIC_ELSE, "else", yyout); }
 
-^[ \t]*#[ \t]*endif([ \t]|$)	{ emit_indented_cpp ("else", yyout); }
+^[ \t]*#[ \t]*endif([ \t]|$)	{ emit_indented_cpp (EIC_ENDIF "endif", yyout);}
 
-^[ \t]*#			{ emit_indented_cpp ("", yyout); }
+^[ \t]*#			{ emit_indented_cpp (EIC_OTHER, "", yyout); }
 
 \n				{ MY_ECHO; ++lineno; }
 .				{ MY_ECHO; }
