@@ -11,7 +11,7 @@ EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
 SUBDIRS = tests
 
 MAINTAINERCLEANFILES = cpp-cond-lookup.c
-CLEANFILES = cpp.h
+CLEANFILES = cpp.h lex.backup
 
 PERL = @PERL@
 
