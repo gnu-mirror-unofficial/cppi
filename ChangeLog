@@ -2,6 +2,9 @@
 
 	* Version 1.11.
 
+	* Makefile.am (AM_LFLAGS): Use this, not LFLAGS.
+	(cppi.c): Use automake-provided $(LEXCOMPILE).
+
 	Avoid warnings from gcc.
 	* cppi.l (kth_entry): Change type of parameter to unsigned int.
 	("\""): Change counter types from int to size_t.
