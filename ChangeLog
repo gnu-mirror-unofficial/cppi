@@ -2,6 +2,9 @@
 
 	* Version 1.9.
 
+	* Makefile.am: Comment out first definition of flex_debug to placate
+	automake.
+
 	* Makefile.cfg: New file.
 	* Makefile.am (EXTRA_DIST): Add Makefile.cfg.
 	* GNUmakefile: Include Makefile.cfg.
