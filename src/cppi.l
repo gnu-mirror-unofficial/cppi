@@ -46,9 +46,6 @@ extern int errno;
 
 #define STREQ(A,B) (strcmp ((A), (B)) == 0)
 
-/* Suppress generation of unused yyunput function.  */
-#define YY_NO_UNPUT
-
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
@@ -60,14 +57,15 @@ extern int errno;
    _c_;						\
  })
 
+#ifndef isblank
+# define isblank(c) ((c) == ' ' || (c) == '\t')
+#endif
+
 /* This is the maximum ifdef nesting level.  */
 /* FIXME: remove this limitation, someday.  */
 #define MAX_DEPTH 40
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
-
-#define EMIT_DIRECTIVE \
-    emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &g_fail)
 
 enum Eic_type
 {
@@ -189,10 +187,15 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
       int n;
       if ((text[0] == '#'
 	   && (n = strspn (text + 1, " ")) == i_depth
-	   && (type == EIC_OTHER || text[1 + n] == 'e' || text[1 + n] == 'i'))
+	   && (type == EIC_OTHER || !isblank (text[1 + n])))
+
 	  /* This allows pragmas to have at least one space before the `#'.
 	     E.g., ` #pragma alloca'.  */
-	  || (type == EIC_PRAGMA && text[0] == ' '))
+	  || (text[0] == ' '
+	      && type == EIC_PRAGMA
+	      && (n = strspn (text + 1, " ")) == i_depth - 1
+	      && text[n + 1] == '#'
+	      && text[n + 2] == 'p'))
 	{
 	  fail = 0;
 	}
@@ -219,7 +222,7 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
   return fail;
 }
 
-static void
+static enum Eic_type
 emit_indented_cpp (char const *in_file, unsigned int line_number,
 		   char const *text, size_t len,
 		   struct Stack *s, int *exit_status)
@@ -296,6 +299,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       warn (0, "%s: %s: line %d: not properly indented",
 	    program_name, in_file, line_number);
     }
+
+  return t;
 }
 
 %}
@@ -400,7 +405,41 @@ b [^a-zA-Z_\n]
   PUT2 ('\0', ']');
 }
 
-^[ \t]*#[ \t]*[a-zA-Z0-9_]+   { EMIT_DIRECTIVE; }
+^[ \t]*#[ \t]*[a-zA-Z0-9_]+   {
+  enum Eic_type t;
+  t = emit_indented_cpp (in_file, lineno, yytext, yyleng, &kl_stack, &g_fail);
+
+  if (t == EIC_IF || t == EIC_ELIF)
+    {
+      int c;
+      if (inhibit_output)
+	{
+	  /* Make sure there's exactly one space after this #if or #elif
+	     directive.  */
+	  c = input ();
+	  if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
+	    {
+	      warn (0, "%s: %s: line %d: not properly formatted\n"
+		    "There must be exactly one SPACE character after each "
+		    "#if and #elif directive.",
+		    program_name, in_file, lineno);
+	      if (g_fail < 1)
+		g_fail = 1;
+	    }
+	}
+      else
+	{
+	  /* Squeeze multiple spaces and tabs after an #if or #elif
+	     directive to a single space.  */
+	  fputc (' ', yyout);
+	  while ((c = input ()) == ' ' || c == '\t')
+	    {
+	      /* empty */
+	    }
+	}
+      unput (c);
+    }
+}
 ^[ \t]*#[ \t]*                { MY_ECHO; }
 ^[ \t]*                       { MY_ECHO; }
 
