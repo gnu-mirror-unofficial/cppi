@@ -3,19 +3,22 @@
 # written by Jim Meyering
 use strict;
 
+my $checking = 0;
+if (@ARGV && $ARGV[0] eq '-c')
+  {
+    shift @ARGV;
+    $checking = 1;
+  }
 unshift (@ARGV, '-') if @ARGV == 0;
+
 die "usage: $0 [FILE]\n" if @ARGV > 1;
 
 my $file = shift @ARGV;
-my $exit_status = cpp_indent ($file, 0);
+my $exit_status = cpp_indent ($file, $checking);
 
 exit ($exit_status);
 
 # ===============================
-
-sub IN_CODE {1}
-sub IN_COMMENT {2}
-sub IN_STRING {3}
 
 # Return 2 for syntax problems.
 # Return 1 for invalid indentation of CPP #-directives (only if $checking).
@@ -31,9 +34,54 @@ sub cpp_indent ($$)
 {
   my ($file, $checking) = @_;
 
-  # Bugs:
-  # May get confused by comments or string literals containing
-  # what would otherwise be valid cpp directives.
+  sub IN_CODE {1}
+  sub IN_COMMENT {2}
+  sub IN_STRING {3}
+  sub update_state ($$)
+  {
+    my ($state, $line) = @_;
+
+    while ($line)
+      {
+	my $remainder = '';
+	if ($state == IN_CODE)
+	  {
+	    if ($line =~ m!.*?(/\*|\")!g)
+	      {
+		if ($1 eq '"')
+		  {
+		    $state = IN_STRING
+		      if ($& eq '"' || $&[length ($&) - 2] ne '\\');
+		  }
+		else
+		  {
+		    $state = IN_COMMENT;
+		  }
+		$remainder = $';
+	      }
+	  }
+	elsif ($state == IN_COMMENT)
+	  {
+	    if ($line =~ m!.*?\*/!g)
+	      {
+		$state = IN_CODE;
+		$remainder = $';
+	      }
+	  }
+	else # $state == IN_STRING
+	  {
+	    if ($line =~ m!^\"|.*?[^\\]\"!g)
+	      {
+		$state = IN_CODE;
+		$remainder = $';
+	      }
+	  }
+	$line = $remainder;
+      }
+
+    return $state;
+  }
+  # ===============================================================
 
   # TODO: allow this to be overridden by a command-line option.
   my $indent_incr = ' ';
@@ -135,59 +183,4 @@ sub cpp_indent ($$)
     }
 
   return $fail;
-}
-
-sub update_state ($$)
-{
-  my ($state, $rest) = @_;
-
-  while ($rest)
-    {
-      if ($state == IN_CODE)
-	{
-	  if ($rest =~ m!.*?(/\*|\")!g)
-	    {
-	      if ($1 eq '"')
-		{
-		  $state = IN_STRING
-		    if ($& eq '"' || $&[length ($&) - 2] ne '\\');
-		}
-	      else
-		{
-		  $state = IN_COMMENT;
-		}
-	      $rest = $';
-	    }
-	  else
-	    {
-	      $rest = '';
-	    }
-	}
-      elsif ($state == IN_COMMENT)
-	{
-	  if ($rest =~ m!.*?\*/!g)
-	    {
-	      $state = IN_CODE;
-	      $rest = $';
-	    }
-	  else
-	    {
-	      $rest = '';
-	    }
-	}
-      else # $state == IN_STRING
-	{
-	  if ($rest =~ m!^\"|.*?[^\\]\"!g)
-	    {
-	      $state = IN_CODE;
-	      $rest = $';
-	    }
-	  else
-	    {
-	      $rest = '';
-	    }
-	}
-    }
-
-  return $state;
 }
