@@ -136,7 +136,7 @@ static void gobble_define (void);
 /* PREFIX is the cpp line from beginning of line to end of the keyword
    following the `#'.  */
 
-enum Eic_type
+static enum Eic_type
 lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
 {
   /* Find the beginning of the keyword.  */
