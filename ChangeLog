@@ -3,6 +3,11 @@ Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 	* cppi.l (enum Eic_type): Add EIC_PRAGMA.
 	(emit_or_check): Treat ` #pragma' as a special case.
 	(emit_indented_cpp): Treat EIC_PRAGMA just like EIC_OTHER.
+	(^[ \t]*#[ \t]*[a-zA-Z0-9_]+): Emit/require a single space after each
+	#if and #elif.
+	[all tests]: Update for required space after #if/#elif.
+	(emit_or_check): Allow either of two formats for #pragma.
+	Sometimes, portability dictates that the `#' be indented.
 
 	* cpp.gp: Add `pragma'.
 
