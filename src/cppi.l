@@ -205,14 +205,22 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
     {
       int i;
       const char *dir = (type == EIC_OTHER ? other : directive[type]);
-      int spaces_first = (type == EIC_PRAGMA && text[0] == ' ');
+      int space_first = (type == EIC_PRAGMA && text[0] == ' ');
 
-      if (!spaces_first)
-	fputc ('#', yyout);
-      for (i = 0; i < i_depth; i++)
-	fputc (' ', yyout);
-      if (spaces_first)
-	fputc ('#', yyout);
+      if (space_first)
+	{
+	  fputc (' ', yyout);
+	  fputc ('#', yyout);
+	  for (i = 0; i < i_depth - 1; i++)
+	    fputc (' ', yyout);
+	}
+      else
+	{
+	  fputc ('#', yyout);
+	  for (i = 0; i < i_depth; i++)
+	    fputc (' ', yyout);
+	}
+
       fputs (dir, yyout);
 
       fail = 0;
