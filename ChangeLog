@@ -1,3 +1,7 @@
+2004-01-24  Jim Meyering  <jim@meyering.net>
+
+	* src/Makefile.am (cppi_SOURCES): Remove sys2.h.
+
 2003-11-22  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.12.
