@@ -70,4 +70,4 @@ cpp.h: cpp.gp Makefile.am
 BUILT_SOURCES = cpp-cond.c cpp.h
 
 distcheck-hook:
-        $(MAKE) my-distcheck
+	$(MAKE) my-distcheck
