@@ -488,7 +488,8 @@ b [^a-zA-Z_\n]
   if (fail && list_files_only)
     return fail;
 
-  lex_fail = fail;
+  if (fail > lex_fail)
+    lex_fail = fail;
 }
 ^[ \t]*#[ \t]*            { MY_ECHO; }
 ^[ \t]*                   { MY_ECHO; }
