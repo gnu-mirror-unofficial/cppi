@@ -5,7 +5,8 @@ t=`basename $0`
 cat > $t.I <<\EOF
 #if (FOO)
 # error ick
-#endif
+#endif /*
+#if */
 EOF
 
 cat > $t.EO <<\EOF
