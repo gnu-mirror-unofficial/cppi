@@ -596,7 +596,7 @@ The exit code will be one of these:\n\
 Set the `DISABLE_CPP_INDENT_CHECK' environment variable to disable\n\
 all checks.  It is useful only with -c.\n\
 \n\
-Pragma directives may have their `#' indented.
+Pragma directives may have their `#' indented.\n\
 ",
 	      program_name, program_name);
     }
