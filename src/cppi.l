@@ -183,8 +183,12 @@ pop (void)
 }
 
 static __inline void
-push (struct KL_pair pair)
+push (enum Eic_type opener_type, unsigned int line_number)
 {
+  struct KL_pair pair;
+  pair.opener_type = opener_type;
+  pair.line_number = line_number;
+
   obstack_grow (&opener_stack, &pair, sizeof (struct KL_pair));
 }
 
@@ -256,8 +260,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       /* Maintain a stack of (keyword, line number) pairs to better
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
-      /* FIXME: Note: this initialization syntax uses a GCC extension.  */
-      push ((struct KL_pair) {t, line_number});
+      push (t, line_number);
 
       *fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
@@ -669,7 +672,6 @@ main (int argc, char** argv)
   for (i = 0; file_list[i]; i++)
     {
       int err;
-      char *p;
 
       err = cpp_indent (file_list[i]);
       if (err > max_err)
