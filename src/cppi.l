@@ -81,6 +81,7 @@ enum Eic_type
 
 static char const *const directive[] =
 {
+  /* FIXME: Note: This syntax uses a GCC extension.  */
   [EIC_IF]	"if",
   [EIC_IFDEF]	"ifdef",
   [EIC_IFNDEF]	"ifndef",
@@ -181,21 +182,21 @@ yywrap (void)
   return 1;
 }
 
-static struct KL_pair
+static __inline struct KL_pair
 nth_entry (const struct Stack *s, int i)
 {
   assert (0 <= i && i < s->top);
   return s->vec[i];
 }
 
-static struct KL_pair
+static __inline struct KL_pair
 pop (struct Stack *s)
 {
   assert (s->top > 0);
   return s->vec[--(s->top)];
 }
 
-static void
+static __inline void
 push (struct Stack *s, struct KL_pair pair)
 {
   assert (s->top < MAX_DEPTH);
@@ -270,12 +271,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       /* Maintain a stack of (keyword, line number) pairs to better
 	 report any `unterminated #if...' errors.  Put a new pair
 	 on the stack.  */
-      {
-	struct KL_pair x;
-	x.opener_type = t;
-	x.line_number = line_number;
-	push (s, x);
-      }
+      /* FIXME: Note: this initialization syntax uses a GCC extension.  */
+      push (s, (struct KL_pair) {t, line_number});
 
       *fail = emit_or_check (t, yytext, keyword);
       ++i_depth;
@@ -286,8 +283,10 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       if (i_depth <= 0)
 	{
 	  if (!list_files_only)
-	    warn (0, "%s: %s: line %d: found #%s without matching #if",
-		  program_name, in_file, line_number, directive[t]);
+	    {
+	      warn (0, "%s: %s: line %d: found #%s without matching #if",
+		    program_name, in_file, line_number, directive[t]);
+	    }
 	  i_depth = 0;
 	  *fail = emit_or_check (t, yytext, keyword);
 	  *fail = 2;
@@ -304,8 +303,10 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       if (i_depth <= 0)
 	{
 	  if (!list_files_only)
-	    warn (0, "%s: %s: line %d: found #%s without matching #if",
-		  program_name, in_file, line_number, directive[t]);
+	    {
+	      warn (0, "%s: %s: line %d: found #%s without matching #if",
+		    program_name, in_file, line_number, directive[t]);
+	    }
 	  i_depth = 1;
 	  *fail = 2;
 	}
