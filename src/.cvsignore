@@ -1,8 +1,8 @@
+.deps
+Makefile
 cpp-indent
 cpp.h
 cppi
 cppi.c
 lex.backup
-Makefile
 localedir.h
-.deps
