@@ -17,7 +17,7 @@ LDADD = libcppi.a
 noinst_HEADERS = fatal.h getopt.h obstack.h xstrtol.h
 
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c \
-  GNUmakefile Makefile.maint .prev-version
+  GNUmakefile Makefile.cfg Makefile.maint .prev-version
 
 SUBDIRS = . m4 tests
 
