@@ -82,7 +82,7 @@ static char const *const directive[] =
 };
 
 static unsigned int lineno = 1;
-static unsigned int i_depth = 0;
+static int i_depth = 0;
 static int inhibit_output = 0;
 static int g_fail = 0;
 static char *default_file_list[] = {"-", NULL};
@@ -104,10 +104,10 @@ yywrap (void)
     {									\
       if (inhibit_output)						\
 	{								\
-	  size_t n;							\
+	  int n;							\
 	  if (text[0] == '#'						\
 	      && (n = strspn (text + 1, " ")) == i_depth		\
-	      && text[1 + n] != ' ')					\
+	      && (text[1 + n] == 'e' || text[1 + n] == 'i'))		\
 	    {								\
 	      ok = 1;							\
 	    }								\
@@ -116,7 +116,7 @@ yywrap (void)
 	{								\
 	  ok = 1;							\
 	  fputc ('#', out);						\
-	  assert (i_depth <= MAX_DEPTH);				\
+	  assert (0 <= i_depth && i_depth <= MAX_DEPTH);		\
 	  blanks[i_depth] = '\0';					\
 	  fputs (blanks, out);						\
 	  blanks[i_depth] = ' ';					\
@@ -137,18 +137,40 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
     case EIC_IF:
     case EIC_IFDEF:
     case EIC_IFNDEF:
+      /* Maintain stack of (line number, keyword) pairs to better
+	 report any `unterminated #if...' errors.  */
+      /* FIXME: push here */
+
       EMIT (t);
       ++i_depth;
       break;
 
     case EIC_ELSE:
     case EIC_ELIF:
-      --i_depth;
-      EMIT (t);
-      ++i_depth;
+      if (i_depth <= 0)
+	{
+	  warn (0, "%s: %s: line %d: found #%s without matching #if",
+	    program_name, in_file, lineno, directive[t]);
+	  i_depth = 0;
+	  g_fail = 2;
+	  EMIT (t);
+	}
+      else
+	{
+	  --i_depth;
+	  EMIT (t);
+	  ++i_depth;
+	}
       break;
 
     case EIC_ENDIF:
+      if (i_depth <= 0)
+	{
+	  warn (0, "%s: %s: line %d: found #%s without matching #if",
+	    program_name, in_file, lineno, directive[t]);
+	  i_depth = 1;
+	  g_fail = 2;
+	}
       --i_depth;
       EMIT (t);
       break;
@@ -163,7 +185,8 @@ emit_indented_cpp (FILE *out, enum eic_type t, char const *text,
 
   if (!ok)
     {
-      g_fail = 1;
+      if (g_fail == 0)
+	g_fail = 1;
       warn (0, "%s: %s: line %d: not properly indented",
 	    program_name, in_file, lineno);
     }
@@ -267,10 +290,11 @@ b [^a-zA-Z_\n]
 .                         { MY_ECHO; }
 
 <<EOF>> {
-  /* FIXME */
-
   if (i_depth != 0)
     {
+      /* Iterate the opener stack, giving a diagnostic per unterminated
+	 #if* directive.  */
+      /* FIXME */
       warn (0, "%s: %s: unterminated #if, #ifdef, or #ifndef",
 	    program_name, in_file);
     }
