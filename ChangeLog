@@ -1,3 +1,8 @@
+1998-10-02  Jim Meyering  <meyering@ascend.com>
+
+	* tests/Makefile.am (TESTS): Add d5.
+	* tests/d5: New file.
+
 1998-09-09  Jim Meyering  <meyering@ascend.com>
 
 	* cppi.l (lookup_cpp_keyword): Declare function to be static.
