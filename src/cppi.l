@@ -22,6 +22,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <getopt.h>
 
 #include <errno.h>
 #ifndef errno
@@ -37,6 +38,8 @@ extern int errno;
 #ifndef EXIT_SUCCESS
 # define EXIT_SUCCESS 0
 #endif
+
+#define VERSION "1.0"
 
 #ifdef MY_DEBUG
 # define PUT2(x,y) do { putchar (x); putchar (y); } while (0)
@@ -105,6 +108,10 @@ static int g_fail = 0;
 /* Current nesting level.  */
 static int i_depth;
 
+/* Nonzero means don't generate diagnostics about indentation and print
+   to stdout only the names of files that aren't properly indented.  */
+static int list_files_only;
+
 /* Set to non-zero to inhibit non-error output.  */
 static int inhibit_output = 0;
 
@@ -112,6 +119,23 @@ static char *default_file_list[] = {"-", NULL};
 
 char *program_name;
 
+/* If nonzero, display usage information and exit.  */
+static int show_help;
+
+/* If nonzero, print the version on standard output then exit.  */
+static int show_version;
+
+static struct option const long_options[] =
+{
+  {"cvs", no_argument, NULL, 'C'},
+  {"check", no_argument, NULL, 'c'},
+  {"list-files-only", no_argument, NULL, 'l'},
+  {"help", no_argument, &show_help, 1},
+  {"version", no_argument, &show_version, 1},
+  {NULL, 0, NULL, 0}
+};
+
+/* Include gperf-generated hash function.  */
 #include "cpp-cond-lookup.c"
 
 /* PREFIX is the cpp line from beginning of line to end of the keyword
@@ -427,10 +451,13 @@ b [^a-zA-Z_\n]
 	  c = input ();
 	  if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
 	    {
-	      warn (0, "%s: %s: line %d: not properly formatted\n"
-		    "There must be exactly one SPACE character after each\n"
-		    "#if, #elif, and #define directive.",
-		    program_name, in_file, lineno);
+	      if (!list_files_only)
+		{
+		  warn (0, "%s: %s: line %d: not properly formatted\n"
+			"There must be exactly one SPACE character after each\n"
+			"#if, #elif, and #define directive.",
+			program_name, in_file, lineno);
+		}
 	      if (g_fail < 1)
 		g_fail = 1;
 	    }
@@ -446,6 +473,11 @@ b [^a-zA-Z_\n]
 	    }
 	}
       unput (c);
+    }
+
+  if (g_fail && list_files_only)
+    {
+      return g_fail;
     }
 }
 ^[ \t]*#[ \t]*            { MY_ECHO; }
@@ -558,30 +590,43 @@ main (int argc, char** argv)
   int i;
   int fail;
   char **file_list;
+  int c;
 
   /* Make `cppi -C' usable directly via CVS's commitinfo (see below).  */
   int cvs_mode = 0;
 
   program_name = argv[0];
 
-  if (argc >= 2 && (STREQ (argv[1], "-h") || STREQ (argv[1], "-help")))
+  while ((c = getopt_long (argc, argv, "cCl", long_options, NULL)) != -1)
     {
-      usage (0);
+      switch (c)
+	{
+	case 0:
+	  break;
+
+	case 'c':
+	  inhibit_output = 1;
+	  break;
+
+	case 'C':
+	  inhibit_output = 1;
+	  cvs_mode = 1;
+	  break;
+
+	default:
+	  usage (2);
+	  break;
+	}
     }
 
-  if (argc >= 2 && STREQ (argv[1], "-c"))
+  if (show_version)
     {
-      inhibit_output = 1;
-      ++argv;
-      --argc;
+      printf ("cppi %s\n", VERSION);
+      exit (EXIT_SUCCESS);
     }
-  else if (argc >= 2 && STREQ (argv[1], "-C"))
-    {
-      inhibit_output = 1;
-      cvs_mode = 1;
-      ++argv;
-      --argc;
-    }
+
+  if (show_help)
+    usage (0);
 
   if (!inhibit_output && argc > 2)
     {
@@ -594,7 +639,7 @@ main (int argc, char** argv)
   if (inhibit_output && getenv ("DISABLE_CPP_INDENT_CHECK"))
     exit (0);
 
-  file_list = (argc == 1 ? default_file_list : argv + 1);
+  file_list = (optind == argc ? default_file_list : argv + optind);
 
   /* Make `cppi -C' usable directly via CVS's commitinfo.
      Ignore the first command line argument if it is a directory and
@@ -621,6 +666,8 @@ main (int argc, char** argv)
 	continue;
 
       err = cpp_indent (file_list[i], cvs_mode);
+      if (err && list_files_only)
+	puts (file_list[i]);
       if (err > fail)
 	fail = err;
     }
