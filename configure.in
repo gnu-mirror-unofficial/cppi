@@ -10,12 +10,12 @@ dnl Checks for programs.
 
 AC_PROG_CC
 AC_PROG_CPP
+AC_AIX
+AC_MINIX
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_RANLIB
 AM_PROG_LEX
 AC_PROG_CC_STDC
-AC_AIX
-AC_MINIX
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(memory.h stdlib.h string.h unistd.h)
