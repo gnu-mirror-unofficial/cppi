@@ -626,7 +626,7 @@ main (int argc, char** argv)
 
   program_name = argv[0];
 
-  while ((c = getopt_long (argc, argv, "cCl", long_options, NULL)) != -1)
+  while ((c = getopt_long (argc, argv, "cl", long_options, NULL)) != -1)
     {
       switch (c)
 	{
