@@ -1,4 +1,4 @@
-./cppi - < $t.I > $t.O 2> $t.e
+./cppi $options - < $t.I > $t.O 2> $t.e
 status=$?
 
 fail=0
