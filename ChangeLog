@@ -1,3 +1,7 @@
+1998-09-09  Jim Meyering  <meyering@ascend.com>
+
+	* cppi.l (lookup_cpp_keyword): Declare function to be static.
+
 1998-09-08  Jim Meyering  <meyering@ascend.com>
 
 	* Makefile.am (cpp.h): Generate declarations of `enum Eic_type'
