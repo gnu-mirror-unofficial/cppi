@@ -5,7 +5,7 @@ AC_CONFIG_SRCDIR(src/cppi.l)
 AC_CONFIG_AUX_DIR(config)
 AM_CONFIG_HEADER(config.h:config.hin)
 
-AM_INIT_AUTOMAKE([1.6b gnits dist-bzip2])
+AM_INIT_AUTOMAKE([1.8 gnits dist-bzip2])
 
 AM_MISSING_PROG(HELP2MAN, help2man)
 AC_PROG_CC
