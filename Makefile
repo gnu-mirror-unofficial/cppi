@@ -19,7 +19,7 @@ LFLAGS = -I $(lex_debug)
 # all: $(td) $(qd) cppi
 all: $(qd) cppi
 
-cppi: cppi.o fatal.o
+cppi: cppi.o fatal.o strerror.o
 	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(td): %.d: %.E %.O
