@@ -46,23 +46,36 @@ sub cpp_indent ($$)
 	my $remainder = '';
 	if ($state == IN_CODE)
 	  {
-	    if ($line =~ m!.*?(/\*|\")!g)
+	    my $i = index ($line, '"');
+	    my $j = index ($line, '/*');
+	    last if ($i < 0 && $j < 0);
+
+	    # A double quote inside single quotes doesn't count.
+	    $i = -1 if substr ($line, $i - 1, 1) eq "'";
+
+	    my $k;
+	    if ($i < 0)
 	      {
-		if ($1 eq '"')
+		last if $j < 0;
+		$k = $j;
+	      }
+	    else
+	      {
+		if ($j < 0)
 		  {
-		    $state = IN_STRING
-		      if ($& eq '"' || $&[length ($&) - 2] ne '\\');
+		    $k = $i;
 		  }
 		else
 		  {
-		    $state = IN_COMMENT;
+		    $k = ($i < $j ? $i : $j);
 		  }
-		$remainder = $';
 	      }
+	    $state = ($k == $i ? IN_STRING : IN_COMMENT);
+	    $remainder = substr ($line, $k + 1);
 	  }
 	elsif ($state == IN_COMMENT)
 	  {
-	    if ($line =~ m!.*?\*/!g)
+	    if ($line =~ m!\*/!g)
 	      {
 		$state = IN_CODE;
 		$remainder = $';
@@ -70,9 +83,9 @@ sub cpp_indent ($$)
 	  }
 	else # $state == IN_STRING
 	  {
-	    if ($line =~ m!^\"|.*?[^\\]\"!g)
+	    if ($line =~ m!\\*\"! && length ($&) % 2 == 1)
 	      {
-		$state = IN_CODE;
+                $state = IN_CODE;
 		$remainder = $';
 	      }
 	  }
@@ -106,7 +119,9 @@ sub cpp_indent ($$)
 	      my $keyword;
 	      my $indent;
 	      my $pfx = "$0: $file: line $.";
-	      if ($line =~ /^if(n?def)?\b/)
+	      if ($line =~ /^if\b/
+		  || $line =~ /^ifdef\b/
+		  || $line =~ /^ifndef\b/)
 		{
 		  # Maintain stack of (line number, keyword) pairs to better
 		  # report any `unterminated #if...' errors.
@@ -141,6 +156,7 @@ sub cpp_indent ($$)
 		}
 	      else
 		{
+		  # Handle #error, #include, #pragma, etc.
 		  $keyword = '';
 		  $indent = $indent_incr x $depth;
 		}
@@ -154,7 +170,6 @@ sub cpp_indent ($$)
 
 	      $line = "#$indent$keyword$'";
 	      $rest = $';
-	      $state = update_state ($state, $rest);
 	    }
 	  else
 	    {
@@ -165,6 +180,7 @@ sub cpp_indent ($$)
 	{
 	  $rest = $line;
 	}
+      #print $state if !$checking;
       print $line if !$checking;
 
       $state = update_state ($state, $rest);
