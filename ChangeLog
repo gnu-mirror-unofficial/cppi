@@ -1,3 +1,8 @@
+1998-03-27  Jim Meyering  <meyering@eng.ascend.com>
+
+	* configure.in: Use AM_PROG_LEX in place of the (AC_PROG_LEX,
+	AC_DECL_YYTEXT) pair.
+
 1998-03-15  Jim Meyering  <meyering@eng.ascend.com>
 
 	* Makefile.am (cppi.c): Add explicit rule.
