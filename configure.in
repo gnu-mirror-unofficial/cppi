@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script. -*-m4-*-
 AC_INIT(cppi.l)
 AM_CONFIG_HEADER(config.h)
-AC_PREREQ(2.12)dnl               dnl Minimum Autoconf version required.
+AC_PREREQ(2.13)dnl               dnl Minimum Autoconf version required.
 
-AM_INIT_AUTOMAKE([cppi], [1.6])
+AM_INIT_AUTOMAKE([cppi], [1.7])
 GNU_PACKAGE="GNU $PACKAGE"
 AC_DEFINE_UNQUOTED(GNU_PACKAGE, "$GNU_PACKAGE")
 
