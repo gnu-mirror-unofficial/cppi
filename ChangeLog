@@ -1,3 +1,10 @@
+1998-09-01  Jim Meyering  <meyering@ascend.com>
+
+	* Makefile.am (flex_8_bit): New variable.
+	(LFLAGS): Include it here.
+	* tests/8-bit: New file.
+	* tests/Makefile.am (TESTS): Add 8-bit.
+
 1998-08-01  Jim Meyering  <meyering@ascend.com>
 
 	* configure.in: Bump version to 1.2.

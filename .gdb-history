@@ -270,3 +270,102 @@ b emit_or_check
 r -l f7.I2 f7.I
 c
 q
+r -cl /tmp/block-diagram.gif
+n
+p yy_amount_of_matched_text
+n
+r
+q
+q
+r in
+up
+b main
+r
+n
+q
+b main
+r in
+n
+b cpp_indent 
+r
+disa 1
+c
+n
+l
+b cpp_i
+disa 2
+c
+n
+l
+n
+n
+r
+n
+n
+n
+p yy_cp
+p (int)yy_cp
+p (char)yy_cp
+n
+p *yy_cp
+n
+p *yy_cp
+n
+p *yy_cp
+n
+n
+p *yy_cp
+n
+r
+n
+b yy_load_buffer_state 
+r
+c
+n
+i frame
+i local
+i stack
+p yy_n_chars
+p yyin
+p *yyin
+n
+n
+p yytext
+p *yytext
+b read
+r
+c
+c
+up
+fin
+l
+n
+p *yytext
+l
+p yytext_ptr
+p yy_amount_of_matched_text
+n
+p yy_current_state
+n
+p yy_bp
+n
+p yy_bp
+n
+p yy_current_state
+p yy_nxt[yy_current_state][ ((unsigned int) (unsigned char) *yy_cp)]
+n
+n
+n
+p yy_act
+p yy_current_state
+p yyleng
+n
+n
+p yy_act
+p *yytext
+p *yy_cp
+p yy_amount_of_matched_text
+n
+p yy_c_buf_p
+p  &yy_current_buffer->yy_ch_buf[yy_n_chars]
+q
