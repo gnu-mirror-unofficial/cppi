@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script. -*-m4-*-
 AC_INIT(cppi.l)
-AM_CONFIG_HEADER(config.h)
-AC_PREREQ(2.13)dnl               dnl Minimum Autoconf version required.
+AM_CONFIG_HEADER(config.h:config.hin)
+AC_PREREQ(2.52)dnl               dnl Minimum Autoconf version required.
 AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE([cppi], [1.11])
