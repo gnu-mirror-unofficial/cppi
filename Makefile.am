@@ -5,7 +5,8 @@ cppi_SOURCES = cppi.l fatal.c getopt.c getopt1.c obstack.c
 
 noinst_HEADERS = fatal.h getopt.h obstack.h
 
-EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c
+EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond-lookup.c \
+  GNUmakefile Makefile.maint
 
 SUBDIRS = tests
 
