@@ -1,3 +1,32 @@
+2000-08-03  Jim Meyering  <meyering@lucent.com>
+
+	* Makefile.am (cppi_SOURCES): Add xstrtoul.c and xstrtol.c
+	(noinst_HEADERS): Add xstrtol.h.
+	(SUBDIRS): Prepend `.' and m4.
+	(ACLOCAL_AMFLAGS): Set to `-I m4"
+	(Makefile): Depend on $(BUILT_SOURCES).
+
+	* xstrtol.c: New file.
+	* xstrtol.h: New file.
+	* xstrtoul.c: New file.
+
+2000-08-02  Jim Meyering  <meyering@lucent.com>
+
+	* missing: New file.
+
+	* cppi.l: Add new option: --max-string-length=LEN.
+
+	* configure.in: Add AC_PROG_CC_STDC before AC_C_CONST.
+	(AC_PROG_RANLIB): Remove.
+	(jm_AC_PREREQ_XSTRTOUMAX): Use it.
+	Use AC_CONFIG_FILES and AC_OUTPUT.
+
+	* acconfig.h: Remove file.
+
+2000-05-04  Jim Meyering  <meyering@lucent.com>
+
+	* cppi.l: Remove unused variable, `preceding_backslash'.
+
 1999-02-13  Jim Meyering  <meyering@ascend.com>
 
 	* Version 1.7.
