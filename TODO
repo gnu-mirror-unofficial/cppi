@@ -17,5 +17,3 @@ and flex is not available.
 Likewise with cpp.gp and gperf.
 
 Add gettext support.
-
-Remove dependency on gcc -- see FIXMEs in cppi.l.
