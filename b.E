@@ -1,3 +1,6 @@
+#if(FOO)
+#endif
+
 " /* "
 #endif-not-a-cpp-directive
 #if 1
