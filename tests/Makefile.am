@@ -5,7 +5,7 @@ TESTS = \
    f1 f2 f3 f4 f5    f7 f8 f9 \
    stringify-1 stringify-2 stringify-3 stringify-4 \
    8-bit ansi-1 ansi-2 ansi-3 ansi-4 ansi-5 ansi-6 \
-   cxx-1 cxx-2
+   cxx-1 cxx-2 cxx-3
 
 EXTRA_DIST = test-common $(TESTS)
 TESTS_ENVIRONMENT = srcdir=@srcdir@ PATH=..:$$PATH
