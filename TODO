@@ -3,3 +3,12 @@ convert to use automake/autoconf
 use getopt, maybe the GNU version
 
 add -h (help), -v (version) options
+
+Add a -l option (useful only with -c) to print just the names of files
+with improper indentation.  Suggestion from Ignacio Goyret <igoyret@ascend.com>.
+
+Add overwrite option -- maybe use GNU-style backup code.
+
+Put under GPL?  ask Tom
+
+
