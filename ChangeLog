@@ -370,16 +370,16 @@
 	Update stack manipulation functions.
 	(nth_entry): New function.
 
-Thu Jun 26 23:27:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-06-26  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (#<any-cpp-directive>): Don't try to return early when
 	detecting improper indentation and -l was specified.
 
-Tue Jun 24 08:31:36 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+Tue Jun 24 08:31:36 1997-06-24  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (emit_indented_cpp): Initialize *fail to zero.
 
-Mon Jun 23 06:59:06 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-06-23  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* Makefile (cppi): Add getopt.o and getopt1.o.
 
@@ -387,17 +387,17 @@ Mon Jun 23 06:59:06 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 	Suggestion from Ignacio Goyret.
 	Use GNU getopt.
 
-Sun Jun 15 08:16:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-06-15  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (emit_or_check): Handle leading-space #pragmas a little
 	differently.
 	* f5: Modify test to reflect the change.
 
-Thu May 29 09:50:24 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-29  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (usage): Describe white-space-squeezing xform.
 
-Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-27  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* Makefile: Remove old cpp-indent rules.
 	Begin converting empty, a, b, c tests to new format.
@@ -424,13 +424,13 @@ Tue May 27 11:04:27 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cpp.gp: Add `pragma'.
 
-Thu May 22 20:59:08 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-22  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (main): New option, -C.  Now, `cppi -C' is usable directly
 	via CVS's commitinfo file.
 	Add rules to avoid flex's backup states.
 
-Fri May 16 08:49:52 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-16  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l: Revamp to avoid backup states.
 
@@ -439,12 +439,12 @@ Fri May 16 08:49:52 1997  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cpp.gp: New file.
 
-Thu May 15 17:24:00 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-15  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l: Remove a few useless rules.
 	Get rid of some of flex's backup states.
 
-Thu May  8 09:05:31 1997  Jim Meyering  <meyering@na-net.ornl.gov>
+1997-05-08  Jim Meyering  <meyering@na-net.ornl.gov>
 
 	* cppi.l (main): Add back door: DISABLE_CPP_INDENT_CHECK.
 	(usage): Flesh out.
