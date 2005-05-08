@@ -1,5 +1,6 @@
 struct KW {char *name; int code;};
 %%
+**, EIC_INVALID
 if, EIC_IF
 ifdef, EIC_IFDEF
 ifndef, EIC_IFNDEF
