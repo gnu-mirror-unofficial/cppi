@@ -23,8 +23,6 @@
 #include <sys/types.h>
 #include <getopt.h>
 
-#include "gettext.h"
-
 #define _(msgid) gettext (msgid)
 #define N_(msgid) msgid
 
@@ -117,9 +115,9 @@ static struct option const long_options[] =
   {NULL, 0, NULL, 0}
 };
 
-static void gobble_define (int*);
-static void gobble_c_comment (const char *, int *);
-static void gobble_line (int *);
+static void gobble_define (unsigned int*);
+static void gobble_c_comment (const char *, unsigned int *);
+static void gobble_line (unsigned int *);
 
 /* Include gperf-generated hash function.  */
 #include "cpp-cond.c"
@@ -667,7 +665,7 @@ Report bugs to <bug-cppi@gnu.org>.\n\
    stringification of a macro argument as a cpp directive.  */
 
 static void
-gobble_define (int *line_number)
+gobble_define (unsigned int *line_number)
 {
   int c;
   int backslash_count = 0;
@@ -691,7 +689,7 @@ gobble_define (int *line_number)
    the closing delimiter.  */
 
 static void
-gobble_c_comment (const char *in_file, int *line_number)
+gobble_c_comment (const char *in_file, unsigned int *line_number)
 {
   int start_lineno = *line_number;
   for ( ; ; )
@@ -724,7 +722,7 @@ gobble_c_comment (const char *in_file, int *line_number)
 /* Read up to and including any newline.  */
 
 static void
-gobble_line (int *line_number)
+gobble_line (unsigned int *line_number)
 {
   int c;
   while ((c = INPUT_AND_ECHO ()) != EOF)
