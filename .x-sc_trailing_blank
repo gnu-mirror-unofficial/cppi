@@ -1,0 +1,7 @@
+Makefile\.in$
+/texinfo\.tex$
+\.gdb-history$
+maintain\.texi$
+standards\.texi$
+Makefile$
+^ABOUT-NLS$

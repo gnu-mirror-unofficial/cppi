@@ -1,0 +1,16 @@
+config(ure|\.(guess|sub))
+tests/pr
+lib/regex.c
+config-log
+tests/misc/nl
+po/de.po
+m4/lib-ld.m4
+m4/po.m4
+aclocal.m4
+config/mkinstalldirs
+gnulib/gnulib-tool
+gnulib/lib/argp-help.c
+gnulib/lib/argp-parse.c
+gnulib/lib/argp.h
+gnulib/lib/regex.h
+gnulib/lib/trigl.c
