@@ -1,3 +1,9 @@
+2005-05-08  Jim Meyering  <jim@meyering.net>
+
+	* src/cppi.l: Don't include gettext.h -- system.h does that.
+	Adjust type of parameters corresponding to line_number, so that
+	they too have type `unsigned int'.
+
 2004-01-24  Jim Meyering  <jim@meyering.net>
 
 	* src/Makefile.am (cppi_SOURCES): Remove sys2.h.
