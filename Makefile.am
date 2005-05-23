@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = 1.7 gnits
 
-SUBDIRS = lib m4 po src tests man
+SUBDIRS = lib po src tests man
 
 ACLOCAL_AMFLAGS = -I m4
 

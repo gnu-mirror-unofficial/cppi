@@ -1,5 +1,7 @@
 GNU cppi NEWS                                               -*- outline -*-
 
+* Major changes in release 1.12:
+
 * Major changes in release 1.11:
   revamp infrastructure to use gnulib
 
