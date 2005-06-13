@@ -14,3 +14,7 @@ gnulib/lib/argp-parse.c
 gnulib/lib/argp.h
 gnulib/lib/regex.h
 gnulib/lib/trigl.c
+gnulib/lib/csharpcomp.sh.in
+gnulib/lib/csharpexec.sh.in
+m4/lib-ld_gl.m4
+m4/po_gl.m4
