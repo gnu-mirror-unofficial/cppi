@@ -2,6 +2,8 @@
 
 	* Version 1.12.
 
+	* man/Makefile.am (.x.1): Define PATH so help2man can find cppi.
+
 	* src/cppi.l (pop): Avoid overflow-in-implicit-constant-conversion
 	on 64-bit systems.
 	("\""): Use %lu, not %d with size_t argument.
