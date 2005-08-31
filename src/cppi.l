@@ -183,8 +183,9 @@ kth_entry (unsigned int k)
 static inline void
 pop (void)
 {
+  int pair_size = sizeof (struct KL_pair);
   assert (OPENER_STACK_HEIGHT > 0);
-  obstack_blank (&opener_stack, -(sizeof (struct KL_pair)));
+  obstack_blank (&opener_stack, -pair_size);
 }
 
 static inline void
@@ -435,7 +436,7 @@ b [^a-zA-Z_\n]
 
   if (0 < max_string_length && max_string_length < string_length)
     {
-      error (0, 0, _("%s: line %d: string (%d) longer than maximum of %lu"),
+      error (0, 0, _("%s: line %d: string (%lu) longer than maximum of %lu"),
 	     in_file, start_lineno, string_length,
 	     max_string_length);
       fail = 1;
