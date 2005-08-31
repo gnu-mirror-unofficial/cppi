@@ -1,3 +1,11 @@
+2005-08-31  Jim Meyering  <jim@meyering.net>
+
+	* Version 1.12.
+
+	* src/cppi.l (pop): Avoid overflow-in-implicit-constant-conversion
+	on 64-bit systems.
+	("\""): Use %lu, not %d with size_t argument.
+
 2005-05-08  Jim Meyering  <jim@meyering.net>
 
 	* src/cppi.l: Don't include gettext.h -- system.h does that.
@@ -9,8 +17,6 @@
 	* src/Makefile.am (cppi_SOURCES): Remove sys2.h.
 
 2003-11-22  Jim Meyering  <jim@meyering.net>
-
-	* Version 1.12.
 
 	* src/cpp-cond.c: Regenerate with gperf-3.0.1.
 
