@@ -13,7 +13,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software Foundation,
-   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 /* Written by Jim Meyering. */
 
@@ -27,5 +27,7 @@
 /* Default copyright goes to the FSF. */
 
 const char version_etc_copyright[] =
-  /* Do *not* mark this string for translation.  */
-  "Copyright (C) 2005 Free Software Foundation, Inc.";
+  /* Do *not* mark this string for translation.  %s is a copyright
+     symbol suitable for this locale, and %d is the copyright
+     year.  */
+  "Copyright %s %d Free Software Foundation, Inc.";
