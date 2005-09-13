@@ -53,12 +53,8 @@ you must include <sys/types.h> before including this file
 # define STDERR_FILENO 2
 #endif
 
-
-/* limits.h must come before pathmax.h because limits.h on some systems
-   undefs PATH_MAX, whereas pathmax.h sets PATH_MAX.  */
 #include <limits.h>
 
-#include "pathmax.h"
 #include "localedir.h"
 
 #if TIME_WITH_SYS_TIME
@@ -160,11 +156,7 @@ initialize_exit_failure (int status)
     exit_failure = status;
 }
 
-#if HAVE_FCNTL_H
-# include <fcntl.h>
-#else
-# include <sys/file.h>
-#endif
+#include <fcntl.h>
 
 #if !defined SEEK_SET
 # define SEEK_SET 0
@@ -481,30 +473,10 @@ static inline unsigned char to_uchar (char ch) { return ch; }
 
 #define STREQ(a, b) (strcmp ((a), (b)) == 0)
 
-#if !HAVE_DECL_FREE
-void free ();
-#endif
-
-#if !HAVE_DECL_MALLOC
-char *malloc ();
-#endif
-
-#if !HAVE_DECL_MEMCHR
-char *memchr ();
-#endif
-
-#if !HAVE_DECL_REALLOC
-char *realloc ();
-#endif
-
 #if !HAVE_DECL_STPCPY
 # ifndef stpcpy
 char *stpcpy ();
 # endif
-#endif
-
-#if !HAVE_DECL_STRNDUP
-char *strndup ();
 #endif
 
 #if !HAVE_DECL_STRSTR
