@@ -1,3 +1,9 @@
+2005-09-13  Jim Meyering  <jim@meyering.net>
+
+	* src/system.h: Don't include pathmax.h
+	Include <fcntl.h> and <unistd.h> unconditionally.
+	Remove HAVE_DECL_* blocks.
+
 2005-08-31  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.12.
