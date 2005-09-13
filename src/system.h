@@ -37,9 +37,7 @@ you must include <sys/types.h> before including this file
 
 /* <unistd.h> should be included before any preprocessor test
    of _POSIX_VERSION.  */
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 #ifndef STDIN_FILENO
 # define STDIN_FILENO 0
