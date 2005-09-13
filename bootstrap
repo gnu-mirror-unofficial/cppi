@@ -16,8 +16,8 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
 
 # Written by Paul Eggert.
 # Adapted for use by cppi by Jim Meyering
@@ -27,6 +27,7 @@ SKIP_PO=t
 
 # Ensure file names are sorted consistently across platforms;
 # e.g., m4/ulonglong_gl.m4 should follow m4/ulonglong.m4.
+# Also, ensure diagnostics are in English, e.g., "wget --help" below.
 LC_ALL=C
 export LC_ALL
 
@@ -131,7 +132,6 @@ gnulib_files=`
      $GNULIB_SRCDIR/gnulib-tool --extract-filelist $gnulib_module
    done) | sort -u
 `
-printf "$gnulib_modules\n***\n$gnulib_files\n\n" >> /t/k-mod-files
 
 gnulib_dirs=`echo "$gnulib_files" | sed 's,/[^/]*$,,' | sort -u`
 mkdir -p $gnulib_dirs || exit
@@ -166,10 +166,19 @@ sed '
 
 case $SKIP_PO in
 '')
+  case `wget --help` in
+  *'--no-cache'*)
+    no_cache='--no-cache';;
+  *'--cache=on/off'*)
+    no_cache='--cache=off';;
+  *)
+    no_cache='';;
+  esac
+
   echo "$0: getting translations into po (please ignore the robots.txt ERROR 404)..."
   (cd po &&
    rm -f dummy `ls | sed -n '/\.gmo$/p; /\.po/p'` &&
-   wget -nv -nd -r -l 1 -A .po -C off \
+   wget -nv -nd -r -l 1 -A .po $no_cache \
      http://www.iro.umontreal.ca/translation/maint/$package/ &&
    ls *.po | sed 's/\.po$//' >LINGUAS
   ) || exit;;
