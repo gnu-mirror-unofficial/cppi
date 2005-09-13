@@ -1,12 +1,15 @@
 2005-09-13  Jim Meyering  <jim@meyering.net>
 
+	* Version 1.12.
+
+	* configure.ac: Use gl_EARLY and gl_INIT.
+	Remove AC_GNU_SOURCE, gl_USE_SYSTEM_EXTENSIONS, and AM_STDBOOL_H.
+
 	* src/system.h: Don't include pathmax.h
 	Include <fcntl.h> and <unistd.h> unconditionally.
 	Remove HAVE_DECL_* blocks.
 
 2005-08-31  Jim Meyering  <jim@meyering.net>
-
-	* Version 1.12.
 
 	* man/Makefile.am (.x.1): Define PATH so help2man can find cppi.
 
