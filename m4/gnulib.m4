@@ -18,7 +18,6 @@ gl_FUNC_FPENDING
 
 gl_GETOPT
 
-AM_GNU_GETTEXT([external])
 
 AC_FUNC_MALLOC
 
