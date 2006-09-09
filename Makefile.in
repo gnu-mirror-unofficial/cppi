@@ -33,34 +33,46 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = .
+build_triplet = @build@
+host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.hin \
 	$(top_srcdir)/configure ABOUT-NLS AUTHORS COPYING ChangeLog \
 	INSTALL NEWS THANKS TODO build-aux/ChangeLog \
 	build-aux/config.guess build-aux/config.rpath \
 	build-aux/config.sub build-aux/depcomp build-aux/install-sh \
-	build-aux/mdate-sh build-aux/missing build-aux/mkinstalldirs \
-	build-aux/texinfo.tex
+	build-aux/missing build-aux/mkinstalldirs
+subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/alloca.m4 \
-	$(top_srcdir)/m4/atexit.m4 $(top_srcdir)/m4/closeout.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/absolute-header.m4 \
+	$(top_srcdir)/m4/alloca.m4 $(top_srcdir)/m4/assert.m4 \
+	$(top_srcdir)/m4/atexit.m4 $(top_srcdir)/m4/close-stream.m4 \
+	$(top_srcdir)/m4/closeout.m4 $(top_srcdir)/m4/config-h.m4 \
+	$(top_srcdir)/m4/dirname.m4 $(top_srcdir)/m4/dos.m4 \
+	$(top_srcdir)/m4/double-slash-root.m4 \
 	$(top_srcdir)/m4/error.m4 $(top_srcdir)/m4/exitfail.m4 \
 	$(top_srcdir)/m4/extensions.m4 $(top_srcdir)/m4/fpending.m4 \
-	$(top_srcdir)/m4/getopt.m4 $(top_srcdir)/m4/gettext_gl.m4 \
-	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/gnulib.m4 \
-	$(top_srcdir)/m4/intmax_t.m4 $(top_srcdir)/m4/inttypes_h_gl.m4 \
+	$(top_srcdir)/m4/free.m4 $(top_srcdir)/m4/getopt.m4 \
+	$(top_srcdir)/m4/gnulib-comp.m4 $(top_srcdir)/m4/inttypes-h.m4 \
+	$(top_srcdir)/m4/inttypes-pri.m4 $(top_srcdir)/m4/inttypes.m4 \
 	$(top_srcdir)/m4/longlong.m4 $(top_srcdir)/m4/mbrtowc.m4 \
-	$(top_srcdir)/m4/mbstate_t.m4 $(top_srcdir)/m4/memrchr.m4 \
-	$(top_srcdir)/m4/obstack.m4 $(top_srcdir)/m4/onceonly_2_57.m4 \
-	$(top_srcdir)/m4/quote.m4 $(top_srcdir)/m4/quotearg.m4 \
-	$(top_srcdir)/m4/st_mtim.m4 $(top_srcdir)/m4/stat-macros.m4 \
-	$(top_srcdir)/m4/stdbool.m4 $(top_srcdir)/m4/stdint_h_gl.m4 \
-	$(top_srcdir)/m4/stpcpy.m4 $(top_srcdir)/m4/timespec.m4 \
-	$(top_srcdir)/m4/uintmax_t_gl.m4 \
-	$(top_srcdir)/m4/ulonglong_gl.m4 \
-	$(top_srcdir)/m4/unlocked-io.m4 $(top_srcdir)/m4/xalloc.m4 \
-	$(top_srcdir)/m4/xstrtol.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/mbstate_t.m4 $(top_srcdir)/m4/memchr.m4 \
+	$(top_srcdir)/m4/memcmp.m4 $(top_srcdir)/m4/memcpy.m4 \
+	$(top_srcdir)/m4/memmove.m4 $(top_srcdir)/m4/memset.m4 \
+	$(top_srcdir)/m4/onceonly_2_57.m4 $(top_srcdir)/m4/quote.m4 \
+	$(top_srcdir)/m4/quotearg.m4 $(top_srcdir)/m4/rename.m4 \
+	$(top_srcdir)/m4/safe-read.m4 $(top_srcdir)/m4/safe-write.m4 \
+	$(top_srcdir)/m4/ssize_t.m4 $(top_srcdir)/m4/stat-macros.m4 \
+	$(top_srcdir)/m4/stdarg.m4 $(top_srcdir)/m4/stdbool.m4 \
+	$(top_srcdir)/m4/stdint.m4 $(top_srcdir)/m4/stpcpy.m4 \
+	$(top_srcdir)/m4/strcspn.m4 $(top_srcdir)/m4/strndup.m4 \
+	$(top_srcdir)/m4/strnlen.m4 $(top_srcdir)/m4/strtod.m4 \
+	$(top_srcdir)/m4/strtol.m4 $(top_srcdir)/m4/timespec.m4 \
+	$(top_srcdir)/m4/unistd_h.m4 $(top_srcdir)/m4/unlocked-io.m4 \
+	$(top_srcdir)/m4/utimbuf.m4 $(top_srcdir)/m4/utime.m4 \
+	$(top_srcdir)/m4/utimes-null.m4 $(top_srcdir)/m4/xalloc.m4 \
+	$(top_srcdir)/m4/xstrndup.m4 $(top_srcdir)/m4/xstrtol.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -90,6 +102,8 @@ DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
+ABSOLUTE_INTTYPES_H = @ABSOLUTE_INTTYPES_H@
+ABSOLUTE_STDINT_H = @ABSOLUTE_STDINT_H@
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 ALLOCA_H = @ALLOCA_H@
@@ -100,6 +114,11 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BITSIZEOF_PTRDIFF_T = @BITSIZEOF_PTRDIFF_T@
+BITSIZEOF_SIG_ATOMIC_T = @BITSIZEOF_SIG_ATOMIC_T@
+BITSIZEOF_SIZE_T = @BITSIZEOF_SIZE_T@
+BITSIZEOF_WCHAR_T = @BITSIZEOF_WCHAR_T@
+BITSIZEOF_WINT_T = @BITSIZEOF_WINT_T@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -114,14 +133,31 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 GETOPT_H = @GETOPT_H@
+GL_COND_LIBTOOL_FALSE = @GL_COND_LIBTOOL_FALSE@
+GL_COND_LIBTOOL_TRUE = @GL_COND_LIBTOOL_TRUE@
 GNU_PACKAGE = @GNU_PACKAGE@
 GREP = @GREP@
+HAVE_DECL_IMAXABS = @HAVE_DECL_IMAXABS@
+HAVE_DECL_IMAXDIV = @HAVE_DECL_IMAXDIV@
+HAVE_DECL_STRTOIMAX = @HAVE_DECL_STRTOIMAX@
+HAVE_DECL_STRTOUMAX = @HAVE_DECL_STRTOUMAX@
+HAVE_INTTYPES_H = @HAVE_INTTYPES_H@
+HAVE_LONG_LONG_INT = @HAVE_LONG_LONG_INT@
+HAVE_SIGNED_SIG_ATOMIC_T = @HAVE_SIGNED_SIG_ATOMIC_T@
+HAVE_SIGNED_WCHAR_T = @HAVE_SIGNED_WCHAR_T@
+HAVE_SIGNED_WINT_T = @HAVE_SIGNED_WINT_T@
+HAVE_STDINT_H = @HAVE_STDINT_H@
+HAVE_SYS_BITYPES_H = @HAVE_SYS_BITYPES_H@
+HAVE_SYS_INTTYPES_H = @HAVE_SYS_INTTYPES_H@
+HAVE_SYS_TYPES_H = @HAVE_SYS_TYPES_H@
+HAVE_WCHAR_H = @HAVE_WCHAR_H@
 HAVE__BOOL = @HAVE__BOOL@
 HELP2MAN = @HELP2MAN@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTTYPES_H = @INTTYPES_H@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
@@ -138,15 +174,23 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+POW_LIB = @POW_LIB@
+PRIPTR_PREFIX = @PRIPTR_PREFIX@
+PRI_MACROS_BROKEN = @PRI_MACROS_BROKEN@
+PTRDIFF_T_SUFFIX = @PTRDIFF_T_SUFFIX@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SIG_ATOMIC_T_SUFFIX = @SIG_ATOMIC_T_SUFFIX@
+SIZE_T_SUFFIX = @SIZE_T_SUFFIX@
 STDBOOL_H = @STDBOOL_H@
+STDINT_H = @STDINT_H@
 STRIP = @STRIP@
+UNISTD_H = @UNISTD_H@
 VERSION = @VERSION@
+WCHAR_T_SUFFIX = @WCHAR_T_SUFFIX@
+WINT_T_SUFFIX = @WINT_T_SUFFIX@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__include = @am__include@
@@ -155,13 +199,21 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
