@@ -3,6 +3,7 @@
 	* Version 1.13.
 	* configure.ac: Remove GNULIB_AUTOCONF_SNIPPET.
 	(AC_INIT): Bump version to 1.13.
+	Add AM_GNU_GETTEXT([external]).
 
 	* .x-sc_unmarked_diagnostics: New file.
 
