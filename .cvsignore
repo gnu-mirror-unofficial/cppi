@@ -1,6 +1,9 @@
 .deps
 ABOUT-NLS
+INSTALL
 Makefile
+Makefile.in
+aclocal.m4
 autom4te.cache
 config-log
 config.cache
@@ -8,11 +11,7 @@ config.h
 config.hin
 config.log
 config.status
+configure
 stamp-h
 stamp-h.in
 stamp-h1
-configure
-aclocal.m4
-Makefile.in
-INSTALL
-ABOUT-NLS
