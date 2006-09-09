@@ -7,3 +7,4 @@ cppi.c
 lex.backup
 localedir.h
 Makefile.in
+cpp-cond.c
