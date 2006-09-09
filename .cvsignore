@@ -12,6 +12,8 @@ config.hin
 config.log
 config.status
 configure
+cppi-*.tar.bz2
+cppi-*.tar.gz
 stamp-h
 stamp-h.in
 stamp-h1
