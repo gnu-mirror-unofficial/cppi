@@ -73,3 +73,6 @@ xstrtol.c
 xstrtol.h
 xstrtoul.c
 Makefile.in
+configmake.h
+inttypes.h
+stdint.h
