@@ -6,3 +6,4 @@ cppi
 cppi.c
 lex.backup
 localedir.h
+Makefile.in

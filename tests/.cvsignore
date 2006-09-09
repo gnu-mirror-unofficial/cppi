@@ -7,3 +7,4 @@ e*.Ee
 e*.I
 e*.e
 Makefile
+Makefile.in
