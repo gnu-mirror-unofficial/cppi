@@ -2,7 +2,7 @@
 
 # Bootstrap this package from CVS.
 
-# Copyright (C) 2005 Free Software Foundation, Inc.
+# Copyright (C) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,16 +20,76 @@
 # 02110-1301, USA.
 
 # Written by Paul Eggert.
-# Adapted for use by cppi by Jim Meyering
 
-package=cppi
-SKIP_PO=t
+nl='
+'
 
-# Ensure file names are sorted consistently across platforms;
-# e.g., m4/ulonglong_gl.m4 should follow m4/ulonglong.m4.
+# Ensure file names are sorted consistently across platforms.
 # Also, ensure diagnostics are in English, e.g., "wget --help" below.
 LC_ALL=C
 export LC_ALL
+
+
+# Configuration.
+
+# List of gnulib modules needed.
+gnulib_modules=
+
+# Any extra gnulib files needed.
+gnulib_files=
+
+# Translation Project URL, for the registry of all projects
+# and for the translation-team master directory.
+TP_URL='http://www.iro.umontreal.ca/translation/registry.cgi?domain='
+TP_PO_URL='http://www.iro.umontreal.ca/translation/teams/PO/'
+
+extract_package_name='
+  /^AC_INIT(/{
+     /.*,.*,.*,/{
+       s///
+       s/[][]//g
+       p
+       q
+     }
+     s/AC_INIT(\[*//
+     s/]*,.*//
+     s/^GNU //
+     y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+     s/[^A-Za-z0-9_]/-/g
+     p
+  }
+'
+package=`sed -n "$extract_package_name" configure.ac` || exit
+
+# Extra files from gnulib, which are not part of any module yet.
+gnulib_extra_files='
+	build-aux/install-sh
+	build-aux/missing
+	build-aux/mdate-sh
+	build-aux/texinfo.tex
+	build-aux/depcomp
+	build-aux/config.guess
+	build-aux/config.sub
+	doc/INSTALL
+'
+
+# Other locale categories that need message catalogs.
+EXTRA_LOCALE_CATEGORIES=
+
+# Additional xgettext options to use.  Use "\\\newline" to break lines.
+XGETTEXT_OPTIONS='\\\
+ --flag=_:1:pass-c-format\\\
+ --flag=N_:1:pass-c-format\\\
+ --flag=error:3:c-format --flag=error_at_line:5:c-format\\\
+'
+
+# Files we don't want to import.
+excluded_files=
+
+# Override the default configuration, if necessary.
+test -r bootstrap.conf && . ./bootstrap.conf
+
+# Translate configuration into internal form.
 
 # Parse options.
 
@@ -53,11 +113,10 @@ done
 
 echo "$0: Bootstrapping CVS $package..."
 
-build_cvs_prefix() {
-  CVS_PREFIX=:${1}:
-  if [ "${2}" != - ]; then
-    CVS_PREFIX=${CVS_PREFIX}${2}@
-  fi
+cleanup_gnulib() {
+  status=$?
+  rm -fr gnulib
+  exit $status
 }
 
 # Get gnulib files.
@@ -67,12 +126,9 @@ case ${GNULIB_SRCDIR--} in
   if [ ! -d gnulib ]; then
     echo "$0: getting gnulib files..."
 
-    trap exit 1 2 13 15
-    trap 'rm -fr gnulib; exit 1' 0
-
-    case ${CVS_AUTH-anoncvs} in
-    anoncvs)
-      CVS_PREFIX='anoncvs@';;
+    case ${CVS_AUTH-pserver} in
+    pserver)
+      CVS_PREFIX=':pserver:anonymous@';;
     ssh)
       CVS_PREFIX="$CVS_USER${CVS_USER+@}";;
     *)
@@ -81,188 +137,235 @@ case ${GNULIB_SRCDIR--} in
     esac
 
     case $CVS_RSH in
-    '') export CVS_RSH=ssh;;
+    '') CVS_RSH=ssh; export CVS_RSH;;
     esac
 
-    cvs -z3 -q -d ${CVS_PREFIX}subversions.gnu.org:/cvsroot/gnulib co gnulib || exit
+    trap cleanup_gnulib 1 2 13 15
 
-    trap - 0
+    cvs -z3 -q -d ${CVS_PREFIX}cvs.savannah.gnu.org:/cvsroot/gnulib co gnulib ||
+      cleanup_gnulib
+
+    trap - 1 2 13 15
   fi
   GNULIB_SRCDIR=gnulib
 esac
 
-<$GNULIB_SRCDIR/gnulib-tool || exit
-
-gnulib_modules='
-alloca
-closeout
-extensions
-getopt
-malloc
-memrchr
-realloc
-obstack
-quote
-quotearg
-stat-macros
-stdbool
-stpcpy
-timespec
-unlocked-io
-xalloc
-xalloc-die
-xstrtol
-version-etc
-version-etc-fsf
-'
-
-previous_gnulib_modules=
-while [ "$gnulib_modules" != "$previous_gnulib_modules" ]; do
-  previous_gnulib_modules=$gnulib_modules
-  gnulib_modules=`
-    (echo "$gnulib_modules"
-     for gnulib_module in $gnulib_modules; do
-       $GNULIB_SRCDIR/gnulib-tool --extract-dependencies $gnulib_module
-     done) | sort -u
-  `
-done
-
-gnulib_files=`
-  (for gnulib_module in $gnulib_modules; do
-     $GNULIB_SRCDIR/gnulib-tool --extract-filelist $gnulib_module
-   done) | sort -u
-`
-
-gnulib_dirs=`echo "$gnulib_files" | sed 's,/[^/]*$,,' | sort -u`
-mkdir -p $gnulib_dirs || exit
-
-for gnulib_file in $gnulib_files; do
-  dest=$gnulib_file
-
-  case $gnulib_file in
-  m4/onceonly_2_57.m4) dest=m4/onceonly.m4;;
-  # These will be overwritten by autopoint, which still uses
-  # old jm_.* macro names, so we have to keep both copies.
-  # m4/gettext.m4 isn't mentioned here, since it's patched below.
-  m4/glibc21.m4 | m4/inttypes_h.m4 | m4/lib-ld.m4 | \
-  m4/lib-prefix.m4 | m4/po.m4 | m4/stdint_h.m4 | m4/uintmax_t.m4 | \
-  m4/ulonglong.m4)
-    dest=`expr $gnulib_file : '\(.*\).m4'`_gl.m4;;
-  esac
-
-  rm -f $dest &&
-  echo "$0: Copying file $GNULIB_SRCDIR/$gnulib_file" &&
-  cp -p $GNULIB_SRCDIR/$gnulib_file $dest || exit
-done
-
-echo "$0: patching m4/gettext.m4 so that AM_INTL_SUBDIR is empty ..."
-sed '
-  /^AC_DEFUN(\[AM_INTL_SUBDIR],/,/^]/c\
-    AC_DEFUN([AM_INTL_SUBDIR], [])
-' m4/gettext.m4 >m4/gettext_gl.m4 || exit
-
+gnulib_tool=$GNULIB_SRCDIR/gnulib-tool
+<$gnulib_tool || exit
 
 # Get translations.
+
+get_translations() {
+  subdir=$1
+  domain=$2
+
+  case $WGET_COMMAND in
+  '')
+    echo "$0: wget not available; skipping translations";;
+  ?*)
+    echo "$0: getting translations into $subdir for $domain..." &&
+
+    (cd $subdir && rm -f dummy `ls | sed -n '/\.gmo$/p; /\.po/p'`) &&
+    $WGET_COMMAND -O "$subdir/$domain.html" "$TP_URL$domain" &&
+
+    sed -n 's|.*"http://[^"]*/translation/teams/PO/\([^/"]*\)/'"$domain"'-\([^/"]*\)\.[^."]*\.po".*|\1.\2|p' <"$subdir/$domain.html" |
+    sort -k 1,1 -k 2,2n -k2,2 -k3,3n -k3,3 -k4,4n -k4,4 -k5,5n -k5.5 |
+    awk -F. '
+      { if (lang && $1 != lang) print lang, ver }
+      { lang = $1; ver = substr($0, index($0, ".") + 1) }
+      END { if (lang) print lang, ver }
+    ' | awk -v domain="$domain" -v subdir="$subdir" '
+      {
+	lang = $1
+	ver = $2
+	urlfmt = ""
+	printf "{ $WGET_COMMAND -O %s/%s.po '\'"$TP_PO_URL"'/%s/%s-%s.%s.po'\'' &&\n", subdir, lang, lang, domain, ver, lang
+	printf "  msgfmt -c -o /dev/null %s/%s.po || {\n", subdir, lang
+	printf "    echo >&2 '\'"$0"': omitting translation for %s'\''\n", lang
+	printf "    rm -f %s/%s.po; }; } &&\n", subdir, lang
+      }
+      END { print ":" }
+    ' | WGET_COMMAND="$WGET_COMMAND" sh;;
+  esac &&
+  ls "$subdir"/*.po 2>/dev/null |
+    sed 's|.*/||; s|\.po$||' >"$subdir/LINGUAS" &&
+  rm -f "$subdir/$domain.html"
+}
 
 case $SKIP_PO in
 '')
   case `wget --help` in
   *'--no-cache'*)
-    no_cache='--no-cache';;
+    WGET_COMMAND='wget -nv --no-cache';;
   *'--cache=on/off'*)
-    no_cache='--cache=off';;
+    WGET_COMMAND='wget -nv --cache=off';;
+  *'--non-verbose'*)
+    WGET_COMMAND='wget -nv';;
   *)
-    no_cache='';;
+    WGET_COMMAND='';;
   esac
 
-  echo "$0: getting translations into po (please ignore the robots.txt ERROR 404)..."
-  (cd po &&
-   rm -f dummy `ls | sed -n '/\.gmo$/p; /\.po/p'` &&
-   wget -nv -nd -r -l 1 -A .po $no_cache \
-     http://www.iro.umontreal.ca/translation/maint/$package/ &&
-   ls *.po | sed 's/\.po$//' >LINGUAS
-  ) || exit;;
+  get_translations po $package || exit
+
+  if test -d runtime-po; then
+    get_translations runtime-po $package-runtime || exit
+  fi;;
 esac
 
+cp_mark_as_generated()
+{
+  cp_src=$1
+  cp_dst=$2
+  case $cp_dst in
+    *.[ch])             c1='/* '; c2=' */';;
+    *.texi)             c1='@c '; c2=     ;;
+    *.m4|*/Make*|Make*) c1='# ' ; c2=     ;;
+    *)                  c1=     ; c2=     ;;
+  esac
 
-# Generate autoconf and automake snippets.
+  if test -z "$c1"; then
+    cp "$cp_src" "$cp_dst"
+    return
+  fi
 
-(echo '# This file is generated automatically by "bootstrap".' &&
- echo 'AC_DEFUN([GNULIB_AUTOCONF_SNIPPET],[' &&
- $GNULIB_SRCDIR/gnulib-tool --extract-autoconf-snippet $gnulib_modules &&
- echo '])'
-) >m4/gnulib.m4 || exit
+  (
+    echo "$c1-*- buffer-read-only: t -*- vi: set ro:$c2"
+    echo "${c1}DO NOT EDIT! GENERATED AUTOMATICALLY!$c2"
+    cat "$cp_src"
+  ) >> "$cp_dst"
+}
 
-(echo '# This file is generated automatically by "bootstrap".' &&
- $GNULIB_SRCDIR/gnulib-tool --extract-automake-snippet $gnulib_modules
-) >lib/gnulib.mk || exit
+slurp() {
+  for dir in . `(cd $1 && find * -type d -print)`; do
+    copied=
+    sep=
+    for file in `ls $1/$dir`; do
+      test -d $1/$dir/$file && continue
+      for excluded_file in $excluded_files; do
+	test "$dir/$file" = "$excluded_file" && continue 2
+      done
+      if test $file = Makefile.am; then
+	copied=$copied${sep}gnulib.mk; sep=$nl
+	echo "$0: Copying $1/$dir/$file to $dir/gnulib.mk ..." &&
+	rm -f $dir/gnulib.mk
+	sed '/^[^#].*\/intl/s/^/#/' $1/$dir/$file >$dir/gnulib.mk
+      elif test -r ${2-no/such/dir}/$dir/$file ||
+	   grep -F "/$file/" $dir/CVS/Entries 2>/dev/null |
+	     grep -q '^/[^/]*/[0-9]'; then
+	echo "$0: $dir/$file overrides $1/$dir/$file"
+      else
+	copied=$copied$sep$file; sep=$nl
+	if test $file = gettext.m4; then
+	  echo "$0: patching m4/gettext.m4 to remove need for intl/* ..."
+	  rm -f $dir/$file
+	  sed '
+	    /^AC_DEFUN(\[AM_INTL_SUBDIR],/,/^]/c\
+	      AC_DEFUN([AM_INTL_SUBDIR], [
+	    /^AC_DEFUN(\[gt_INTL_SUBDIR_CORE],/,/^]/c\
+	      AC_DEFUN([gt_INTL_SUBDIR_CORE], [])
+	    $a\
+	      AC_DEFUN([gl_LOCK_EARLY], [])
+	  ' $1/$dir/$file >$dir/$file
+	else
+	  rm -f $dir/$file
+	  cp_mark_as_generated $1/$dir/$file $dir/$file
+	fi
+      fi || exit
+    done
+
+    ig=$dir/.cvsignore
+    if test -n "$copied" && test -f $ig; then
+      echo "$copied" | sort -u - $ig | cmp -s - $ig ||
+      echo "$copied" | sort -u - $ig -o $ig || exit
+    fi
+  done
+}
+
+
+# Create boot temporary directories to import from gnulib and gettext.
+
+bt='.#bootmp'
+bt2=${bt}2
+rm -fr $bt $bt2 &&
+mkdir $bt $bt2 || exit
+
+# Import from gnulib.
+
+gnulib_tool_options="\
+ --import\
+ --no-changelog\
+ --aux-dir $bt/build-aux\
+ --doc-base $bt/doc\
+ --lib lib$package\
+ --m4-base $bt/m4/\
+ --source-base $bt/lib/\
+ --tests-base $bt/tests\
+"
+echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
+$gnulib_tool $gnulib_tool_options --import $gnulib_modules &&
+slurp $bt || exit
+
+
+# Import from gettext.
+
+echo "$0: (cd $bt2; autopoint) ..."
+cp configure.ac $bt2 &&
+(cd $bt2 && autopoint && rm configure.ac) &&
+slurp $bt2 $bt || exit
+
+rm -fr $bt $bt2 || exit
 
 
 # Reconfigure, getting other files.
 
-echo "$0: autoreconf --verbose ..."
-autoreconf --verbose || exit
+for command in \
+  'aclocal --force -I m4' \
+  'autoconf --force' \
+  'autoheader --force' \
+  'automake --add-missing --copy --force-missing';
+do
+  echo "$0: $command ..."
+  $command || exit
+done
 
 
-# We don't need intl, so remove it.
-# Remove aclocal.m4 too, so that it gets rebuilt.
-intl_files_to_remove='
-  aclocal.m4
-  intl
-'
-echo $0: rm -fr $intl_files_to_remove ...
-rm -fr $intl_files_to_remove || exit
+# Get some extra files from gnulib, overriding existing files.
 
-# Patch what appears to be a bug in gettext 0.14.1;
-# remove this once the bug is fixed.
-grep @top_builddir@ po/Makefile.in.in >/dev/null || {
-  echo "$0: prepending 'top_builddir=@top_builddir@' to po/Makefile.in.in ... "
-  old_contents=`cat po/Makefile.in.in` || exit
-  cat >po/Makefile.in.in <<EOF
-top_builddir=@top_builddir@
-$old_contents
-EOF
-}
-
-# Put bug-reporting address into po/Makevars.
-if test -d po; then
-  echo "$0: sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-$package@gnu.org/'" \
-      "po/Makevars.template >po/Makevars ..."
-  sed '/^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/' \
-      po/Makevars.template >po/Makevars
-fi
-
-
-if test -f src/parse-gram.c; then
-  # if src/parse-gram.[ch] are out of date, rebuild them.
-  parse_gram_y=`find src/parse-gram.y \
-		   '(' -newer src/parse-gram.c -o -newer src/parse-gram.h ')' \
-		   -print` || exit
-  case $parse_gram_y in
-  ?*)
-    echo "$0: warning: bootstrapping with old src/parse-gram.[ch] files."
-
-    echo "$0: touch -c src/parse-gram.[ch] ... "
-    touch -c src/parse-gram.[ch] || exit
-
-    echo "$0: ./configure --disable-nls ..."
-    ./configure --disable-nls || exit
-
-    echo "$0: (cd lib && make) ..."
-    (cd lib && make) || exit
-
-    echo "$0: (cd src && make) ..."
-    (cd src && make) || exit
-
-    echo "$0: rm -f src/parse-gram.c src/parse-gram.h ..."
-    rm -f src/parse-gram.c src/parse-gram.h || exit
-
-    echo "$0: (cd src && make parse-gram.c parse-gram.h) ..."
-    (cd src && make parse-gram.c parse-gram.h) || exit
-
-    echo "$0: make distclean ..."
-    make distclean || exit;;
+for file in $gnulib_extra_files; do
+  src=$GNULIB_SRCDIR/$file
+  case $file in
+  */INSTALL) dest=.;;
+  *) dest=$file;;
   esac
+  echo "$0: cp -fp $src $dest" &&
+  cp -fp $src $dest || exit
+done
+
+
+# Create gettext configuration.
+echo "$0: Creating po/Makevars from po/Makevars.template ..."
+rm -f po/Makevars
+sed '
+  /^EXTRA_LOCALE_CATEGORIES *=/s/=.*/= '"$EXTRA_LOCALE_CATEGORIES"'/
+  /^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/
+  /^XGETTEXT_OPTIONS *=/{
+    s/$/ \\/
+    a\
+	'"$XGETTEXT_OPTIONS"' $${end_of_xgettext_options+}
+  }
+' po/Makevars.template >po/Makevars
+
+if test -d runtime-po; then
+  # Likewise for runtime-po/Makevars, except also change a few other parameters.
+  rm -f runtime-po/Makevars
+  sed '
+    s/^\(DOMAIN\) *=.*/\1 = '"$package"'-runtime/
+    s/^\(subdir\) *=.*/\1 = runtime-po/
+    s/^\(XGETTEXT_OPTIONS\) *=.*/\1 = '"$XGETTEXT_OPTIONS_RUNTIME"'/
+  ' <po/Makevars >runtime-po/Makevars
+
+  # Copy identical files from po to runtime-po.
+  (cd po && cp -p Makefile.in.in *-quot *.header *.sed *.sin ../runtime-po)
 fi
 
 echo "$0: done.  Now you can run './configure'."

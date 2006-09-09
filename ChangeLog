@@ -1,3 +1,24 @@
+2006-09-09  Jim Meyering  <jim@meyering.net>
+
+	* Version 1.13.
+	* configure.ac: Remove GNULIB_AUTOCONF_SNIPPET.
+	(AC_INIT): Bump version to 1.13.
+
+	* src/system.h: Update from coreutils, with some tiny changes.
+
+	* src/cppi.l: Include "system.h" from %top to avoid redefinition
+	warnings about cpp symbols like INT8_MAX that are defined in the
+	generated cppi.c.
+
+	* src/Makefile.am (cpp-cond.c): Prepend "#include <config.h>",
+	when generating this file.
+
+	* Makefile.cfg (local-checks-to-skip): Skip three of the checks
+	that coreutils performs.
+
+	* bootstrap: Update from coreutils.
+	* bootstrap.conf: New file.
+
 2005-09-13  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.12.

@@ -3,6 +3,7 @@
 /* config.h must precede flex's inclusion of <stdio.h>
    in order for its _GNU_SOURCE definition to take effect.  */
 #include "config.h"
+#include "system.h"
 }
 
 %{ /* -*- C -*- */
@@ -26,7 +27,6 @@
 #define _(msgid) gettext (msgid)
 #define N_(msgid) msgid
 
-#include "system.h"
 #include "cpp.h"
 #include "error.h"
 #include "obstack.h"

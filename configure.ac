@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([GNU cppi],[1.12],[bug-cppi@gnu.org])
+AC_INIT([GNU cppi],[1.13],[bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR(build-aux)
@@ -24,8 +24,6 @@ GNU_PACKAGE="GNU $PACKAGE"
 AC_DEFINE_UNQUOTED(GNU_PACKAGE, "$GNU_PACKAGE",
   [The concatenation of the strings `GNU ', and PACKAGE.])
 AC_SUBST(GNU_PACKAGE)
-
-GNULIB_AUTOCONF_SNIPPET
 
 AM_GNU_GETTEXT_VERSION(0.13.1)
 
