@@ -4,6 +4,8 @@
 	* configure.ac: Remove GNULIB_AUTOCONF_SNIPPET.
 	(AC_INIT): Bump version to 1.13.
 
+	* .x-sc_unmarked_diagnostics: New file.
+
 	* src/system.h: Update from coreutils, with some tiny changes.
 
 	* src/cppi.l: Include "system.h" from %top to avoid redefinition
