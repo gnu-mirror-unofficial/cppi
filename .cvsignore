@@ -14,3 +14,5 @@ stamp-h1
 configure
 aclocal.m4
 Makefile.in
+INSTALL
+ABOUT-NLS
