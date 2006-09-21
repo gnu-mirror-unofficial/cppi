@@ -29,13 +29,35 @@ nl='
 LC_ALL=C
 export LC_ALL
 
+usage() {
+  echo >&2 "\
+Usage: $0 [OPTION]...
+Bootstrap this package from the CVS sources.
+
+Options:
+ --gnulib-srcdir=DIRNAME  Specify the local directory where gnulib
+                          sources reside.  Use this if you already
+                          have gnulib sources on your machine, and
+                          do not want to waste your bandwidth dowloading
+                          them again.
+ --force                  Bootstrap even if the sources didn't come from CVS.
+ --skip-po                Do not download po files.
+ --cvs-user=USERNAME      Set the CVS username to be used when accessing
+                          the gnulib repository.
+
+If the file .bootstrap.conf exists in the current working directory, its
+contents are read as shell variables to configure the bootstrap.
+
+Running without arguments will suffice in most cases.
+"
+}
 
 # Configuration.
 
 # List of gnulib modules needed.
 gnulib_modules=
 
-# Any extra gnulib files needed.
+# Any gnulib files needed that are not in modules.
 gnulib_files=
 
 # Translation Project URL, for the registry of all projects
@@ -61,7 +83,7 @@ extract_package_name='
 '
 package=`sed -n "$extract_package_name" configure.ac` || exit
 
-# Extra files from gnulib, which are not part of any module yet.
+# Extra files from gnulib, which override files from other sources.
 gnulib_extra_files='
 	build-aux/install-sh
 	build-aux/missing
@@ -86,6 +108,10 @@ XGETTEXT_OPTIONS='\\\
 # Files we don't want to import.
 excluded_files=
 
+# File that should exist with CVS checkout, but not with
+# the distributed version.
+CVS_only_file=CVS
+
 # Override the default configuration, if necessary.
 test -r bootstrap.conf && . ./bootstrap.conf
 
@@ -97,7 +123,7 @@ for option
 do
   case $option in
   --help)
-    echo "$0: usage: $0 [--gnulib-srcdir=DIR] [--cvs-user=USERNAME] [--skip-po]"
+    usage
     exit;;
   --gnulib-srcdir=*)
     GNULIB_SRCDIR=`expr "$option" : '--gnulib-srcdir=\(.*\)'`;;
@@ -105,11 +131,18 @@ do
     CVS_USER=`expr "$option" : '--cvs-user=\(.*\)'`;;
   --skip-po)
     SKIP_PO=t;;
+  --force)
+    CVS_only_file=;;
   *)
     echo >&2 "$0: $option: unknown option"
     exit 1;;
   esac
 done
+
+if test -n "$CVS_only_file" && test ! -r "$CVS_only_file"; then
+  echo "$0: Bootstrapping from a non-CVS distribution is a bit risky." >&2
+  exit 1
+fi
 
 echo "$0: Bootstrapping CVS $package..."
 
@@ -212,27 +245,73 @@ case $SKIP_PO in
   fi;;
 esac
 
+symlink_to_gnulib()
+{
+  src=$GNULIB_SRCDIR/$1
+  dst=${2-$1}
+  dot_dots=
+
+  case $src in
+  /*) ;;
+  *)
+    case /$dst/ in
+    *//* | */../* | */./* | /*/*/*/*/*/)
+       echo >&2 "$0: invalid symlink calculation: $src -> $dst"
+       exit 1;;
+    /*/*/*/*/)	dot_dots=../../../;;
+    /*/*/*/)	dot_dots=../../;;
+    /*/*/)	dot_dots=../;;
+    esac;;
+  esac
+
+  test -f "$src" && {
+    test -h "$dst" &&
+    src_ls=`ls -diL "$src" 2>/dev/null` && set $src_ls && src_i=$1 &&
+    dst_ls=`ls -diL "$dst" 2>/dev/null` && set $dst_ls && dst_i=$1 &&
+    test "$src_i" = "$dst_i" || {
+      echo "$0: ln -fs $dot_dots$src $dst" &&
+      ln -fs "$dot_dots$src" "$dst"
+    }
+  }
+}
+
 cp_mark_as_generated()
 {
   cp_src=$1
   cp_dst=$2
-  case $cp_dst in
-    *.[ch])             c1='/* '; c2=' */';;
-    *.texi)             c1='@c '; c2=     ;;
-    *.m4|*/Make*|Make*) c1='# ' ; c2=     ;;
-    *)                  c1=     ; c2=     ;;
-  esac
 
-  if test -z "$c1"; then
-    cp "$cp_src" "$cp_dst"
-    return
+  if cmp -s "$cp_src" "$GNULIB_SRCDIR/$cp_dst"; then
+    symlink_to_gnulib "$cp_dst"
+  else
+    case $cp_dst in
+      *.[ch])             c1='/* '; c2=' */';;
+      *.texi)             c1='@c '; c2=     ;;
+      *.m4|*/Make*|Make*) c1='# ' ; c2=     ;;
+      *)                  c1=     ; c2=     ;;
+    esac
+
+    if test -z "$c1"; then
+      cmp -s "$cp_src" "$cp_dst" || {
+	echo "$0: cp -f $cp_src $cp_dst" &&
+	cp -f "$cp_src" "$cp_dst"
+      }
+    else
+      # Copy the file first to get proper permissions if it
+      # doesn't already exist.  Then overwrite the copy.
+      cp "$cp_src" "$cp_dst-t" &&
+      (
+	echo "$c1-*- buffer-read-only: t -*- vi: set ro:$c2" &&
+	echo "${c1}DO NOT EDIT! GENERATED AUTOMATICALLY!$c2" &&
+	cat "$cp_src"
+      ) > $cp_dst-t &&
+      if cmp -s "$cp_dst-t" "$cp_dst"; then
+	rm -f "$cp_dst-t"
+      else
+	echo "$0: cp $cp_src $cp_dst # with edits" &&
+	mv -f "$cp_dst-t" "$cp_dst"
+      fi
+    fi
   fi
-
-  (
-    echo "$c1-*- buffer-read-only: t -*- vi: set ro:$c2"
-    echo "${c1}DO NOT EDIT! GENERATED AUTOMATICALLY!$c2"
-    cat "$cp_src"
-  ) >> "$cp_dst"
 }
 
 slurp() {
@@ -245,11 +324,14 @@ slurp() {
 	test "$dir/$file" = "$excluded_file" && continue 2
       done
       if test $file = Makefile.am; then
-	copied=$copied${sep}gnulib.mk; sep=$nl
-	echo "$0: Copying $1/$dir/$file to $dir/gnulib.mk ..." &&
-	rm -f $dir/gnulib.mk
-	sed '/^[^#].*\/intl/s/^/#/' $1/$dir/$file >$dir/gnulib.mk
-      elif test -r ${2-no/such/dir}/$dir/$file ||
+        copied=$copied${sep}gnulib.mk; sep=$nl
+	remove_intl='/^[^#].*\/intl/s/^/#/'
+        sed "$remove_intl" $1/$dir/$file | cmp -s - $dir/gnulib.mk || {
+	  echo "$0: Copying $1/$dir/$file to $dir/gnulib.mk ..." &&
+	  rm -f $dir/gnulib.mk &&
+	  sed "$remove_intl" $1/$dir/$file >$dir/gnulib.mk
+	}
+      elif { test "${2+set}" = set && test -r $2/$dir/$file; } ||
 	   grep -F "/$file/" $dir/CVS/Entries 2>/dev/null |
 	     grep -q '^/[^/]*/[0-9]'; then
 	echo "$0: $dir/$file overrides $1/$dir/$file"
@@ -267,7 +349,6 @@ slurp() {
 	      AC_DEFUN([gl_LOCK_EARLY], [])
 	  ' $1/$dir/$file >$dir/$file
 	else
-	  rm -f $dir/$file
 	  cp_mark_as_generated $1/$dir/$file $dir/$file
 	fi
       fi || exit
@@ -305,6 +386,10 @@ echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
 $gnulib_tool $gnulib_tool_options --import $gnulib_modules &&
 slurp $bt || exit
 
+for file in $gnulib_files; do
+  symlink_to_gnulib $file || exit
+done
+
 
 # Import from gettext.
 
@@ -332,13 +417,11 @@ done
 # Get some extra files from gnulib, overriding existing files.
 
 for file in $gnulib_extra_files; do
-  src=$GNULIB_SRCDIR/$file
   case $file in
-  */INSTALL) dest=.;;
-  *) dest=$file;;
+  */INSTALL) dst=INSTALL;;
+  *) dst=$file;;
   esac
-  echo "$0: cp -fp $src $dest" &&
-  cp -fp $src $dest || exit
+  symlink_to_gnulib $file $dst || exit
 done
 
 

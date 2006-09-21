@@ -1,11 +1,12 @@
 # Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.60)
 AC_INIT([GNU cppi],[1.13],[bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR(build-aux)
 AM_CONFIG_HEADER(config.h:config.hin)
 
-AM_INIT_AUTOMAKE([1.9.3 gnits dist-bzip2])
+AM_INIT_AUTOMAKE([1.9.6 gnits dist-bzip2])
 
 AM_MISSING_PROG(HELP2MAN, help2man)
 AC_PROG_CC

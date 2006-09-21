@@ -1,3 +1,8 @@
+2006-09-21  Jim Meyering  <jim@meyering.net>
+
+	* configure.ac: Require autoconf-2.60 and automake-1.9.6.
+	* bootstrap: Import from coreutils.
+
 2006-09-09  Jim Meyering  <jim@meyering.net>
 
 	* Version 1.13.
