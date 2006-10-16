@@ -1,0 +1,12 @@
+*~
+*.o
+.deps
+Makefile
+Makefile.in
+cpp-cond.c
+cpp-indent
+cpp.h
+cppi
+cppi.c
+lex.backup
+localedir.h
