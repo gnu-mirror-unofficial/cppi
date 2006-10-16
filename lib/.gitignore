@@ -1,16 +1,12 @@
-*~
 *.o
+*~
 .deps
 Makefile
 Makefile.in
-alloca.h
-configmake.h
-inttypes.h
-libcppi.a
-stdint.h
 __fpending.c
 __fpending.h
 alloca.c
+alloca.h
 alloca_.h
 atexit.c
 basename.c
@@ -18,6 +14,7 @@ close-stream.c
 close-stream.h
 closeout.c
 closeout.h
+configmake.h
 dirname.c
 dirname.h
 error.c
@@ -35,7 +32,9 @@ getopt_int.h
 gettext.h
 gnulib.mk
 intprops.h
+inttypes.h
 inttypes_.h
+libcppi.a
 malloc.c
 memchr.c
 memcmp.c
@@ -53,6 +52,7 @@ safe-write.c
 safe-write.h
 stat-macros.h
 stdbool_.h
+stdint.h
 stdint_.h
 stpcpy.c
 stpcpy.h

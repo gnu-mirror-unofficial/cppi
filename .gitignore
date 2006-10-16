@@ -4,7 +4,6 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache
-stamp-h1
 config.h
 config.hin
 config.log
@@ -12,3 +11,4 @@ config.status
 configure
 cppi-*.tar.bz2
 cppi-*.tar.gz
+stamp-h1
