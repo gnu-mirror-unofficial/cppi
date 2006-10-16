@@ -1,3 +1,7 @@
+2006-10-16  Jim Meyering  <jim@meyering.net>
+
+	* bootstrap (slurp): Also update .gitignore if it exists.
+
 2006-10-14  Jim Meyering  <jim@meyering.net>
 
 	* src/system.h (EXIT_FAILURE, EXIT_SUCCESS): Remove definitions.

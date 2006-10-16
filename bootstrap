@@ -394,6 +394,11 @@ slurp() {
       echo "$copied" | sort -u - $ig | cmp -s - $ig ||
       echo "$copied" | sort -u - $ig -o $ig || exit
     fi
+    ig=$dir/.gitignore
+    if test -n "$copied" && test -f $ig; then
+      echo "$copied" | sort -u - $ig | cmp -s - $ig ||
+      echo "$copied" | sort -u - $ig -o $ig || exit
+    fi
   done
 }
 
