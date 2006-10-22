@@ -1,3 +1,8 @@
+2006-10-22  Jim Meyering  <jim@meyering.net>
+
+	* NEWS: Record the 6.4 release date.
+	* Makefile.maint: Update to work with git.
+
 2006-10-16  Jim Meyering  <jim@meyering.net>
 
 	* bootstrap (slurp): Also update .gitignore if it exists.
@@ -15,7 +20,6 @@
 
 2006-09-09  Jim Meyering  <jim@meyering.net>
 
-	* Version 1.13.
 	* configure.ac: Remove GNULIB_AUTOCONF_SNIPPET.
 	(AC_INIT): Bump version to 1.13.
 	Add AM_GNU_GETTEXT([external]).
