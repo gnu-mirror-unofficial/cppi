@@ -487,7 +487,7 @@ maintainer-distcheck:
 # checks fail.  Also, make sure the NEWS file is up-to-date.
 # FIXME: use dist-hook/my-dist like distcheck-hook/my-distcheck.
 cvs-dist: $(local-check) cvs-check maintainer-distcheck
-	$(GIT) tag -c $(this-vc-tag)
+	$(VC) tag $(this-vc-tag)
 	$(MAKE) dist
 
 # Use this to make sure we don't run these programs when building
