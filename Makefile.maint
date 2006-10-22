@@ -486,7 +486,7 @@ maintainer-distcheck:
 # Tag before making distribution.  Also, don't make a distribution if
 # checks fail.  Also, make sure the NEWS file is up-to-date.
 # FIXME: use dist-hook/my-dist like distcheck-hook/my-distcheck.
-cvs-dist: $(local-check) cvs-check maintainer-distcheck
+vc-dist: $(local-check) cvs-check maintainer-distcheck
 	$(VC) tag $(this-vc-tag)
 	$(MAKE) dist
 
@@ -584,7 +584,7 @@ alpha beta major: news-date-check changelog-check $(local-check)
 	  && { echo $(VERSION) | grep -E '^[0-9]+(\.[0-9]+)+$$'	\
 	       || { echo "invalid version string: $(VERSION)" 1>&2; exit 1;};}\
 	  || :
-	$(MAKE) cvs-dist
+	$(MAKE) vc-dist
 	$(MAKE) $(xd-delta)
 	$(MAKE) -s announcement RELEASE_TYPE=$@ > /tmp/announce-$(my_distdir)
 	ln $(rel-files) $(release_archive_dir)
