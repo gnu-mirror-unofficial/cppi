@@ -1,5 +1,7 @@
 2006-10-22  Jim Meyering  <jim@meyering.net>
 
+	Version 1.13.
+
 	* NEWS: Record the 6.4 release date.
 	* Makefile.maint: Update to work with git.
 
