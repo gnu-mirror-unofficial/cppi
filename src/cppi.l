@@ -122,7 +122,7 @@ static void gobble_line (unsigned int *);
 /* Include gperf-generated hash function.  */
 #include "cpp-cond.c"
 
-#ifdef __GNUC__
+#if __GNUC__ && ! __STRICT_ANSI__
 /* this use of a statement-expression works only with gcc.  */
 # define INPUT_AND_ECHO()			\
  ({						\
@@ -134,6 +134,7 @@ static void gobble_line (unsigned int *);
 #else
 /* Although the above is a macro, this function definition must
    follow the declaration of inhibit_output, above.  */
+static int input (void);
 static int
 INPUT_AND_ECHO (void)
 {
@@ -613,35 +614,48 @@ usage (int status)
     }
   else
     {
-      printf ("\
+      printf (_("\
 Usage: %s [FILE]\n\
   or:  %s -c [OPTION] [FILE]...\n\
+"), program_name, program_name);
+      fputs (_("\
 \n\
 Indent the C preprocessor directives in FILE to reflect their nesting\n\
 and ensure that there is exactly one space character between each #if,\n\
 #elif, #define directive and the following token, and write the result\n\
+"), stdout);
+      fputs (_("\
 to standard output.  The number of spaces between the `#' and the following\n\
 directive must correspond to the level of nesting of that directive.\n\
 With no FILE, or when FILE is -, read standard input.\n\
+"), stdout);
+      fputs (_("\
 \n\
   -a, --ansi             when checking, fail if text follows #else or #endif\n\
   -c, --check            set exit code, but don't produce any output\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
 			   print to stdout only the names of files that\n\
 			   are not properly indented\n\
+"), stdout);
+      fputs (_("\
   -m, --max-string-length=LENGTH\n\
                          fail if there is a double-quoted string longer\n\
                            than LENGTH;  if LENGTH is 0 (the default),\n\
                            then there is no limit\n\
-      --help             print this help, then exit\n\
-      --version          print version information, then exit\n\
-\n\
+"), stdout);
+      fputs (HELP_OPTION_DESCRIPTION, stdout);
+      fputs (VERSION_OPTION_DESCRIPTION, stdout);
+      fputs (_("\n\
 With the -c option, don't write to stdout.  Instead, check the\n\
 indentation of the specified files giving diagnostics for preprocessor\n\
 lines that aren't properly indented or are otherwise invalid.\n\
+"), stdout);
+      fputs (_("\
 \n\
 Note that --ansi without --check does not correct the problem of\n\
 non-ANSI text following #else and #endif directives.\n\
+"), stdout);
+      fputs (_("\
 \n\
 The exit code will be one of these:\n\
   0 all directives properly indented\n\
@@ -650,12 +664,12 @@ The exit code will be one of these:\n\
   2 #if/#endif mismatch\n\
   3 file (e.g. read/write) error\n\
   4 found a double-quoted string longer than the specified maximum\n\
+"), stdout);
+      fputs (_("\
 \n\
 A pragma directive may have its `#' indented.\n\
-\n\
-Report bugs to <bug-cppi@gnu.org>.\n\
-",
-	      program_name, program_name);
+"), stdout);
+      printf (_("\nReport bugs to <%s>.\n"), PACKAGE_BUGREPORT);
     }
   exit (status == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

@@ -1,5 +1,13 @@
 2007-01-30  Jim Meyering  <jim@meyering.net>
 
+	* src/cppi.l (INPUT_AND_ECHO): Guard ({})-using definition
+	with "#if __GNUC__ && ! __STRICT_ANSI__".
+	Put a static declaration of "input" in the #else block.
+	(usage): Divide --help output string into smaller chunks,
+	each of which is no larger than the C89 max of 509.
+	Use the HELP_OPTION_DESCRIPTION and VERSION_OPTION_DESCRIPTION macros.
+	Use the PACKAGE_BUGREPORT macro.
+
 	* src/system.h: Don't include "stpcpy.h".
 
 2006-10-22  Jim Meyering  <jim@meyering.net>
