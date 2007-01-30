@@ -2,7 +2,7 @@
 # This Makefile fragment is shared between the coreutils,
 # CPPI, Bison, and Autoconf.
 
-## Copyright (C) 2001-2006 Free Software Foundation, Inc.
+## Copyright (C) 2001-2007 Free Software Foundation, Inc.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ GZIP_ENV = '--no-name --best $(gzip_rsyncable)'
 CVS = cvs
 GIT = git
 VC = $(GIT)
+VC-tag = git-tag -s -m '$(VERSION)'
 
 CVS_LIST = build-aux/vc-list-files
 
@@ -97,12 +98,13 @@ syntax-check: $(syntax-check-rules)
 # FIXME: don't allow `#include .strings\.h' anywhere
 
 sc_cast_of_argument_to_free:
-	@grep -nE '\<free \(\(' $(srcdir)/{lib,src}/*.[chly] &&		\
+	@grep -nE '\<free \(\(' $$($(CVS_LIST_EXCEPT)) &&		\
 	  { echo '$(ME): don'\''t cast free argument' 1>&2;		\
 	    exit 1; } || :
 
 sc_cast_of_x_alloc_return_value:
-	@grep -nE --exclude=$(srcdir)/lib/regex.c			\
+	@grep -nE --exclude=$(srcdir)/lib/xalloc.h			\
+		--exclude=$(srcdir)/lib/regex.c				\
 	    '\*\) *x(m|c|re)alloc\>'					\
 	    $(srcdir)/{lib,src}/*.[chy] &&				\
 	  { echo '$(ME): don'\''t cast x*alloc return value' 1>&2;	\
@@ -329,10 +331,16 @@ patch-check:
 	cp -a src src-c89
 	(cd src-c89; patch -V never --fuzz=0) < src/c99-to-c89.diff \
 	  > $@.1 2>&1
+	if test "$${REGEN_PATCH+set}" = set; then \
+	  diff -upr src src-c89 > new-diff || : ; fi
 	grep -v '^patching file ' $@.1 > $@.2 || :
-	fail=0; test -s $@.2 && fail=1 || : ; \
-	rm -rf src-c89 $@.1 $@.2; \
-	test $$fail = 0
+	msg=ok; test -s $@.2 && msg='fuzzy patch' || : ;	\
+	rm -f src-c89/*.o || msg='rm failed';			\
+	$(MAKE) -C src-c89 CFLAGS='-Wdeclaration-after-statement -Werror' \
+	  || msg='compile failure with extra options';		\
+	rm -rf src-c89 $@.1 $@.2;				\
+	test "$$msg" = ok && : || echo "$$msg" 1>&2;		\
+	test "$$msg" = ok
 
 # Ensure that date's --help output stays in sync with the info
 # documentation for GNU strftime.  The only exception is %N,
@@ -441,12 +449,19 @@ writable-files:
 	test "$$fail" && exit 1 || :
 
 v_etc_file = lib/version-etc.c
+sample-test = tests/sample-test
 # Make sure that the copyright date in $(v_etc_file) is up to date.
 copyright-check:
 	@if test -f $(v_etc_file); then \
 	  grep 'enum { COPYRIGHT_YEAR = '$$(date +%Y)' };' $(v_etc_file) \
 	    >/dev/null \
 	  || { echo 'out of date copyright in $(v_etc_file); update it' 1>&2; \
+	       exit 1; }; \
+	fi
+	@if test -f $(sample-test); then \
+	  grep '# Copyright (C) '$$(date +%Y)' Free' $(sample-test) \
+	    >/dev/null \
+	  || { echo 'out of date copyright in $(sample-test); update it' 1>&2; \
 	       exit 1; }; \
 	fi
 
@@ -487,7 +502,7 @@ maintainer-distcheck:
 # checks fail.  Also, make sure the NEWS file is up-to-date.
 # FIXME: use dist-hook/my-dist like distcheck-hook/my-distcheck.
 vc-dist: $(local-check) cvs-check maintainer-distcheck
-	$(VC) tag $(this-vc-tag)
+	$(VC-tag) $(this-vc-tag)
 	$(MAKE) dist
 
 # Use this to make sure we don't run these programs when building
@@ -522,6 +537,10 @@ my-distcheck: $(local-check) $(release_archive_dir)/$(prev-tgz)
 	(cd $(t) && mv $(distdir) $(distdir).old	\
 	  && $(AMTAR) -zxf - ) < $(distdir).tar.gz
 	diff -ur $(t)/$(distdir).old $(t)/$(distdir)
+	cd $(t)/$(distdir)				\
+	  && ./configure --disable-largefile		\
+	       CFLAGS='-Werror -ansi -pedantic -Wno-long-long' \
+	  && $(MAKE)
 	-rm -rf $(t)
 	@echo "========================"; \
 	echo "$(distdir).tar.gz is ready for distribution"; \
@@ -543,17 +562,22 @@ prev-tgz = $(PACKAGE)-$(PREV_VERSION).tar.gz
 xd-delta = $(PACKAGE)-$(PREV_VERSION)-$(VERSION).xdelta
 
 rel-files = $(xd-delta) $(DIST_ARCHIVES)
+
+# Approximate date of last "update" by the date on the ChangeLog file.
+gnulib_snapshot_date = \
+  $$(date -u --date $$(stat --printf @%Y $(gnulib_dir)/ChangeLog) \
+     '+%Y-%m-%d %T %z')
 announcement: NEWS ChangeLog $(rel-files)
-	@./announce-gen							\
+	@./build-aux/announce-gen					\
 	    --release-type=$(RELEASE_TYPE)				\
 	    --package=$(PACKAGE)					\
 	    --prev=$(PREV_VERSION)					\
 	    --curr=$(VERSION)						\
-	    --release-archive-directory=$(release_archive_dir)		\
 	    --gpg-key-id=$(gpg_key_ID)					\
 	    --news=NEWS							\
-	    $(addprefix --url-dir=, $(url_dir_list))			\
-
+	    --bootstrap-tools=autoconf,automake,bison,gnulib		\
+            --gnulib-snapshot-date=$(gnulib_snapshot_date)		\
+	    $(addprefix --url-dir=, $(url_dir_list))
 
 ## ---------------- ##
 ## Updating files.  ##
@@ -591,4 +615,6 @@ alpha beta major: news-date-check changelog-check $(local-check)
 	chmod a-w $(rel-files)
 	$(MAKE) -s emit_upload_commands RELEASE_TYPE=$@
 	echo $(VERSION) > $(prev_version_file)
-	$(VC) commit -m. $(prev_version_file)
+	$(VC) commit -m \
+	  '$(prev_version_file): Record previous version: $(VERSION).' \
+	  $(prev_version_file)

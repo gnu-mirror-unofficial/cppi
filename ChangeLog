@@ -1,7 +1,11 @@
 2007-01-30  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.maint: Upgrade from coreutils.
+	* bootstrap: Likewise.
+	* bootstrap.conf: Add announce-gen.
+
 	* src/cppi.l (INPUT_AND_ECHO): Guard ({})-using definition
-	with "#if __GNUC__ && ! __STRICT_ANSI__".
+	with "#if __GNUC__ && ! __STRICT_ANSI__", not just __GNUC__.
 	Put a static declaration of "input" in the #else block.
 	(usage): Divide --help output string into smaller chunks,
 	each of which is no larger than the C89 max of 509.
