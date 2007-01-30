@@ -1,3 +1,7 @@
+2007-01-30  Jim Meyering  <jim@meyering.net>
+
+	* src/system.h: Don't include "stpcpy.h".
+
 2006-10-22  Jim Meyering  <jim@meyering.net>
 
 	Version 1.13.

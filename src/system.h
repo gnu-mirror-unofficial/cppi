@@ -1,5 +1,5 @@
-/* system-dependent definitions for coreutils
-   Copyright (C) 1989, 1991-2006 Free Software Foundation, Inc.
+/* system-dependent definitions; derived from those of coreutils
+   Copyright (C) 1989, 1991-2007 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -93,7 +93,6 @@ you must include <sys/types.h> before including this file
    memcpy otherwise.  */
 
 #include <string.h>
-#include "stpcpy.h"
 
 #include <errno.h>
 
