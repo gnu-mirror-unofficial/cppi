@@ -18,9 +18,11 @@ getopt.m4
 gettext.m4
 glibc21.m4
 gnulib-cache.m4
+gnulib-common.m4
 gnulib-comp.m4
 gnulib-tool.m4
 iconv.m4
+inline.m4
 intmax.m4
 inttypes-h.m4
 inttypes-pri.m4
@@ -55,6 +57,7 @@ stdint.m4
 stdint_h.m4
 stpcpy.m4
 strcspn.m4
+string_h.m4
 strndup.m4
 strnlen.m4
 strtod.m4
@@ -66,7 +69,9 @@ utimbuf.m4
 utime.m4
 utimes-null.m4
 utimes.m4
+wchar.m4
 wchar_t.m4
+wctype.m4
 wint_t.m4
 xalloc.m4
 xstrndup.m4
