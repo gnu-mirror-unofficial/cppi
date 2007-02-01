@@ -11,7 +11,7 @@ CLEANFILES = cpp.h lex.backup
 
 GPERF = gperf
 
-AM_CPPFLAGS = -I.. -I$(srcdir) -I$(top_srcdir)/lib -I../lib
+AM_CPPFLAGS = -I$(srcdir) -I$(top_srcdir)/lib -I../lib
 
 LDADD = ../lib/libcppi.a $(LIBINTL) ../lib/libcppi.a
 

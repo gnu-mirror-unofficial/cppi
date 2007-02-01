@@ -1,3 +1,8 @@
+2007-02-01  Jim Meyering  <jim@meyering.net>
+
+	* configure.ac: Put config.h in lib/.
+	* src/Makefile.am (AM_CPPFLAGS): Remove "-I..".  No longer needed.
+
 2007-01-30  Jim Meyering  <jim@meyering.net>
 
 	* Makefile.maint: Upgrade from coreutils.

@@ -4,7 +4,7 @@ AC_INIT([GNU cppi],[1.13],[bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR(build-aux)
-AM_CONFIG_HEADER(config.h:config.hin)
+AM_CONFIG_HEADER([lib/config.h:config.hin])
 
 AM_INIT_AUTOMAKE([1.9.6 gnits dist-bzip2])
 
