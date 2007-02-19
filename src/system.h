@@ -109,7 +109,6 @@ you must include <sys/types.h> before including this file
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <exit.h>
 
 /* Exit statuses for programs like 'env' that exec other programs.
    EXIT_FAILURE might not be 1, so use EXIT_FAIL in such programs.  */
