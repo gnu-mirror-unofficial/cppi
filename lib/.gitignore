@@ -56,6 +56,8 @@ stdbool.h
 stdbool_.h
 stdint.h
 stdint_.h
+stdlib.h
+stdlib_.h
 stpcpy.c
 stpcpy.h
 strcspn.c
@@ -68,6 +70,8 @@ strnlen.c
 strnlen.h
 strtod.c
 strtol.c
+time.h
+time_.h
 timespec.h
 unistd.h
 unistd_.h

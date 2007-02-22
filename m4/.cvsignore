@@ -57,6 +57,7 @@ stdarg.m4
 stdbool.m4
 stdint.m4
 stdint_h.m4
+stdlib_h.m4
 stpcpy.m4
 strcspn.m4
 string_h.m4
@@ -64,6 +65,7 @@ strndup.m4
 strnlen.m4
 strtod.m4
 strtol.m4
+time_h.m4
 timespec.m4
 unistd_h.m4
 unlocked-io.m4
