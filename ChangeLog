@@ -1,5 +1,8 @@
 2007-02-25  Jim Meyering  <jim@meyering.net>
 
+	* README-hacking: Renamed from README-cvs, and sync'd from coreutils.
+	* README-cvs: Renamed to README-hacking.
+
 	* bootstrap: Update from coreutils.
 
 2007-02-22  Jim Meyering  <jim@meyering.net>
