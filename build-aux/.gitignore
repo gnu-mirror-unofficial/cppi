@@ -1,8 +1,10 @@
 announce-gen
+compile
 config.guess
 config.rpath
 config.sub
 depcomp
+gnupload
 install-sh
 link-warning.h
 mdate-sh
