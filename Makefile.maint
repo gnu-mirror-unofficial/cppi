@@ -301,7 +301,7 @@ sc_trailing_blank:
 # Match lines like the following, but where there is only one space
 # between the options and the description:
 #   -D, --all-repeated[=delimit-method]  print all duplicate lines\n
-longopt_re = --[a-z][0-9A-Za-z-]*(\[=[0-9A-Za-z-]*\])?
+longopt_re = --[a-z][0-9A-Za-z-]*(\[?=[0-9A-Za-z-]*\]?)?
 sc_two_space_separator_in_usage:
 	@grep -nE '^   *(-[A-Za-z],)? $(longopt_re) [^ ].*\\$$'		\
 	    $$($(CVS_LIST_EXCEPT)) &&					\
@@ -329,7 +329,7 @@ sc_useless_cpp_parens:
 patch-check:
 	rm -rf src-c89 $@.1 $@.2
 	cp -a src src-c89
-	(cd src-c89; patch -V never --fuzz=0) < src/c99-to-c89.diff \
+	(cd src-c89; patch -p2 -V never --fuzz=0) < src/c99-to-c89.diff \
 	  > $@.1 2>&1
 	if test "$${REGEN_PATCH+set}" = set; then \
 	  diff -upr src src-c89 > new-diff || : ; fi
@@ -539,7 +539,7 @@ my-distcheck: $(local-check) $(release_archive_dir)/$(prev-tgz)
 	diff -ur $(t)/$(distdir).old $(t)/$(distdir)
 	cd $(t)/$(distdir)				\
 	  && ./configure --disable-largefile		\
-	       CFLAGS='-Werror -ansi -pedantic -Wno-long-long' \
+	       CFLAGS='-O -Werror -ansi -pedantic -Wno-long-long' \
 	  && $(MAKE)
 	-rm -rf $(t)
 	@echo "========================"; \
@@ -564,11 +564,10 @@ xd-delta = $(PACKAGE)-$(PREV_VERSION)-$(VERSION).xdelta
 rel-files = $(xd-delta) $(DIST_ARCHIVES)
 
 # Approximate date of last "update" by the date on the ChangeLog file.
-gnulib_snapshot_date = \
-  $$(date -u --date $$(stat --printf @%Y $(gnulib_dir)/ChangeLog) \
-     '+%Y-%m-%d %T %z')
 announcement: NEWS ChangeLog $(rel-files)
-	@./build-aux/announce-gen					\
+	@cl_date=$$(stat --printf @%Y $(gnulib_dir)/ChangeLog);		\
+	utc_date=$$(date -u --date $$cl_date '+%Y-%m-%d %T %z');	\
+	./build-aux/announce-gen					\
 	    --release-type=$(RELEASE_TYPE)				\
 	    --package=$(PACKAGE)					\
 	    --prev=$(PREV_VERSION)					\
@@ -576,7 +575,7 @@ announcement: NEWS ChangeLog $(rel-files)
 	    --gpg-key-id=$(gpg_key_ID)					\
 	    --news=NEWS							\
 	    --bootstrap-tools=autoconf,automake,bison,gnulib		\
-            --gnulib-snapshot-date=$(gnulib_snapshot_date)		\
+	    --gnulib-snapshot-time-stamp="$$utc_date"			\
 	    $(addprefix --url-dir=, $(url_dir_list))
 
 ## ---------------- ##
