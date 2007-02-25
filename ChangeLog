@@ -1,3 +1,7 @@
+2007-02-25  Jim Meyering  <jim@meyering.net>
+
+	* bootstrap: Update from coreutils.
+
 2007-02-22  Jim Meyering  <jim@meyering.net>
 
 	* bootstrap: Update from coreutils.
