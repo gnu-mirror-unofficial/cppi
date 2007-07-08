@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Bootstrap this package from CVS.
+# Bootstrap this package from checked-out sources.
 
 # Copyright (C) 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 
@@ -29,6 +29,8 @@ nl='
 LC_ALL=C
 export LC_ALL
 
+local_gl_dir=gl
+
 # Temporary directory names.
 bt='._bootmp'
 bt_regex=`echo "$bt"| sed 's/\./[.]/g'`
@@ -49,10 +51,10 @@ Options:
  --force                  Attempt to bootstrap even if the sources seem
                           not to have been checked out.
  --skip-po                Do not download po files.
- --cvs-user=USERNAME      Set the CVS username to be used when accessing
-                          the gnulib repository.
+ --cvs-user=USERNAME      Set the username to use when checking out
+                          sources from the gnulib repository.
 
-If the file .bootstrap.conf exists in the current working directory, its
+If the file bootstrap.conf exists in the current working directory, its
 contents are read as shell variables to configure the bootstrap.
 
 Running without arguments will suffice in most cases.
@@ -60,6 +62,9 @@ Running without arguments will suffice in most cases.
 }
 
 # Configuration.
+
+# Name of the Makefile.am
+gnulib_mk=gnulib.mk
 
 # List of gnulib modules needed.
 gnulib_modules=
@@ -69,8 +74,7 @@ gnulib_files=
 
 # Translation Project URL, for the registry of all projects
 # and for the translation-team master directory.
-TP_URL='http://www.iro.umontreal.ca/translation/registry.cgi?domain='
-TP_PO_URL='http://www.iro.umontreal.ca/translation/teams/PO/'
+TP_URL="http://translationproject.org/latest/"
 
 extract_package_name='
   /^AC_INIT(/{
@@ -89,18 +93,23 @@ extract_package_name='
   }
 '
 package=`sed -n "$extract_package_name" configure.ac` || exit
+gnulib_name=lib$package
 
+build_aux=build-aux
 # Extra files from gnulib, which override files from other sources.
-gnulib_extra_files='
-	build-aux/install-sh
-	build-aux/missing
-	build-aux/mdate-sh
-	build-aux/texinfo.tex
-	build-aux/depcomp
-	build-aux/config.guess
-	build-aux/config.sub
+gnulib_extra_files="
+	$build_aux/install-sh
+	$build_aux/missing
+	$build_aux/mdate-sh
+	$build_aux/texinfo.tex
+	$build_aux/depcomp
+	$build_aux/config.guess
+	$build_aux/config.sub
 	doc/INSTALL
-'
+"
+
+# Additional gnulib-tool options to use.  Use "\newline" to break lines.
+gnulib_tool_option_extras=
 
 # Other locale categories that need message catalogs.
 EXTRA_LOCALE_CATEGORIES=
@@ -117,7 +126,7 @@ excluded_files=
 
 # File that should exist in the top directory of a checked out hierarchy,
 # but not in a distribution tarball.
-CVS_only_file=README-hacking
+checkout_only_file=README-hacking
 
 # Whether to use copies instead of symlinks.
 copy=false
@@ -142,7 +151,7 @@ do
   --skip-po)
     SKIP_PO=t;;
   --force)
-    CVS_only_file=;;
+    checkout_only_file=;;
   --copy)
     copy=true;;
   *)
@@ -151,12 +160,43 @@ do
   esac
 done
 
-if test -n "$CVS_only_file" && test ! -r "$CVS_only_file"; then
+if test -n "$checkout_only_file" && test ! -r "$checkout_only_file"; then
   echo "$0: Bootstrapping from a non-checked-out distribution is risky." >&2
   exit 1
 fi
 
-echo "$0: Bootstrapping CVS $package..."
+# If $STR is not already on a line by itself in $FILE, insert it,
+# sorting the new contents of the file and replacing $FILE with the result.
+insert_sorted_if_absent() {
+  file=$1
+  str=$2
+  echo "$str" | sort -u - $file | cmp -s - $file \
+    || echo "$str" | sort -u - $file -o $file \
+    || exit 1
+}
+
+# Die if there is no AC_CONFIG_AUX_DIR($build_aux) line in configure.ac.
+found_aux_dir=no
+grep '^[	 ]*AC_CONFIG_AUX_DIR(\['"$build_aux"'\])' configure.ac \
+    >/dev/null && found_aux_dir=yes
+grep '^[	 ]*AC_CONFIG_AUX_DIR('"$build_aux"')' configure.ac \
+    >/dev/null && found_aux_dir=yes
+if test $found_aux_dir = no; then
+  echo "$0: expected line not found in configure.ac. Add the following:" >&2
+  echo "  AC_CONFIG_AUX_DIR([$build_aux])" >&2
+  exit 1
+fi
+
+# If $build_aux doesn't exist, create it now, otherwise some bits
+# below will malfunction.  If creating it, also mark it as ignored.
+if test ! -d $build_aux; then
+  mkdir $build_aux
+  for ig in .cvsignore .gitignore; do
+    test -f $ig && insert_sorted_if_absent $ig $build_aux
+  done
+fi
+
+echo "$0: Bootstrapping from checked-out $package sources..."
 
 cleanup_gnulib() {
   status=$?
@@ -210,31 +250,12 @@ get_translations() {
   ?*)
     echo "$0: getting translations into $subdir for $domain..." &&
 
-    (cd $subdir && rm -f dummy `ls | sed -n '/\.gmo$/p; /\.po/p'`) &&
-    $WGET_COMMAND -O "$subdir/$domain.html" "$TP_URL$domain" &&
-
-    sed -n 's|.*"http://[^"]*/translation/teams/PO/\([^/"]*\)/'"$domain"'-\([^/"]*\)\.[^."]*\.po".*|\1.\2|p' <"$subdir/$domain.html" |
-    sort -k 1,1 -k 2,2n -k2,2 -k3,3n -k3,3 -k4,4n -k4,4 -k5,5n -k5.5 |
-    awk -F. '
-      { if (lang && $1 != lang) print lang, ver }
-      { lang = $1; ver = substr($0, index($0, ".") + 1) }
-      END { if (lang) print lang, ver }
-    ' | awk -v domain="$domain" -v subdir="$subdir" '
-      {
-	lang = $1
-	ver = $2
-	urlfmt = ""
-	printf "{ $WGET_COMMAND -O %s/%s.po '\'"$TP_PO_URL"'/%s/%s-%s.%s.po'\'' &&\n", subdir, lang, lang, domain, ver, lang
-	printf "  msgfmt -c -o /dev/null %s/%s.po || {\n", subdir, lang
-	printf "    echo >&2 '\'"$0"': omitting translation for %s'\''\n", lang
-	printf "    rm -f %s/%s.po; }; } &&\n", subdir, lang
-      }
-      END { print ":" }
-    ' | WGET_COMMAND="$WGET_COMMAND" sh;;
+    (cd $subdir && rm -f dummy `ls | sed -n '/\.gmo$/p; /\.po/p'` &&
+     $WGET_COMMAND -r -l1 -nd -np -A.po $TP_URL/$domain)
+    ;;
   esac &&
   ls "$subdir"/*.po 2>/dev/null |
-    sed 's|.*/||; s|\.po$||' >"$subdir/LINGUAS" &&
-  rm -f "$subdir/$domain.html"
+    sed 's|.*/||; s|\.po$||' >"$subdir/LINGUAS"
 }
 
 case $SKIP_PO in
@@ -259,12 +280,18 @@ case $SKIP_PO in
   fi;;
 esac
 
-symlink_to_gnulib()
+symlink_to_dir()
 {
-  src=$GNULIB_SRCDIR/$1
-  dst=${2-$1}
+  src=$1/$2
+  dst=${3-$2}
 
   test -f "$src" && {
+
+    # If the destination directory doesn't exist, create it.
+    # This is required at least for "lib/uniwidth/cjk.h".
+    dst_dir=`dirname "$dst"`
+    test -d "$dst_dir" || mkdir -p "$dst_dir"
+
     if $copy; then
       {
 	test ! -h "$dst" || {
@@ -309,7 +336,9 @@ cp_mark_as_generated()
   cp_dst=$2
 
   if cmp -s "$cp_src" "$GNULIB_SRCDIR/$cp_dst"; then
-    symlink_to_gnulib "$cp_dst"
+    symlink_to_dir "$GNULIB_SRCDIR" "$cp_dst"
+  elif cmp -s "$cp_src" "$local_gl_dir/$cp_dst"; then
+    symlink_to_dir $local_gl_dir "$cp_dst"
   else
     case $cp_dst in
       *.[ch])             c1='/* '; c2=' */';;
@@ -358,16 +387,6 @@ version_controlled_file() {
   test $found = yes
 }
 
-# If $STR is not already on a line by itself in $FILE, insert it,
-# sorting the new contents of the file and replacing $FILE with the result.
-insert_sorted_if_absent() {
-  file=$1
-  str=$2
-  echo "$str" | sort -u - $file | cmp -s - $file \
-    || echo "$str" | sort -u - $file -o $file \
-    || exit
-}
-
 slurp() {
   for dir in . `(cd $1 && find * -type d -print)`; do
     copied=
@@ -378,12 +397,12 @@ slurp() {
 	test "$dir/$file" = "$excluded_file" && continue 2
       done
       if test $file = Makefile.am; then
-        copied=$copied${sep}gnulib.mk; sep=$nl
+        copied=$copied${sep}$gnulib_mk; sep=$nl
 	remove_intl='/^[^#].*\/intl/s/^/#/;'"s!$bt_regex/!!g"
-        sed "$remove_intl" $1/$dir/$file | cmp -s - $dir/gnulib.mk || {
-	  echo "$0: Copying $1/$dir/$file to $dir/gnulib.mk ..." &&
-	  rm -f $dir/gnulib.mk &&
-	  sed "$remove_intl" $1/$dir/$file >$dir/gnulib.mk
+        sed "$remove_intl" $1/$dir/$file | cmp -s - $dir/$gnulib_mk || {
+	  echo "$0: Copying $1/$dir/$file to $dir/$gnulib_mk ..." &&
+	  rm -f $dir/$gnulib_mk &&
+	  sed "$remove_intl" $1/$dir/$file >$dir/$gnulib_mk
 	}
       elif { test "${2+set}" = set && test -r $2/$dir/$file; } ||
 	   version_controlled_file $dir $file; then
@@ -431,86 +450,117 @@ mkdir $bt $bt2 || exit
 gnulib_tool_options="\
  --import\
  --no-changelog\
- --aux-dir $bt/build-aux\
+ --aux-dir $bt/$build_aux\
  --doc-base $bt/doc\
- --lib lib$package\
+ --lib $gnulib_name\
  --m4-base $bt/m4/\
  --source-base $bt/lib/\
  --tests-base $bt/tests\
- --local-dir gl\
+ --local-dir $local_gl_dir\
+$gnulib_tool_option_extras\
 "
 echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
 $gnulib_tool $gnulib_tool_options --import $gnulib_modules &&
 slurp $bt || exit
 
 for file in $gnulib_files; do
-  symlink_to_gnulib $file || exit
+  symlink_to_dir "$GNULIB_SRCDIR" $file || exit
 done
 
 
 # Import from gettext.
+with_gettext=yes
+grep '^[	 ]*AM_GNU_GETTEXT_VERSION(' configure.ac >/dev/null || \
+    with_gettext=no
 
-echo "$0: (cd $bt2; autopoint) ..."
-cp configure.ac $bt2 &&
-(cd $bt2 && autopoint && rm configure.ac) &&
-slurp $bt2 $bt || exit
+if test $with_gettext = yes; then
+  echo "$0: (cd $bt2; autopoint) ..."
+  cp configure.ac $bt2 &&
+  (cd $bt2 && autopoint && rm configure.ac) &&
+  slurp $bt2 $bt || exit
 
-rm -fr $bt $bt2 || exit
+  rm -fr $bt $bt2 || exit
+fi
 
+# Coreutils is unusual in that it generates some of its test-related
+# Makefile.am files.  That must be done before invoking automake.
+mam_template=tests/Makefile.am.in
+if test -f $mam_template; then
+  PERL=perl
+  for tool in cut head join pr sort tac tail test tr uniq wc; do
+    m=tests/$tool/Makefile.am
+    t=${m}t
+    rm -f $m $t
+    sed -n '1,/^##test-files-begin/p' $mam_template > $t
+    echo "x = $tool" >> $t
+    srcdir=tests/$tool
+    $PERL -I$srcdir -w -- tests/mk-script $srcdir --list >> $t
+    sed -n '/^##test-files-end/,$p' $mam_template >> $t
+    chmod -w $t
+    mv $t $m
+  done
+fi
 
 # Reconfigure, getting other files.
 
 for command in \
+  libtool \
   'aclocal --force -I m4' \
   'autoconf --force' \
   'autoheader --force' \
   'automake --add-missing --copy --force-missing';
 do
+  if test "$command" = libtool; then
+    grep '^[	 ]*AM_PROG_LIBTOOL\>' configure.ac >/dev/null ||
+      continue
+    command='libtoolize -c -f'
+  fi
   echo "$0: $command ..."
   $command || exit
 done
 
 
 # Get some extra files from gnulib, overriding existing files.
-
 for file in $gnulib_extra_files; do
   case $file in
   */INSTALL) dst=INSTALL;;
+  build-aux/*) dst=$build_aux/`expr "$file" : 'build-aux/\(.*\)'`;;
   *) dst=$file;;
   esac
-  symlink_to_gnulib $file $dst || exit
+  symlink_to_dir "$GNULIB_SRCDIR" $file $dst || exit
 done
 
-
-# Create gettext configuration.
-echo "$0: Creating po/Makevars from po/Makevars.template ..."
-rm -f po/Makevars
-sed '
-  /^EXTRA_LOCALE_CATEGORIES *=/s/=.*/= '"$EXTRA_LOCALE_CATEGORIES"'/
-  /^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/
-  /^XGETTEXT_OPTIONS *=/{
-    s/$/ \\/
-    a\
-	'"$XGETTEXT_OPTIONS"' $${end_of_xgettext_options+}
-  }
-' po/Makevars.template >po/Makevars
-
-if test -d runtime-po; then
-  # Similarly for runtime-po/Makevars, but not quite the same.
-  rm -f runtime-po/Makevars
+if test $with_gettext = yes; then
+  # Create gettext configuration.
+  echo "$0: Creating po/Makevars from po/Makevars.template ..."
+  rm -f po/Makevars
   sed '
-    /^DOMAIN *=.*/s/=.*/= '"$package"'-runtime/
-    /^subdir *=.*/s/=.*/= runtime-po/
+    /^EXTRA_LOCALE_CATEGORIES *=/s/=.*/= '"$EXTRA_LOCALE_CATEGORIES"'/
     /^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/
     /^XGETTEXT_OPTIONS *=/{
       s/$/ \\/
       a\
-	  '"$XGETTEXT_OPTIONS_RUNTIME"' $${end_of_xgettext_options+}
+	  '"$XGETTEXT_OPTIONS"' $${end_of_xgettext_options+}
     }
-  ' <po/Makevars.template >runtime-po/Makevars
+  ' po/Makevars.template >po/Makevars
 
-  # Copy identical files from po to runtime-po.
-  (cd po && cp -p Makefile.in.in *-quot *.header *.sed *.sin ../runtime-po)
+  if test -d runtime-po; then
+    # Similarly for runtime-po/Makevars, but not quite the same.
+    rm -f runtime-po/Makevars
+    sed '
+      /^DOMAIN *=.*/s/=.*/= '"$package"'-runtime/
+      /^subdir *=.*/s/=.*/= runtime-po/
+      /^MSGID_BUGS_ADDRESS *=/s/=.*/= bug-'"$package"'@gnu.org/
+      /^XGETTEXT_OPTIONS *=/{
+	s/$/ \\/
+	a\
+	    '"$XGETTEXT_OPTIONS_RUNTIME"' $${end_of_xgettext_options+}
+      }
+    ' <po/Makevars.template >runtime-po/Makevars
+
+    # Copy identical files from po to runtime-po.
+    (cd po && cp -p Makefile.in.in *-quot *.header *.sed *.sin ../runtime-po)
+  fi
 fi
 
 echo "$0: done.  Now you can run './configure'."
