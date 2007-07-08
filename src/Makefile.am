@@ -17,8 +17,7 @@ LDADD = ../lib/libcppi.a $(LIBINTL) ../lib/libcppi.a
 
 cpp-cond.c: cpp.gp
 	rm -f $@ $@-tmp
-	( echo '#include <config.h>'; \
-	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< ) \
+	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
 	  > $@-tmp
 	chmod a-w $@-tmp
 	mv $@-tmp $@

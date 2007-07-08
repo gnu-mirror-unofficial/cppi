@@ -1,3 +1,9 @@
+2007-07-08  Jim Meyering  <jim@meyering.net>
+
+	* src/Makefile.am (cpp-cond.c): Don't emit "include <config.h>"
+	into this file.  Otherwise, I'd get a redefinition warning for
+	the symbol, __STDC_LIMIT_MACROS_TRIGGER.
+
 2007-03-24  Jim Meyering  <jim@meyering.net>
 
 	* src/system.h: Simply include <time.h>, now that that is as
