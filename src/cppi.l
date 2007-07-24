@@ -438,8 +438,8 @@ b [^a-zA-Z_\n]
   if (0 < max_string_length && max_string_length < string_length)
     {
       error (0, 0, _("%s: line %d: string (%lu) longer than maximum of %lu"),
-	     in_file, start_lineno, string_length,
-	     max_string_length);
+	     in_file, start_lineno, (unsigned long) string_length,
+	     (unsigned long) max_string_length);
       fail = 1;
     }
 

@@ -1,3 +1,8 @@
+2007-07-24  Jim Meyering  <jim@meyering.net>
+
+	* src/cppi.l: Add casts to avoid %lu vs. size_t format/type
+	mismatch warning.
+
 2007-07-08  Jim Meyering  <jim@meyering.net>
 
 	* bootstrap: Copy from coreutils.
