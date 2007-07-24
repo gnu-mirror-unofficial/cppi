@@ -1,5 +1,7 @@
 2007-07-24  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.am (EXTRA_DIST): Remove announce-gen.
+
 	Update all copyright notices to use the newer form (e.g., remove
 	the postal address, and add the 'licenses' URL).
 	* GNUmakefile, bootstrap.conf, build-aux/vc-list-files:
