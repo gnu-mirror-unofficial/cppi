@@ -1,5 +1,7 @@
 2007-07-24  Jim Meyering  <jim@meyering.net>
 
+	* announce-gen: Remove this file.  Now it's in build-aux/.
+
 	* Makefile.maint: Update from coreutils.
 	* bootstrap: Likewise.
 
