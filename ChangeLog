@@ -1,5 +1,7 @@
 2007-07-24  Jim Meyering  <jim@meyering.net>
 
+	* Makefile.maint: Update from coreutils.
+
 	* src/cppi.l: Add casts to avoid %lu vs. size_t format/type
 	mismatch warning.
 
