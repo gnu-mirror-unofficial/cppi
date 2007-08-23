@@ -87,6 +87,7 @@ xalloc.h
 xmalloc.c
 xstrndup.c
 xstrndup.h
+xstrtol-error.c
 xstrtol.c
 xstrtol.h
 xstrtoul.c
