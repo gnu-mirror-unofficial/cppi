@@ -1,3 +1,7 @@
+2007-08-23  Jim Meyering  <jim@meyering.net>
+
+	* Makefile.maint: Merge from coreutils.
+
 2007-07-24  Jim Meyering  <jim@meyering.net>
 
 	* Makefile.am (EXTRA_DIST): Remove announce-gen.

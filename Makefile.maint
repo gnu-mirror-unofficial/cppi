@@ -115,12 +115,19 @@ sc_space_tab:
 	  { echo '$(ME): found SPACE-TAB sequence; remove the SPACE'	\
 		1>&2; exit 1; } || :
 
-# Don't use the old ato* functions in `real' code.
+# Don't use *scanf or the old ato* functions in `real' code.
 # They provide no error checking mechanism.
 # Instead, use strto* functions.
 sc_prohibit_atoi_atof:
-	@grep -nE '\<ato([filq]|ll)\>' $$($(CVS_LIST_EXCEPT)) &&	\
-	  { echo '$(ME): do not use ato''f, ato''i, ato''l, ato''ll, or ato''q'	\
+	@grep -nE '\<([fs]?scanf|ato([filq]|ll))\>' $$($(CVS_LIST_EXCEPT)) && \
+	  { echo '$(ME): do not use *scan''f, ato''f, ato''i, ato''l, ato''ll, ato''q, or ss''canf'	\
+		1>&2; exit 1; } || :
+
+# Use STREQ rather than comparing strcmp == 0, or != 0.
+sc_prohibit_strcmp:
+	@grep -nE '! *str''cmp \(|\<str''cmp \([^)]+\) *==' \
+	    $$($(CVS_LIST_EXCEPT)) && \
+	  { echo '$(ME): use STREQ in place of the above uses of str''cmp' \
 		1>&2; exit 1; } || :
 
 # Using EXIT_SUCCESS as the first argument to error is misleading,
@@ -161,6 +168,30 @@ sc_prohibit_assert_without_use:
 	  grep -L '\<assert (' $$files					\
 	      | grep . &&						\
 	    { echo "$(ME): the above files include <assert.h> but don't use it" \
+		  1>&2; exit 1; } || :;					\
+	else :;								\
+	fi
+
+# Don't include quotearg.h unless you use one of its functions.
+sc_prohibit_quotearg_without_use:
+	@if $(CVS_LIST_EXCEPT) | grep '\.c$$' > /dev/null; then		\
+	  files=$$(grep -l '# *include "quotearg\.h"'			\
+		    $$($(CVS_LIST_EXCEPT) | grep '\.c$$')) &&		\
+	  grep -LE '\<quotearg(_[^ ]+)? \(' $$files			\
+	      | grep . &&						\
+	    { echo "$(ME): the above files include "quotearg.h" but don't use it" \
+		  1>&2; exit 1; } || :;					\
+	else :;								\
+	fi
+
+# Don't include quote.h unless you use one of its functions.
+sc_prohibit_quote_without_use:
+	@if $(CVS_LIST_EXCEPT) | grep '\.c$$' > /dev/null; then		\
+	  files=$$(grep -l '# *include "quote\.h"'			\
+		    $$($(CVS_LIST_EXCEPT) | grep '\.c$$')) &&		\
+	  grep -LE '\<quote(_n)? \(' $$files			\
+	      | grep . &&						\
+	    { echo "$(ME): the above files include "quote.h" but don't use it" \
 		  1>&2; exit 1; } || :;					\
 	else :;								\
 	fi
@@ -322,21 +353,26 @@ sc_useless_cpp_parens:
 	  { echo '$(ME): found useless parentheses in cpp directive'	\
 		1>&2; exit 1; } || :
 
+# Require the latest GPL.
+sc_GPL_version:
+	@grep -n 'either ''version [^3]' $$($(CVS_LIST_EXCEPT)) &&	\
+	  { echo '$(ME): GPL vN, N!=3' 1>&2; exit 1; } || :
+
 # Ensure that the c99-to-c89 patch applies cleanly.
 patch-check:
 	rm -rf src-c89 $@.1 $@.2
 	cp -a src src-c89
-	(cd src-c89; patch -p2 -V never --fuzz=0) < src/c99-to-c89.diff \
+	(cd src-c89; patch -p1 -V never --fuzz=0) < src/c99-to-c89.diff \
 	  > $@.1 2>&1
-	if test "$${REGEN_PATCH+set}" = set; then \
-	  diff -upr src src-c89 > new-diff || : ; fi
+	if test "$$REGEN_PATCH" = yes; then \
+	  diff -upr src src-c89 | sed 's,src-c89/,src/,' \
+	    | grep -v '^Only in' > new-diff || : ; fi
 	grep -v '^patching file ' $@.1 > $@.2 || :
 	msg=ok; test -s $@.2 && msg='fuzzy patch' || : ;	\
 	rm -f src-c89/*.o || msg='rm failed';			\
 	$(MAKE) -C src-c89 CFLAGS='-Wdeclaration-after-statement -Werror' \
 	  || msg='compile failure with extra options';		\
-	rm -rf src-c89 $@.1 $@.2;				\
-	test "$$msg" = ok && : || echo "$$msg" 1>&2;		\
+	test "$$msg" = ok && rm -rf src-c89 $@.1 $@.2 || echo "$$msg" 1>&2; \
 	test "$$msg" = ok
 
 # Ensure that date's --help output stays in sync with the info
@@ -361,7 +397,7 @@ check-AUTHORS:
 # not @...@ in Makefile.am, now that we can rely on automake
 # to emit a definition for each substituted variable.
 makefile-check:
-	grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
+	@grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
 	  && { echo 'Makefile.maint: use $$(...), not @...@' 1>&2; exit 1; } || :
 
 news-date-check: NEWS
@@ -398,6 +434,7 @@ po-check:
 	  for file in $$($(CVS_LIST_EXCEPT)) lib/*.[ch]; do		\
 	    case $$file in						\
 	    djgpp/* | man/*) continue;;					\
+	    */c99-to-c89.diff) continue;;				\
 	    esac;							\
 	    case $$file in						\
 	    *.[ch])							\
@@ -447,7 +484,9 @@ writable-files:
 
 v_etc_file = lib/version-etc.c
 sample-test = tests/sample-test
+texi = doc/$(PACKAGE).texi
 # Make sure that the copyright date in $(v_etc_file) is up to date.
+# Do the same for the $(sample-test) and the main doc/.texi file.
 copyright-check:
 	@if test -f $(v_etc_file); then \
 	  grep 'enum { COPYRIGHT_YEAR = '$$(date +%Y)' };' $(v_etc_file) \
@@ -459,6 +498,12 @@ copyright-check:
 	  grep '# Copyright (C) '$$(date +%Y)' Free' $(sample-test) \
 	    >/dev/null \
 	  || { echo 'out of date copyright in $(sample-test); update it' 1>&2; \
+	       exit 1; }; \
+	fi
+	@if test -f $(texi); then \
+	  grep 'Copyright @copyright{} .*'$$(date +%Y)' Free' $(texi) \
+	    >/dev/null \
+	  || { echo 'out of date copyright in $(texi); update it' 1>&2; \
 	       exit 1; }; \
 	fi
 
@@ -538,7 +583,7 @@ my-distcheck: $(local-check) $(release_archive_dir)/$(prev-tgz)
 	  cd $(t)/$(distdir)						\
 	    && (cd src && patch -V never --fuzz=0 <c99-to-c89.diff)	\
 	    && ./configure --disable-largefile				\
-	         CFLAGS='-Werror -ansi -pedantic -Wno-long-long'	\
+	         CFLAGS='-Werror -ansi -Wno-long-long'			\
 	    && $(MAKE);							\
 	fi
 	-rm -rf $(t)
