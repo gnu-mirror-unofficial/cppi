@@ -1,3 +1,7 @@
+2007-09-03  Jim Meyering  <jim@meyering.net>
+
+	* bootstrap.conf (gnulib_modules): Add git-version-gen.
+
 2007-08-23  Jim Meyering  <jim@meyering.net>
 
 	* Makefile.maint: Merge from coreutils.
