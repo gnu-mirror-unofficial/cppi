@@ -4,6 +4,7 @@
 
 	* configure.ac: Use new version-string set-up.
 	(AM_INIT_AUTOMAKE): Require automake-1.10.  Drop "gnits" option.
+	* Makefile.am (AUTOMAKE_OPTIONS): Don't set this (thus removing gnits).
 
 	* bootstrap.conf (gnulib_modules): Add git-version-gen.
 
