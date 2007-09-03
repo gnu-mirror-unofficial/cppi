@@ -18,6 +18,7 @@ LDADD = ../lib/libcppi.a $(LIBINTL) ../lib/libcppi.a
 cpp-cond.c: cpp.gp
 	rm -f $@ $@-tmp
 	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
 	  > $@-tmp
 	chmod a-w $@-tmp
 	mv $@-tmp $@

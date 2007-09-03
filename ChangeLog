@@ -1,5 +1,11 @@
 2007-09-03  Jim Meyering  <jim@meyering.net>
 
+	Temporary hack to avoid warning about gperf-emitted code.
+	* src/Makefile.am (cpp-cond.c): Use perl to insert a "static"
+	declaration on the generated cpp_cond_lookup function, to avoid
+	a warning from gcc:
+	warning: C99 inline functions are not supported; using GNU89.
+
 	Use PACKAGE_NAME instead of GNU_PACKAGE.
 	* configure.ac: Don't define GNU_PACKAGE.
 	* src/system.h: Use PACKAGE_NAME, not GNU_PACKAGE.
