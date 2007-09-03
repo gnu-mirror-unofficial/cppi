@@ -1,5 +1,8 @@
 2007-09-03  Jim Meyering  <jim@meyering.net>
 
+	* configure.ac: Use new version-string set-up.
+	(AM_INIT_AUTOMAKE): Require automake-1.10.  Drop "gnits" option.
+
 	* bootstrap.conf (gnulib_modules): Add git-version-gen.
 
 2007-08-23  Jim Meyering  <jim@meyering.net>
