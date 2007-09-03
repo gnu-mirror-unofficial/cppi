@@ -4,7 +4,7 @@
 # It is necessary if you want to build targets usually of interest
 # only to the maintainer.
 
-# Copyright (C) 2001, 2003, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2003, 2006-2007 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +39,20 @@ ifeq ($(have-Makefile),yes)
 export TAR_OPTIONS = --owner=0 --group=0 --numeric-owner
 
 include Makefile
+
+# Ensure that $(VERSION) is up to date for dist-related targets, but not
+# for others: rerunning autoconf and recompiling everything isn't cheap.
+ifeq (0,$(MAKELEVEL))
+  _is-dist-target = $(filter dist% alpha beta major,$(MAKECMDGOALS))
+  ifneq (,$(_is-dist-target))
+    _curr-ver := $(shell build-aux/git-version-gen 0 .version)
+    ifneq ($(_curr-ver),$(VERSION))
+      $(info INFO: rerunning autoconf for new version string: $(_curr-ver))
+      dummy := $(shell rm -rf autom4te.cache; $(AUTOCONF))
+    endif
+  endif
+endif
+
 include $(srcdir)/Makefile.cfg
 include $(srcdir)/Makefile.maint
 
