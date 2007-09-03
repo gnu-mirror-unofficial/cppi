@@ -1,5 +1,9 @@
 2007-09-03  Jim Meyering  <jim@meyering.net>
 
+	Use PACKAGE_NAME instead of GNU_PACKAGE.
+	* configure.ac: Don't define GNU_PACKAGE.
+	* src/system.h: Use PACKAGE_NAME, not GNU_PACKAGE.
+
 	* Makefile.maint: Update from coreutils.
 
 	* configure.ac: Use new version-string set-up.
