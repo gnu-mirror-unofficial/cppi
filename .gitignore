@@ -5,6 +5,7 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache
+build-aux
 config.h
 config.hin
 config.log
@@ -12,4 +13,6 @@ config.status
 configure
 cppi-*.tar.bz2
 cppi-*.tar.gz
+lib/.gitignore
+m4/.gitignore
 stamp-h1
