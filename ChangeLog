@@ -1,3 +1,7 @@
+2007-10-04  Jim Meyering  <jim@meyering.net>
+
+	* bootstrap (slurp): Adapt to _.h -> .in.h name change.
+
 2007-09-03  Jim Meyering  <jim@meyering.net>
 
 	Temporary hack to avoid warning about gperf-emitted code.
