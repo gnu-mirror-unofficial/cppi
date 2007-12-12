@@ -23,7 +23,6 @@ nl='
 '
 
 # Ensure file names are sorted consistently across platforms.
-# Also, ensure diagnostics are in English, e.g., "wget --help" below.
 LC_ALL=C
 export LC_ALL
 
@@ -49,8 +48,6 @@ Options:
  --force                  Attempt to bootstrap even if the sources seem
                           not to have been checked out.
  --skip-po                Do not download po files.
- --cvs-user=USERNAME      Set the username to use when checking out
-                          sources from the gnulib repository.
 
 If the file bootstrap.conf exists in the current working directory, its
 contents are read as shell variables to configure the bootstrap.
@@ -80,9 +77,10 @@ po_download_command_format=\
 
 extract_package_name='
   /^AC_INIT(/{
-     /.*,.*,.*,/{
+     /.*,.*,.*, */{
        s///
        s/[][]//g
+       s/)$//
        p
        q
      }
@@ -160,8 +158,6 @@ do
     exit;;
   --gnulib-srcdir=*)
     GNULIB_SRCDIR=`expr "$option" : '--gnulib-srcdir=\(.*\)'`;;
-  --cvs-user=*)
-    CVS_USER=`expr "$option" : '--cvs-user=\(.*\)'`;;
   --skip-po)
     SKIP_PO=t;;
   --force)
@@ -227,23 +223,9 @@ case ${GNULIB_SRCDIR--} in
   if [ ! -d gnulib ]; then
     echo "$0: getting gnulib files..."
 
-    case ${CVS_AUTH-pserver} in
-    pserver)
-      CVS_PREFIX=':pserver:anonymous@';;
-    ssh)
-      CVS_PREFIX="$CVS_USER${CVS_USER+@}";;
-    *)
-      echo "$0: $CVS_AUTH: Unknown CVS access method" >&2
-      exit 1;;
-    esac
-
-    case $CVS_RSH in
-    '') CVS_RSH=ssh; export CVS_RSH;;
-    esac
-
     trap cleanup_gnulib 1 2 13 15
 
-    cvs -z3 -q -d ${CVS_PREFIX}cvs.savannah.gnu.org:/cvsroot/gnulib co gnulib ||
+    git clone --depth 2 git://git.sv.gnu.org/gnulib ||
       cleanup_gnulib
 
     trap - 1 2 13 15
@@ -283,11 +265,13 @@ update_po_files() {
 
   langs=`cd $ref_po_dir && echo *.po|sed 's/\.po//g'`
   test "$langs" = '*' && langs=x
-  for po in x $langs; do
+  for po in `cd $ref_po_dir && echo *.po|sed 's/\.po//g'`; do
     case $po in x) continue;; esac
     new_po="$ref_po_dir/$po.po"
     cksum_file="$ref_po_dir/$po.s1"
-    if ! sha1sum -c --status "$cksum_file" < "$new_po" > /dev/null; then
+    if ! test -f "$cksum_file" ||
+	! test -f "$po_dir/$po.po" ||
+	! sha1sum -c --status "$cksum_file" < "$new_po" > /dev/null; then
       echo "updated $po_dir/$po.po..."
       cp "$new_po" "$po_dir/$po.po" && sha1sum < "$new_po" > "$cksum_file"
     fi
@@ -383,6 +367,11 @@ cp_mark_as_generated()
       *.m4|*/Make*|Make*) c1='# ' ; c2=     ;;
       *)                  c1=     ; c2=     ;;
     esac
+
+    # If the destination directory doesn't exist, create it.
+    # This is required at least for "lib/uniwidth/cjk.h".
+    dst_dir=`dirname "$cp_dst"`
+    test -d "$dst_dir" || mkdir -p "$dst_dir"
 
     if test -z "$c1"; then
       cmp -s "$cp_src" "$cp_dst" || {
@@ -505,7 +494,7 @@ gnulib_tool_options="\
  --source-base $bt/lib/\
  --tests-base $bt/tests\
  --local-dir $local_gl_dir\
-$gnulib_tool_option_extras\
+ $gnulib_tool_option_extras\
 "
 echo "$0: $gnulib_tool $gnulib_tool_options --import ..."
 $gnulib_tool $gnulib_tool_options --import $gnulib_modules &&
@@ -610,5 +599,13 @@ if test $with_gettext = yes; then
     (cd po && cp -p Makefile.in.in *-quot *.header *.sed *.sin ../runtime-po)
   fi
 fi
+
+# Horrible, coreutils-specific kludges.
+# Change paths in gnulib-tests/gnulib.mk from "../.." to "..".
+m=gnulib-tests/gnulib.mk
+sed 's,\.\./\.\.,..,g' $m > $m-t
+mv -f $m-t $m
+
+chmod a+x gnulib-tests/test-*.sh
 
 echo "$0: done.  Now you can run './configure'."
