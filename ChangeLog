@@ -1,3 +1,7 @@
+2008-01-02  Jim Meyering  <meyering@redhat.com>
+
+	* Makefile.maint (makefile-check): Prefix a command with "@".
+
 2007-10-04  Jim Meyering  <jim@meyering.net>
 
 	* bootstrap (slurp): Adapt to _.h -> .in.h name change.

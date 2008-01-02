@@ -2,7 +2,7 @@
 # This Makefile fragment is shared between the coreutils,
 # CPPI, Bison, and Autoconf.
 
-## Copyright (C) 2001-2007 Free Software Foundation, Inc.
+## Copyright (C) 2001-2008 Free Software Foundation, Inc.
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -403,8 +403,8 @@ check-AUTHORS:
 # not @...@ in Makefile.am, now that we can rely on automake
 # to emit a definition for each substituted variable.
 makefile-check:
-	grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
-	  && { echo 'Makefile.maint: use $$(...), not @...@' 1>&2; exit 1; } || :
+	@grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
+	  && { echo 'Makefile.maint: use $$(...), not @...@' 1>&2;exit 1; } || :
 
 news-date-check: NEWS
 	today=`date +%Y-%m-%d`;						\
