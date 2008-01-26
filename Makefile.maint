@@ -592,16 +592,19 @@ rel-check:
 	md5sum -c $$md5_tmp < $$tarz
 
 prev-tgz = $(PACKAGE)-$(PREV_VERSION).tar.gz
+
+# FIXME: stop distributing xdelta files in 2008, unless someone speaks up.
+# So far, not one person has said they'd miss this.
 xd-delta = $(PACKAGE)-$(PREV_VERSION)-$(VERSION).xdelta
 
 rel-files = $(xd-delta) $(DIST_ARCHIVES)
 
+gnulib-version = $$(cd $(gnulib_dir) && git describe)
+
 # Approximate the date of last gnulib "update" by the ChangeLog file's
 # mtime, and provide that date in the announcement.
 announcement: NEWS ChangeLog $(rel-files)
-	@cl_date=$$(stat --printf @%Y $(gnulib_dir)/ChangeLog);		\
-	utc_date=$$(date -u --date $$cl_date '+%Y-%m-%d %T %z');	\
-	./build-aux/announce-gen					\
+	@./build-aux/announce-gen					\
 	    --release-type=$(RELEASE_TYPE)				\
 	    --package=$(PACKAGE)					\
 	    --prev=$(PREV_VERSION)					\
@@ -609,7 +612,7 @@ announcement: NEWS ChangeLog $(rel-files)
 	    --gpg-key-id=$(gpg_key_ID)					\
 	    --news=NEWS							\
 	    --bootstrap-tools=autoconf,automake,bison,gnulib		\
-	    --gnulib-snapshot-time-stamp="$$utc_date"			\
+	    --gnulib-version=$(gnulib-version)				\
 	    $(addprefix --url-dir=, $(url_dir_list))
 
 ## ---------------- ##
