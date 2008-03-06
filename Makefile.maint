@@ -643,7 +643,7 @@ alpha beta major: $(local-check) writable-files
 	       || { echo "invalid version string: $(VERSION)" 1>&2; exit 1;};}\
 	  || :
 	$(MAKE) vc-dist
-	$(MAKE) news-date-check changelog-check
+	$(MAKE) news-date-check
 	$(MAKE) $(xd-delta)
 	$(MAKE) -s announcement RELEASE_TYPE=$@ > /tmp/announce-$(my_distdir)
 	ln $(rel-files) $(release_archive_dir)
