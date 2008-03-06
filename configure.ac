@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src/cppi.l)
 AC_CONFIG_AUX_DIR(build-aux)
 AM_CONFIG_HEADER([lib/config.h:config.hin])
 
-AM_INIT_AUTOMAKE([1.10 dist-bzip2])
+AM_INIT_AUTOMAKE([1.10.1 dist-lzma])
 
 AM_MISSING_PROG(HELP2MAN, help2man)
 AC_PROG_CC
