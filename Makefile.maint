@@ -30,7 +30,7 @@ GZIP_ENV = '--no-name --best $(gzip_rsyncable)'
 CVS = cvs
 GIT = git
 VC = $(GIT)
-VC-tag = git-tag -s -m '$(VERSION)'
+VC-tag = git tag -s -m '$(VERSION)'
 
 CVS_LIST = build-aux/vc-list-files
 
@@ -38,7 +38,7 @@ CVS_LIST_EXCEPT = \
   $(CVS_LIST) | if test -f .x-$@; then grep -vEf .x-$@; else grep -v ChangeLog; fi
 
 ifeq ($(origin prev_version_file), undefined)
-  prev_version_file = .prev-version
+  prev_version_file = $(srcdir)/.prev-version
 endif
 
 PREV_VERSION := $(shell cat $(prev_version_file))
@@ -56,7 +56,6 @@ endif
 my_distdir = $(PACKAGE)-$(VERSION)
 
 # Old releases are stored here.
-# Used for diffs and xdeltas.
 release_archive_dir ?= ../release
 
 # Prevent programs like 'sort' from considering distinct strings to be equal.
@@ -69,17 +68,11 @@ export LC_ALL = C
 ## Sanity checks.  ##
 ## --------------- ##
 
-# FIXME: add a check to prohibit definition in src/*.c of symbols defined
-# in system.h.  E.g. today I removed from tail.c a useless definition of
-# ENOSYS.  It was useless because system.h ensures it's defined.
-
 # Collect the names of rules starting with `sc_'.
-syntax-check-rules := $(shell sed -n 's/^\(sc_[a-zA-Z0-9_-]*\):.*/\1/p' $(ME))
+syntax-check-rules := $(shell sed -n 's/^\(sc_[a-zA-Z0-9_-]*\):.*/\1/p' \
+                        $(srcdir)/$(ME))
 .PHONY: $(syntax-check-rules)
 
-# Checks that don't require cvs.
-# Run `changelog-check' last, as previous test may reveal problems requiring
-# new ChangeLog entries.
 local-checks-available = \
   po-check copyright-check m4-check author_mark_check \
   changelog-check patch-check strftime-check $(syntax-check-rules) \
@@ -100,6 +93,13 @@ syntax-check: $(local-check)
 #	  { echo '$(ME): FIXME' 1>&2;					\
 #	    exit 1; } || :
 # FIXME: don't allow `#include .strings\.h' anywhere
+
+sc_avoid_if_before_free:
+	@$(srcdir)/build-aux/useless-if-before-free			\
+		$(useless_free_options)					\
+	    $$($(CVS_LIST_EXCEPT)) &&					\
+	  { echo '$(ME): found useless "if" before "free" above' 1>&2;	\
+	    exit 1; } || :
 
 sc_cast_of_argument_to_free:
 	@grep -nE '\<free \(\(' $$($(CVS_LIST_EXCEPT)) &&		\
@@ -403,8 +403,8 @@ check-AUTHORS:
 # not @...@ in Makefile.am, now that we can rely on automake
 # to emit a definition for each substituted variable.
 makefile-check:
-	@grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
-	  && { echo 'Makefile.maint: use $$(...), not @...@' 1>&2;exit 1; } || :
+	grep -nE '@[A-Z_0-9]+@' `find . -name Makefile.am` \
+	  && { echo 'Makefile.maint: use $$(...), not @...@' 1>&2; exit 1; } || :
 
 news-date-check: NEWS
 	today=`date +%Y-%m-%d`;						\
@@ -477,16 +477,14 @@ makefile_path_separator_check:
 # Check that `make alpha' will not fail at the end of the process.
 writable-files:
 	if test -d $(release_archive_dir); then :; else			\
-	  mkdir $(release_archive_dir);					\
+	  for file in $(distdir).tar.gz					\
+	              $(release_archive_dir)/$(distdir).tar.gz; do	\
+	    test -e $$file || continue;					\
+	    test -w $$file						\
+	      || { echo ERROR: $$file is not writable; fail=1; };	\
+	  done;								\
+	  test "$$fail" && exit 1 || :
 	fi
-	for file in $(distdir).tar.gz $(xd-delta)			\
-	            $(release_archive_dir)/$(distdir).tar.gz		\
-	            $(release_archive_dir)/$(xd-delta); do		\
-	  test -e $$file || continue;					\
-	  test -w $$file						\
-	    || { echo ERROR: $$file is not writable; fail=1; };		\
-	done;								\
-	test "$$fail" && exit 1 || :
 
 v_etc_file = lib/version-etc.c
 sample-test = tests/sample-test
@@ -553,7 +551,7 @@ warn_cflags = -Dlint -O -Werror -Wall -Wformat -Wshadow -Wpointer-arith
 # have to have a recent version of gcc and glibc headers.
 TMPDIR ?= /tmp
 t=$(TMPDIR)/$(PACKAGE)/test
-my-distcheck: $(local-check) $(release_archive_dir)/$(prev-tgz)
+my-distcheck: $(local-check) check
 	-rm -rf $(t)
 	mkdir -p $(t)
 	GZIP=$(GZIP_ENV) $(AMTAR) -C $(t) -zxf $(distdir).tar.gz
@@ -562,7 +560,6 @@ my-distcheck: $(local-check) $(release_archive_dir)/$(prev-tgz)
 	  && $(MAKE) CFLAGS='$(warn_cflags)'		\
 	      AM_MAKEFLAGS='$(null_AM_MAKEFLAGS)'	\
 	  && $(MAKE) dvi				\
-	  && $(MAKE) check				\
 	  && $(MAKE) distclean
 	(cd $(t) && mv $(distdir) $(distdir).old	\
 	  && $(AMTAR) -zxf - ) < $(distdir).tar.gz
@@ -591,13 +588,7 @@ rel-check:
 	echo "$(md5)  -" > $$md5_tmp; \
 	md5sum -c $$md5_tmp < $$tarz
 
-prev-tgz = $(PACKAGE)-$(PREV_VERSION).tar.gz
-
-# FIXME: stop distributing xdelta files in 2008, unless someone speaks up.
-# So far, not one person has said they'd miss this.
-xd-delta = $(PACKAGE)-$(PREV_VERSION)-$(VERSION).xdelta
-
-rel-files = $(xd-delta) $(DIST_ARCHIVES)
+rel-files = $(DIST_ARCHIVES)
 
 gnulib-version = $$(cd $(gnulib_dir) && git describe)
 
@@ -633,9 +624,6 @@ emit_upload_commands:
 	@echo =====================================
 	@echo =====================================
 
-$(xd-delta): $(release_archive_dir)/$(prev-tgz) $(distdir).tar.gz
-	xdelta delta -9 $^ $@ || :
-
 .PHONY: alpha beta major
 alpha beta major: $(local-check) writable-files
 	test $@ = major						\
@@ -644,10 +632,11 @@ alpha beta major: $(local-check) writable-files
 	  || :
 	$(MAKE) vc-dist
 	$(MAKE) news-date-check
-	$(MAKE) $(xd-delta)
 	$(MAKE) -s announcement RELEASE_TYPE=$@ > /tmp/announce-$(my_distdir)
-	ln $(rel-files) $(release_archive_dir)
-	chmod a-w $(rel-files)
+	if test -d $(release_archive_dir); then			\
+	  ln $(rel-files) $(release_archive_dir);		\
+	  chmod a-w $(rel-files);				\
+	fi
 	$(MAKE) -s emit_upload_commands RELEASE_TYPE=$@
 	echo $(VERSION) > $(prev_version_file)
 	$(VC) commit -m \
