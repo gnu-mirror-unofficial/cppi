@@ -19,7 +19,7 @@
 
 # This is reported not to work with make-3.79.1
 # ME := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-ME := Makefile.maint
+ME := maint.mk
 
 # Do not save the original name or timestamp in the .tar.gz file.
 # Use --rsyncable if available.

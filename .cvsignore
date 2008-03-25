@@ -17,3 +17,4 @@ cppi-*.tar.gz
 stamp-h
 stamp-h.in
 stamp-h1
+GNUmakefile

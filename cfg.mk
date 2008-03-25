@@ -1,5 +1,5 @@
 # -*- makefile -*-
-## Customize Makefile.maint.
+## Customize maint.mk.
 
 # Use alpha.gnu.org for alpha and beta releases.
 # Use ftp.gnu.org for major releases.
