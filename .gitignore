@@ -1,4 +1,6 @@
 *~
+.tarball-version
+.version
 ABOUT-NLS
 GNUmakefile
 INSTALL

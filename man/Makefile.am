@@ -5,8 +5,8 @@ man_aux = $(dist_man_MANS:.1=.x)
 EXTRA_DIST = $(man_aux)
 MAINTAINERCLEANFILES = $(man_MANS)
 
-# Depend on configure.ac to get version number changes.
-common_dep = $(top_srcdir)/configure.ac
+# Depend on .version to get version number changes.
+common_dep = $(top_srcdir)/.version
 
 cppi.1:	$(common_dep)	$(srcdir)/cppi.x	../src/cppi.c
 

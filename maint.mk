@@ -1,6 +1,6 @@
 # -*-Makefile-*-
-# This Makefile fragment is shared between the coreutils,
-# CPPI, Bison, and Autoconf.
+# This Makefile fragment tries to be general-purpose enough to be
+# used by at least coreutils, idutils, CPPI, Bison, and Autoconf.
 
 ## Copyright (C) 2001-2008 Free Software Foundation, Inc.
 ##
@@ -336,6 +336,22 @@ sc_system_h_headers: .re-list
 		  1>&2;  exit 1; } || :;				\
 	fi
 
+# Require that the final line of each test-lib.sh-using test be this one:
+# (exit $fail); exit $fail
+# Note: this test requires GNU grep's --label= option.
+sc_require_test_exit_idiom:
+	@if test -f $(srcdir)/tests/test-lib.sh; then			\
+	  die=0;							\
+	  for i in $$(grep -l -F /../test-lib.sh $$($(VC_LIST) tests)); do \
+	    tail -n1 $$i | grep '^(exit \$$fail); exit \$$fail$$' > /dev/null \
+	      && : || { die=1; echo $$i; }				\
+	  done;								\
+	  test $$die = 1 &&						\
+	    { echo 1>&2 '$(ME): the final line in each of the above is not:'; \
+	      echo 1>&2 '(exit $$fail); exit $$fail';			\
+	      exit 1; } || :;						\
+	fi
+
 sc_sun_os_names:
 	@grep -nEi \
 	    'solaris[^[:alnum:]]*2\.(7|8|9|[1-9][0-9])|sunos[^[:alnum:]][6-9]' \
@@ -507,7 +523,7 @@ writable-files:
 	    test -w $$file						\
 	      || { echo ERROR: $$file is not writable; fail=1; };	\
 	  done;								\
-	  test "$$fail" && exit 1 || :
+	  test "$$fail" && exit 1 || : ;				\
 	fi
 
 v_etc_file = lib/version-etc.c
@@ -580,10 +596,12 @@ my-distcheck: $(local-check) check
 	mkdir -p $(t)
 	GZIP=$(GZIP_ENV) $(AMTAR) -C $(t) -zxf $(distdir).tar.gz
 	cd $(t)/$(distdir)				\
-	  && ./configure --disable-nls			\
+	  && ./configure --disable-nls --prefix=$(t)/i	\
 	  && $(MAKE) CFLAGS='$(warn_cflags)'		\
 	      AM_MAKEFLAGS='$(null_AM_MAKEFLAGS)'	\
 	  && $(MAKE) dvi				\
+	  && $(MAKE) install				\
+	  && test -f $(mandir)/man1/cppi.1		\
 	  && $(MAKE) distclean
 	(cd $(t) && mv $(distdir) $(distdir).old	\
 	  && $(AMTAR) -zxf - ) < $(distdir).tar.gz

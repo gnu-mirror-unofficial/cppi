@@ -4,7 +4,7 @@ SUBDIRS = lib po src tests man
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = cfg.mk maint.mk .prev-version
+EXTRA_DIST = cfg.mk maint.mk .prev-version .version
 
 # Arrange so that .tarball-version appears only in the distribution
 # tarball, and never in a checked-out repository.
@@ -23,6 +23,10 @@ gen-ChangeLog:
 	  rm -f $(distdir)/ChangeLog;					\
 	  mv $(distdir)/cl-t $(distdir)/ChangeLog;			\
 	fi
+
+BUILT_SOURCES = .version
+.version:
+	echo $(VERSION) > $@-t && mv $@-t $@
 
 distcheck-hook:
 	$(MAKE) my-distcheck
