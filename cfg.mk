@@ -40,3 +40,5 @@ gnulib_dir = /gnulib
 
 # Now that we have better (check.mk) tests, make this the default.
 export VERBOSE = yes
+
+old_NEWS_hash = 7fd069e38d3f230172cbeff8ffa0ae90  -
