@@ -1,5 +1,5 @@
 /* system-dependent definitions; derived from those of coreutils
-   Copyright (C) 1989, 1991-2007 Free Software Foundation, Inc.
+   Copyright (C) 1989, 1991-2008 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -376,6 +376,7 @@ enum
 # define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
+#include "progname.h"
 #include "intprops.h"
 
 #ifndef SSIZE_MAX

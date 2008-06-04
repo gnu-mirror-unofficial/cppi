@@ -102,9 +102,7 @@ static unsigned long int max_string_length = 0;
 
 static char *default_file_list[] = {"-", NULL};
 
-char *program_name;
-
-static struct option const long_options[] =
+static const struct option const long_options[] =
 {
   {"ansi", no_argument, NULL, 'a'},
   {"check", no_argument, NULL, 'c'},
@@ -759,7 +757,7 @@ main (int argc, char** argv)
   int c;
   int fail = 0;
 
-  program_name = argv[0];
+  set_program_name (argv[0]);
 
   atexit (close_stdout);
 
