@@ -462,9 +462,9 @@ b [^a-zA-Z_\n]
 	    {
 	      if (!list_files_only)
 		{
-		  error (0, 0, _("%s: line %d: not properly formatted\n\
-There must be exactly one SPACE character after each\n\
-#if, #elif, and #define directive."),
+		  error (0, 0, _("%s: line %d: not properly formatted;\n\
+there must be exactly one SPACE character after each\n\
+#if, #elif, and #define directive"),
 			 in_file, lineno);
 		}
 	      if (fail < 1)
