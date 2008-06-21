@@ -49,9 +49,8 @@
 #undef YY_DECL
 #define YY_DECL static int cpp_i (const char *in_file)
 
-#ifndef isblank
-# define isblank(c) ((c) == ' ' || (c) == '\t')
-#endif
+#undef isblank
+#define isblank(c) ((c) == ' ' || (c) == '\t')
 
 #define MY_ECHO do { if (!inhibit_output) ECHO; } while (0)
 
@@ -102,7 +101,7 @@ static unsigned long int max_string_length = 0;
 
 static char *default_file_list[] = {"-", NULL};
 
-static const struct option const long_options[] =
+static struct option const long_options[] =
 {
   {"ansi", no_argument, NULL, 'a'},
   {"check", no_argument, NULL, 'c'},
