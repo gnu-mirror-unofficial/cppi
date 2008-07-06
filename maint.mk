@@ -510,10 +510,11 @@ patch-check:
 	cp -a src src-c89
 	(cd src-c89; patch -p1 -V never --fuzz=0) < src/c99-to-c89.diff \
 	  > $@.1 2>&1
-	if test "$(REGEN_PATCH)" = yes; then \
-	  diff -upr src src-c89 | sed 's,src-c89/,src/,' \
-	    | grep -vE '^(Only in|File )' \
-	    | perl -pe 's/^((?:\+\+\+|---) \S+\t).*/$${1}$(epoch_date)/' \
+	if test "$(REGEN_PATCH)" = yes; then			\
+	  diff -upr src src-c89 | sed 's,src-c89/,src/,'	\
+	    | grep -vE '^(Only in|File )'			\
+	    | perl -pe 's/^((?:\+\+\+|---) \S+\t).*/$${1}$(epoch_date)/;' \
+	       -e 's/^ $$//'					\
 	    > new-diff || : ; fi
 	grep -v '^patching file ' $@.1 > $@.2 || :
 	msg=ok; test -s $@.2 && msg='fuzzy patch' || : ;	\
@@ -573,16 +574,15 @@ m4-check:
 	       exit 1; } || :
 
 # Verify that all source files using _() are listed in po/POTFILES.in.
-# FIXME: don't hard-code file names below; use a more general mechanism.
 po-check:
-	@if test -f po/POTFILES.in; then					\
+	@if test -f po/POTFILES.in; then				\
 	  grep -E -v '^(#|$$)' po/POTFILES.in				\
 	    | grep -v '^src/false\.c$$' | sort > $@-1;			\
 	  files=;							\
 	  for file in $$($(VC_LIST_EXCEPT)) lib/*.[ch]; do		\
 	    case $$file in						\
-	    djgpp/* | man/*) continue;;					\
-	    */c99-to-c89.diff) continue;;				\
+	      *.?|*.??) ;;						\
+	      *) continue;;						\
 	    esac;							\
 	    case $$file in						\
 	    *.[ch])							\
