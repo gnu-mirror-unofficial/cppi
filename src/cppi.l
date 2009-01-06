@@ -99,7 +99,7 @@ static int inhibit_output = 0;
    to indicate there is no limit.  */
 static unsigned long int max_string_length = 0;
 
-static char *default_file_list[] = {"-", NULL};
+static char *default_file_list[] = {(char *) "-", NULL};
 
 static struct option const long_options[] =
 {
@@ -174,7 +174,7 @@ static inline struct KL_pair
 kth_entry (unsigned int k)
 {
   struct KL_pair *s = (struct KL_pair *) obstack_base (&opener_stack);
-  assert (0 <= k && k < OPENER_STACK_HEIGHT);
+  assert (k < OPENER_STACK_HEIGHT);
   return s[k];
 }
 
@@ -324,6 +324,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       *fail = emit_or_check (t, yytext, keyword);
       break;
 
+    case EIC_INVALID:
     default:
       abort ();
     }
@@ -601,6 +602,7 @@ cpp_indent (const char *in_file)
   return fail;
 }
 
+static void usage (int status) ATTRIBUTE_NORETURN;
 static void
 usage (int status)
 {
