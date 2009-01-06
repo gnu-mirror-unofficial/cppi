@@ -5,6 +5,8 @@ cppi_SOURCES = \
   cppi.l \
   system.h
 
+AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
+
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c
 MAINTAINERCLEANFILES = cpp-cond.c
 CLEANFILES = cpp.h lex.backup
