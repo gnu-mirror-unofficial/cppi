@@ -15,9 +15,12 @@ AM_CPPFLAGS = -I$(srcdir) -I$(top_srcdir)/lib -I../lib
 
 LDADD = ../lib/libcppi.a $(LIBINTL) ../lib/libcppi.a
 
+GPERF_OPTIONS = \
+  -C -N cpp_cond_lookup -n -t -s 6 -k '*' --language=ANSI-C
+
 cpp-cond.c: cpp.gp
 	rm -f $@ $@-tmp
-	$(GPERF) -a -C -N cpp_cond_lookup -n -p -t -s 6 -k '*' $< \
+	$(GPERF) $(GPERF_OPTIONS) $< \
 	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
 	  > $@-tmp
 	chmod a-w $@-tmp
