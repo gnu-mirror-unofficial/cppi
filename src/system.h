@@ -290,32 +290,6 @@ select_plural (uintmax_t n)
 
 #include "unlocked-io.h"
 
-#include "dirname.h"
-
-static inline bool
-dot_or_dotdot (char const *file_name)
-{
-  if (file_name[0] == '.')
-    {
-      char sep = file_name[(file_name[1] == '.') + 1];
-      return (! sep || ISSLASH (sep));
-    }
-  else
-    return false;
-}
-
-/* A wrapper for readdir so that callers don't see entries for `.' or `..'.  */
-static inline struct dirent const *
-readdir_ignoring_dot_and_dotdot (DIR *dirp)
-{
-  while (1)
-    {
-      struct dirent const *dp = readdir (dirp);
-      if (dp == NULL || ! dot_or_dotdot (dp->d_name))
-	return dp;
-    }
-}
-
 #if SETVBUF_REVERSED
 # define SETVBUF(Stream, Buffer, Type, Size) \
     setvbuf (Stream, Type, Buffer, Size)
