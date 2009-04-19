@@ -632,7 +632,7 @@ null_AM_MAKEFLAGS = \
 
 built_programs = \
   $$(cd src && echo '_spy:;@echo $$(bin_PROGRAMS)' \
-     | MAKEFLAGS= $(MAKE) -s make -f Makefile -f - _spy)
+     | MAKEFLAGS= $(MAKE) -s -f Makefile -f - _spy)
 
 warn_cflags = -Dlint -O -Werror -Wall -Wformat -Wshadow -Wpointer-arith
 bin=bin-$$$$
