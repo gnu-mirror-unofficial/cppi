@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src/cppi.l)
 AC_CONFIG_AUX_DIR([build-aux])
 AM_CONFIG_HEADER([lib/config.h:config.hin])
 
-AM_INIT_AUTOMAKE([1.10b dist-xz color-tests parallel-tests])
+AM_INIT_AUTOMAKE([1.11 dist-xz color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
 
 AM_MISSING_PROG([HELP2MAN], [help2man])
