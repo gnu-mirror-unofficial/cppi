@@ -1,6 +1,7 @@
 *~
 .tarball-version
 .version
+/maint.mk
 ABOUT-NLS
 GNUmakefile
 INSTALL

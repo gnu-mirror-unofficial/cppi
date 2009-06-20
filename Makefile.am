@@ -4,7 +4,7 @@ SUBDIRS = lib po src tests man
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = cfg.mk maint.mk .prev-version .version
+EXTRA_DIST = cfg.mk maint.mk .prev-version .version dist-check.mk
 
 # Arrange so that .tarball-version appears only in the distribution
 # tarball, and never in a checked-out repository.

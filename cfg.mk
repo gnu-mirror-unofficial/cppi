@@ -1,5 +1,5 @@
 # Customize maint.mk                           -*- makefile -*-
-# Copyright (C) 2003-2008 Free Software Foundation, Inc.
+# Copyright (C) 2003-2009 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,3 +42,5 @@ gnulib_dir = /gnulib
 export VERBOSE = yes
 
 old_NEWS_hash = 7fd069e38d3f230172cbeff8ffa0ae90
+
+include $(srcdir)/dist-check.mk

@@ -8,42 +8,57 @@ These requirements do not apply when building from a distribution tarball.
 We've opted to keep only the highest-level sources in the GIT repository.
 This eases our maintenance burden, (fewer merges etc.), but imposes more
 requirements on anyone wishing to build from the just-checked-out sources.
-For example, you have to use the latest stable versions of the maintainer
-tools we depend upon, including:
+Specific tools and versions will be checked for and listed by the
+bootstrap script shown below, and will include:
 
 - Automake <http://www.gnu.org/software/automake/>
 - Autoconf <http://www.gnu.org/software/autoconf/>
 - Gettext <http://www.gnu.org/software/gettext/>
+- Git <http://git.or.cz/>
 - Gperf <http://www.gnu.org/software/gperf/>
 - Gzip <http://www.gnu.org/software/gzip/>
 - Perl <http://www.cpan.org/>
+- Rsync <http://samba.anu.edu.au/rsync/>
 - Tar <http://www.gnu.org/software/tar/>
-- Wget <http://www.gnu.org/software/wget/>
+
+While building from a just-cloned source tree may require installing a
+few prerequisites, later, a plain `git pull && make' should be sufficient.
+
+- Valgrind
 
 Valgrind <http://valgrind.org/> is also highly recommended, if
-Valgrind supports your architecture.
+Valgrind supports your architecture. See also README-valgrind.
 
-Only building the initial full source tree will be a bit painful.
-Later, a plain `git-pull && make' should be sufficient.
+- XZ utils (successor to LZMA)
+
+This package's build procedure uses XZ to create a compressed
+distribution tarball.  Using this feature of Automake requires
+version 1.10a or newer, as well as the xz program itself.
+Make sure you have the latest version of the XZ Utils from
+<http://tukaani.org/xz/>
 
 * First GIT checkout
 
-Obviously, if you are reading these notes, you did manage to check out
-this package from GIT.  The next step is to get other files needed to
-build, which are extracted from other source packages:
+You can get a copy of the source repository like this:
 
-	$ ./bootstrap
+        $ git clone git://git.sv.gnu.org/cppi
+        $ cd cppi
+
+The next step is to get and check other files needed to build,
+which are extracted from other source packages:
+
+        $ ./bootstrap
 
 And there you are!  Just
 
-	$ ./configure
-	$ make
-	$ make check
+        $ ./configure #[--enable-gcc-warnings]
+        $ make
+        $ make check
 
 At this point, there should be no difference between your local copy,
 and the GIT master copy:
 
-	$ git-diff
+        $ git diff
 
 should output no difference.
 
@@ -51,7 +66,7 @@ Enjoy!
 
 -----
 
-Copyright (C) 2002-2007 Free Software Foundation, Inc.
+Copyright (C) 2002-2009 Free Software Foundation, Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -65,3 +80,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Local Variables:
+indent-tabs-mode: nil
+End:
