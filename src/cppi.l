@@ -596,6 +596,8 @@ cpp_indent (const char *in_file)
 
   fail = cpp_i (in_file);
 
+  obstack_free (&opener_stack, NULL);
+
   if (in && fclose (in) == EOF)
     error (3, errno, "%s", in_file);
 
