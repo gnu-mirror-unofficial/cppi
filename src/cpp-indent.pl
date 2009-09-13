@@ -50,55 +50,55 @@ sub cpp_indent ($$)
     my $new_string_or_comment = 0;
     while ($line)
       {
-	#warn "s: $state: line=$line";
-	my $remainder = '';
-	if ($state == IN_CODE)
-	  {
-	    my $i = index ($line, '"');
-	    my $j = index ($line, '/*');
-	    last if ($i < 0 && $j < 0);
+        #warn "s: $state: line=$line";
+        my $remainder = '';
+        if ($state == IN_CODE)
+          {
+            my $i = index ($line, '"');
+            my $j = index ($line, '/*');
+            last if ($i < 0 && $j < 0);
 
-	    # A double quote inside single quotes doesn't count.
-	    $i = -1 if substr ($line, $i - 1, 1) eq "'";
+            # A double quote inside single quotes doesn't count.
+            $i = -1 if substr ($line, $i - 1, 1) eq "'";
 
-	    my $k;
-	    if ($i < 0)
-	      {
-		last if $j < 0;
-		$k = $j;
-	      }
-	    else
-	      {
-		if ($j < 0)
-		  {
-		    $k = $i;
-		  }
-		else
-		  {
-		    $k = ($i < $j ? $i : $j);
-		  }
-	      }
-	    $state = ($k == $i ? IN_STRING : IN_COMMENT);
-	    $remainder = substr ($line, $k + 1);
-	    $new_string_or_comment = 1;
-	  }
-	elsif ($state == IN_COMMENT)
-	  {
-	    if ($line =~ m!\*/!g)
-	      {
-		$state = IN_CODE;
-		$remainder = $';
-	      }
-	  }
-	else # $state == IN_STRING
-	  {
-	    if ($line =~ m!\\*\"!)
-	      {
-		$state = IN_CODE if (length ($&) % 2 == 1);
-		$remainder = $';
-	      }
-	  }
-	$line = $remainder;
+            my $k;
+            if ($i < 0)
+              {
+                last if $j < 0;
+                $k = $j;
+              }
+            else
+              {
+                if ($j < 0)
+                  {
+                    $k = $i;
+                  }
+                else
+                  {
+                    $k = ($i < $j ? $i : $j);
+                  }
+              }
+            $state = ($k == $i ? IN_STRING : IN_COMMENT);
+            $remainder = substr ($line, $k + 1);
+            $new_string_or_comment = 1;
+          }
+        elsif ($state == IN_COMMENT)
+          {
+            if ($line =~ m!\*/!g)
+              {
+                $state = IN_CODE;
+                $remainder = $';
+              }
+          }
+        else # $state == IN_STRING
+          {
+            if ($line =~ m!\\*\"!)
+              {
+                $state = IN_CODE if (length ($&) % 2 == 1);
+                $remainder = $';
+              }
+          }
+        $line = $remainder;
       }
 
     return ($state, $new_string_or_comment);
@@ -121,81 +121,81 @@ sub cpp_indent ($$)
       my $rest;
 
       if ($state == IN_CODE)
-	{
-	  my $saved_line = $line;
-	  if ($line =~ s/^\s*\#\s*//)
-	    {
-	      my $keyword;
-	      my $indent;
-	      my $pfx = "$0: $file: line $.";
-	      if ($line =~ /^if\b/
-		  || $line =~ /^ifdef\b/
-		  || $line =~ /^ifndef\b/)
-		{
-		  # Maintain stack of (line number, keyword) pairs to better
-		  # report any `unterminated #if...' errors.
-		  push @opener_stack, {LINE_NUMBER => $., KEYWORD => $&};
-		  $keyword = $&;
-		  $indent = $indent_incr x $depth;
-		  ++$depth;
-		}
-	      elsif ($line =~ /^(else|elif)\b/)
-		{
-		  if ($depth < 1)
-		    {
-		      warn "$pfx: found #$& without matching #if\n";
-		      $depth = 1;
-		      $fail = 2;
-		    }
-		  $keyword = $&;
-		  $indent = $indent_incr x ($depth - 1);
-		}
-	      elsif ($line =~ /^endif\b/)
-		{
-		  if ($depth < 1)
-		    {
-		      warn "$pfx: found #$& without matching #if\n";
-		      $depth = 1;
-		      $fail = 2;
-		    }
-		  $keyword = $&;
-		  --$depth;
-		  $indent = $indent_incr x $depth;
-		  pop @opener_stack;
-		}
-	      else
-		{
-		  # Handle #error, #include, #pragma, etc.
-		  $keyword = '';
-		  $indent = $indent_incr x $depth;
-		}
+        {
+          my $saved_line = $line;
+          if ($line =~ s/^\s*\#\s*//)
+            {
+              my $keyword;
+              my $indent;
+              my $pfx = "$0: $file: line $.";
+              if ($line =~ /^if\b/
+                  || $line =~ /^ifdef\b/
+                  || $line =~ /^ifndef\b/)
+                {
+                  # Maintain stack of (line number, keyword) pairs to better
+                  # report any `unterminated #if...' errors.
+                  push @opener_stack, {LINE_NUMBER => $., KEYWORD => $&};
+                  $keyword = $&;
+                  $indent = $indent_incr x $depth;
+                  ++$depth;
+                }
+              elsif ($line =~ /^(else|elif)\b/)
+                {
+                  if ($depth < 1)
+                    {
+                      warn "$pfx: found #$& without matching #if\n";
+                      $depth = 1;
+                      $fail = 2;
+                    }
+                  $keyword = $&;
+                  $indent = $indent_incr x ($depth - 1);
+                }
+              elsif ($line =~ /^endif\b/)
+                {
+                  if ($depth < 1)
+                    {
+                      warn "$pfx: found #$& without matching #if\n";
+                      $depth = 1;
+                      $fail = 2;
+                    }
+                  $keyword = $&;
+                  --$depth;
+                  $indent = $indent_incr x $depth;
+                  pop @opener_stack;
+                }
+              else
+                {
+                  # Handle #error, #include, #pragma, etc.
+                  $keyword = '';
+                  $indent = $indent_incr x $depth;
+                }
 
-	      if ($checking && $saved_line ne "#$indent$keyword$'")
-		{
-		  warn "$pfx: not properly indented\n";
-		  close FILE;
-		  return 1;
-		}
+              if ($checking && $saved_line ne "#$indent$keyword$'")
+                {
+                  warn "$pfx: not properly indented\n";
+                  close FILE;
+                  return 1;
+                }
 
-	      $line = "#$indent$keyword$'";
-	      $rest = $';
-	    }
-	  else
-	    {
-	      $rest = $line;
-	    }
-	}
+              $line = "#$indent$keyword$'";
+              $rest = $';
+            }
+          else
+            {
+              $rest = $line;
+            }
+        }
       else
-	{
-	  $rest = $line;
-	}
+        {
+          $rest = $line;
+        }
       #print $state if !$checking;
       print $line if !$checking;
 
       my $new_non_code;
       ($state, $new_non_code) = update_state ($state, $rest);
       $start_of_last_comment_or_string = $.
-	if $new_non_code;
+        if $new_non_code;
     }
   close FILE;
 
@@ -203,10 +203,10 @@ sub cpp_indent ($$)
     {
       my $x;
       foreach $x (@opener_stack)
-	{
-	  warn "$0: $file: line $x->{LINE_NUMBER}: "
-	    . "unterminated #$x->{KEYWORD}\n";
-	}
+        {
+          warn "$0: $file: line $x->{LINE_NUMBER}: "
+            . "unterminated #$x->{KEYWORD}\n";
+        }
       $fail = 2;
     }
 
@@ -214,7 +214,7 @@ sub cpp_indent ($$)
     {
       my $type = ($state == IN_COMMENT && 'comment' || 'string');
       warn "$0: $file: line $start_of_last_comment_or_string "
-	. "unterminated $type\n";
+        . "unterminated $type\n";
       $fail = 2;
     }
 

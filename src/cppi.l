@@ -153,19 +153,19 @@ lookup_cpp_keyword (const char *prefix, size_t len, const char **kw)
   for (p = prefix; ; ++p, --len)
     {
       switch (*p)
-	{
-	case '#':
-	case ' ':
-	case '\t':
-	  break;
+        {
+        case '#':
+        case ' ':
+        case '\t':
+          break;
 
-	default:
-	  {
-	    struct KW const *ent = cpp_cond_lookup (p, len);
-	    *kw = p;
-	    return (ent ? ent->code : EIC_OTHER);
-	  }
-	}
+        default:
+          {
+            struct KW const *ent = cpp_cond_lookup (p, len);
+            *kw = p;
+            return (ent ? ent->code : EIC_OTHER);
+          }
+        }
       assert (len > 0);
     }
 }
@@ -206,18 +206,18 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
       int n;
       int depth = (i_depth < 0 ? 0 : i_depth);
       if ((text[0] == '#'
-	   && (n = strspn (text + 1, " ")) == depth
-	   && !isblank (text[1 + n]))
-	  /* This allows pragmas to have exactly one space before the `#'.
-	     E.g., ` #pragma alloca' or ` #  pragma alloca' .  */
-	  || (text[0] == ' '
-	      && text[1] == '#'
-	      && type == EIC_PRAGMA
-	      && (n = strspn (text + 2, " ")) == depth - 1
-	      && text[n + 2] == 'p'))
-	{
-	  fail = 0;
-	}
+           && (n = strspn (text + 1, " ")) == depth
+           && !isblank (text[1 + n]))
+          /* This allows pragmas to have exactly one space before the `#'.
+             E.g., ` #pragma alloca' or ` #  pragma alloca' .  */
+          || (text[0] == ' '
+              && text[1] == '#'
+              && type == EIC_PRAGMA
+              && (n = strspn (text + 2, " ")) == depth - 1
+              && text[n + 2] == 'p'))
+        {
+          fail = 0;
+        }
     }
   else
     {
@@ -226,18 +226,18 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
       int space_first = (type == EIC_PRAGMA && text[0] == ' ');
 
       if (space_first)
-	{
-	  fputc (' ', yyout);
-	  fputc ('#', yyout);
-	  for (i = 0; i < i_depth - 1; i++)
-	    fputc (' ', yyout);
-	}
+        {
+          fputc (' ', yyout);
+          fputc ('#', yyout);
+          for (i = 0; i < i_depth - 1; i++)
+            fputc (' ', yyout);
+        }
       else
-	{
-	  fputc ('#', yyout);
-	  for (i = 0; i < i_depth; i++)
-	    fputc (' ', yyout);
-	}
+        {
+          fputc ('#', yyout);
+          for (i = 0; i < i_depth; i++)
+            fputc (' ', yyout);
+        }
 
       fputs (dir, yyout);
 
@@ -249,7 +249,7 @@ emit_or_check (enum Eic_type type, const char *text, const char *other)
 
 static enum Eic_type
 emit_indented_cpp (char const *in_file, unsigned int line_number,
-		   char const *text, size_t len, int *fail)
+                   char const *text, size_t len, int *fail)
 {
   const char *keyword;
   enum Eic_type t = lookup_cpp_keyword (text, len, &keyword);
@@ -262,8 +262,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
     case EIC_IFDEF:
     case EIC_IFNDEF:
       /* Maintain a stack of (keyword, line number) pairs to better
-	 report any `unterminated #if...' errors.  Put a new pair
-	 on the stack.  */
+         report any `unterminated #if...' errors.  Put a new pair
+         on the stack.  */
       push (t, line_number);
 
       *fail = emit_or_check (t, yytext, keyword);
@@ -273,48 +273,48 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
     case EIC_ELSE:
     case EIC_ELIF:
       if (i_depth <= initial_i_depth)
-	{
-	  if (!list_files_only)
-	    {
-	      error (0, 0, _("%s: line %d: found #%s without matching #if"),
-		     in_file, line_number, directive[t]);
-	    }
-	  i_depth = 0;
-	  emit_or_check (t, yytext, keyword);
-	  *fail = 2;
-	}
+        {
+          if (!list_files_only)
+            {
+              error (0, 0, _("%s: line %d: found #%s without matching #if"),
+                     in_file, line_number, directive[t]);
+            }
+          i_depth = 0;
+          emit_or_check (t, yytext, keyword);
+          *fail = 2;
+        }
       else
-	{
-	  --i_depth;
-	  *fail = emit_or_check (t, yytext, keyword);
-	  ++i_depth;
-	}
+        {
+          --i_depth;
+          *fail = emit_or_check (t, yytext, keyword);
+          ++i_depth;
+        }
       break;
 
     case EIC_ENDIF:
       if (i_depth <= initial_i_depth)
-	{
-	  if (!list_files_only)
-	    {
-	      error (0, 0, _("%s: line %d: found #%s without matching #if"),
-		     in_file, line_number, directive[t]);
-	    }
-	  i_depth = initial_i_depth + 1;
-	  *fail = 2;
-	}
+        {
+          if (!list_files_only)
+            {
+              error (0, 0, _("%s: line %d: found #%s without matching #if"),
+                     in_file, line_number, directive[t]);
+            }
+          i_depth = initial_i_depth + 1;
+          *fail = 2;
+        }
       else
-	{
-	  /* We've just found an #endif.  Pop off and discard the
-	     keyword,line-number pair that's on the top of the stack.
-	     That pair identifies the matching #if, #ifdef, or #ifndef.  */
-	  pop ();
-	}
+        {
+          /* We've just found an #endif.  Pop off and discard the
+             keyword,line-number pair that's on the top of the stack.
+             That pair identifies the matching #if, #ifdef, or #ifndef.  */
+          pop ();
+        }
 
       --i_depth;
       {
-	int tf = emit_or_check (t, yytext, keyword);
-	if (tf > *fail)
-	  *fail = tf;
+        int tf = emit_or_check (t, yytext, keyword);
+        if (tf > *fail)
+          *fail = tf;
       }
       break;
 
@@ -332,8 +332,8 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
   if (*fail == 1)
     {
       if (!list_files_only)
-	error (0, 0, _("%s: line %d: not properly indented"),
-	       in_file, line_number);
+        error (0, 0, _("%s: line %d: not properly indented"),
+               in_file, line_number);
     }
 
   return t;
@@ -406,29 +406,29 @@ b [^a-zA-Z_\n]
       c = INPUT_AND_ECHO ();
 
       if (c == EOF)
-	{
-	  error (0, 0, _("%s: line %d: EOF in string"),
-		 in_file, start_lineno);
-	  fail = 1;
-	  break;
-	}
+        {
+          error (0, 0, _("%s: line %d: EOF in string"),
+                 in_file, start_lineno);
+          fail = 1;
+          break;
+        }
 
       /* If the number of preceding backslashes is even, then this is
-	 an unescaped double quote, and it marks the end of the string.  */
+         an unescaped double quote, and it marks the end of the string.  */
       if (c == '"' && n_backslashes % 2 == 0)
-	break;
+        break;
 
       n_backslashes = (c == '\\' ? n_backslashes + 1 : 0);
 
       /* Some compilers (irix4's cc) impose a limit on the length of a
-	 double quoted string.  It's probably a limit on the length of
-	 the actual value of the string, rather than on the number of
-	 bytes between `"'s in the source, but I'm not sure it's worth
-	 the trouble of computing the former.  */
+         double quoted string.  It's probably a limit on the length of
+         the actual value of the string, rather than on the number of
+         bytes between `"'s in the source, but I'm not sure it's worth
+         the trouble of computing the former.  */
       ++string_length;
 
       if (c == '\n')
-	++lineno;
+        ++lineno;
     }
 
   PUT2 ('\0', ']');
@@ -436,8 +436,8 @@ b [^a-zA-Z_\n]
   if (0 < max_string_length && max_string_length < string_length)
     {
       error (0, 0, _("%s: line %d: string (%lu) longer than maximum of %lu"),
-	     in_file, start_lineno, (unsigned long) string_length,
-	     (unsigned long) max_string_length);
+             in_file, start_lineno, (unsigned long) string_length,
+             (unsigned long) max_string_length);
       fail = 1;
     }
 
@@ -455,37 +455,37 @@ b [^a-zA-Z_\n]
     {
       int c;
       if (inhibit_output)
-	{
-	  /* Make sure there's exactly one space after this directive.  */
-	  c = input ();
-	  if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
-	    {
-	      if (!list_files_only)
-		{
-		  error (0, 0, _("%s: line %d: not properly formatted;\n\
+        {
+          /* Make sure there's exactly one space after this directive.  */
+          c = input ();
+          if (c != ' ' || ((c = input ()) == ' ' || c == '\t' || c == EOF))
+            {
+              if (!list_files_only)
+                {
+                  error (0, 0, _("%s: line %d: not properly formatted;\n\
 there must be exactly one SPACE character after each\n\
 #if, #elif, and #define directive"),
-			 in_file, lineno);
-		}
-	      if (fail < 1)
-		fail = 1;
-	    }
-	}
+                         in_file, lineno);
+                }
+              if (fail < 1)
+                fail = 1;
+            }
+        }
       else
-	{
-	  /* Squeeze multiple spaces and tabs after an #if or #elif
-	     directive to a single space.  */
-	  fputc (' ', yyout);
-	  while ((c = input ()) == ' ' || c == '\t')
-	    {
-	      /* empty */
-	    }
-	}
+        {
+          /* Squeeze multiple spaces and tabs after an #if or #elif
+             directive to a single space.  */
+          fputc (' ', yyout);
+          while ((c = input ()) == ' ' || c == '\t')
+            {
+              /* empty */
+            }
+        }
       unput (c);
       if (t == EIC_DEFINE)
-	{
-	  gobble_define (&lineno);
-	}
+        {
+          gobble_define (&lineno);
+        }
     }
   else if (ansi_check && (t == EIC_ELSE || t == EIC_ENDIF))
     {
@@ -494,49 +494,49 @@ there must be exactly one SPACE character after each\n\
       int cpp_directive_lineno = lineno;
       int c;
       while ((c = INPUT_AND_ECHO ()) != EOF)
-	{
-	  if (isblank (c))
-	    continue;
-	  if (c == '/')
-	    {
-	      c = INPUT_AND_ECHO ();
-	      if (c == EOF)
-		break;
-	      if (c == '*')
-		{
-		  gobble_c_comment (in_file, &lineno);
-		  continue;
-		}
-	      if (c == '/')
-		{
-		  gobble_line (&lineno);
-		  break;
-		}
+        {
+          if (isblank (c))
+            continue;
+          if (c == '/')
+            {
+              c = INPUT_AND_ECHO ();
+              if (c == EOF)
+                break;
+              if (c == '*')
+                {
+                  gobble_c_comment (in_file, &lineno);
+                  continue;
+                }
+              if (c == '/')
+                {
+                  gobble_line (&lineno);
+                  break;
+                }
 
-	      /* else, fall through to next if-stmt */
-	    }
+              /* else, fall through to next if-stmt */
+            }
 
-	  if (c == '\n')
-	    {
-	      ++lineno;
-	      break;
-	    }
+          if (c == '\n')
+            {
+              ++lineno;
+              break;
+            }
 
-	  /* We've found a token after an #else or #endif.
-	     Continue reading to end of line.  */
-	  found_non_ansi = 1;
-	}
+          /* We've found a token after an #else or #endif.
+             Continue reading to end of line.  */
+          found_non_ansi = 1;
+        }
 
       if (found_non_ansi)
-	{
-	  if (!list_files_only)
-	    error (0, 0,
-	      _("%s: line %d: text following `#%s' violates ANSI standard"),
-		   in_file, cpp_directive_lineno,
-		   (t == EIC_ELSE ? "else" : "endif"));
-	  if (fail < 1)
-	    fail = 1;
-	}
+        {
+          if (!list_files_only)
+            error (0, 0,
+              _("%s: line %d: text following `#%s' violates ANSI standard"),
+                   in_file, cpp_directive_lineno,
+                   (t == EIC_ELSE ? "else" : "endif"));
+          if (fail < 1)
+            fail = 1;
+        }
     }
 
   if (fail > lex_fail)
@@ -552,19 +552,19 @@ there must be exactly one SPACE character after each\n\
   if (i_depth != initial_i_depth)
     {
       if (!list_files_only)
-	{
-	  /* Iterate the opener stack from bottom to top, giving a
-	     diagnostic per unterminated #if* directive.
-	     Torture this code with a command like this:
-	     $ yes '#if FOO' |head -600 |cppi -c */
-	  unsigned int i;
-	  for (i = 0; i < OPENER_STACK_HEIGHT; i++)
-	    {
-	      struct KL_pair x = kth_entry (i);
-	      error (0, 0, _("%s: line %d: unterminated #%s"),
-		     in_file, x.line_number, directive[x.opener_type]);
-	    }
-	}
+        {
+          /* Iterate the opener stack from bottom to top, giving a
+             diagnostic per unterminated #if* directive.
+             Torture this code with a command like this:
+             $ yes '#if FOO' |head -600 |cppi -c */
+          unsigned int i;
+          for (i = 0; i < OPENER_STACK_HEIGHT; i++)
+            {
+              struct KL_pair x = kth_entry (i);
+              error (0, 0, _("%s: line %d: unterminated #%s"),
+                     in_file, x.line_number, directive[x.opener_type]);
+            }
+        }
 
       lex_fail = 2;
     }
@@ -588,9 +588,9 @@ cpp_indent (const char *in_file)
   else
     {
       if ((in = fopen (in_file, "r")) == NULL)
-	{
-	  error (3, errno, "%s", in_file);
-	}
+        {
+          error (3, errno, "%s", in_file);
+        }
       yyin = in;
     }
 
@@ -611,7 +611,7 @@ usage (int status)
   if (status != 0)
     {
       fprintf (stderr, "Try `%s --help' for more information.\n",
-	       program_name);
+               program_name);
     }
   else
     {
@@ -635,8 +635,8 @@ With no FILE, or when FILE is -, read standard input.\n\
   -a, --ansi             when checking, fail if text follows #else or #endif\n\
   -c, --check            set exit code, but don't produce any output\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
-			   print to stdout only the names of files that\n\
-			   are not properly indented\n\
+                           print to stdout only the names of files that\n\
+                           are not properly indented\n\
 "), stdout);
       fputs (_("\
   -m, --max-string-length=LENGTH\n\
@@ -688,16 +688,16 @@ gobble_define (unsigned int *line_number)
   while ((c = INPUT_AND_ECHO ()) != EOF)
     {
       if (c == '\n')
-	{
-	  ++(*line_number);
-	  if (backslash_count % 2 == 0)
-	    break;
-	}
+        {
+          ++(*line_number);
+          if (backslash_count % 2 == 0)
+            break;
+        }
 
       if (c == '\\')
-	++backslash_count;
+        ++backslash_count;
       else
-	backslash_count = 0;
+        backslash_count = 0;
     }
 }
 
@@ -712,26 +712,26 @@ gobble_c_comment (const char *in_file, unsigned int *line_number)
     {
       int c;
       while ((c = INPUT_AND_ECHO ()) != '*' && c != EOF)
-	{
-	  if (c == '\n')
-	    ++(*line_number);
-	}
+        {
+          if (c == '\n')
+            ++(*line_number);
+        }
 
       if (c == '*')
-	{
-	  while ((c = INPUT_AND_ECHO ()) == '*')
-	    ;
-	  if (c == '/')
-	    break;    /* found the end */
-	  if (c == '\n')
-	    ++(*line_number);
-	}
+        {
+          while ((c = INPUT_AND_ECHO ()) == '*')
+            ;
+          if (c == '/')
+            break;    /* found the end */
+          if (c == '\n')
+            ++(*line_number);
+        }
 
       if (c == EOF)
-	{
-	  error (2, 0, _("%s: line %d: EOF in comment"), in_file, start_lineno);
-	  break;
-	}
+        {
+          error (2, 0, _("%s: line %d: EOF in comment"), in_file, start_lineno);
+          break;
+        }
     }
 }
 
@@ -744,10 +744,10 @@ gobble_line (unsigned int *line_number)
   while ((c = INPUT_AND_ECHO ()) != EOF)
     {
       if (c == '\n')
-	{
-	  ++(*line_number);
-	  break;
-	}
+        {
+          ++(*line_number);
+          break;
+        }
     }
 }
 
@@ -767,40 +767,40 @@ main (int argc, char** argv)
   while ((c = getopt_long (argc, argv, "aclm:", long_options, NULL)) != -1)
     {
       switch (c)
-	{
-	case 0:
-	  break;
+        {
+        case 0:
+          break;
 
-	case 'a':
-	  ansi_check = 1;
-	  break;
+        case 'a':
+          ansi_check = 1;
+          break;
 
-	case 'c':
-	  inhibit_output = 1;
-	  break;
+        case 'c':
+          inhibit_output = 1;
+          break;
 
-	case 'l':
-	  inhibit_output = 1;
-	  list_files_only = 1;
-	  break;
+        case 'l':
+          inhibit_output = 1;
+          list_files_only = 1;
+          break;
 
-	case 'm':
-	  if (xstrtoul (optarg, NULL, 0, &max_string_length, NULL)
-	      != LONGINT_OK)
-	    {
-	      error (0, 0, _("invalid maximum string length %s"), optarg);
-	      fail = 1;
-	    }
-	  break;
+        case 'm':
+          if (xstrtoul (optarg, NULL, 0, &max_string_length, NULL)
+              != LONGINT_OK)
+            {
+              error (0, 0, _("invalid maximum string length %s"), optarg);
+              fail = 1;
+            }
+          break;
 
-	case_GETOPT_HELP_CHAR;
+        case_GETOPT_HELP_CHAR;
 
-	case_GETOPT_VERSION_CHAR (PROGRAM_NAME, AUTHORS);
+        case_GETOPT_VERSION_CHAR (PROGRAM_NAME, AUTHORS);
 
-	default:
-	  usage (2);
-	  break;
-	}
+        default:
+          usage (2);
+          break;
+        }
     }
 
   if (fail)
@@ -821,10 +821,10 @@ main (int argc, char** argv)
 
       err = cpp_indent (file_list[i]);
       if (err > max_err)
-	max_err = err;
+        max_err = err;
 
       if (err && list_files_only)
-	puts (file_list[i]);
+        puts (file_list[i]);
     }
 
   exit (max_err);

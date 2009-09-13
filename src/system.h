@@ -180,8 +180,8 @@ enum
    If anyone knows of a system for which the legitimate value for
    st_blksize can exceed 4MB, please report it as a bug in this code.  */
 # define ST_BLKSIZE(statbuf) ((0 < (statbuf).st_blksize \
-			       && (statbuf).st_blksize <= (1 << 22)) /* 4MB */ \
-			      ? (statbuf).st_blksize : DEV_BSIZE)
+                               && (statbuf).st_blksize <= (1 << 22)) /* 4MB */ \
+                              ? (statbuf).st_blksize : DEV_BSIZE)
 # if defined hpux || defined __hpux__ || defined __hpux
 /* HP-UX counts st_blocks in 1024-byte units.
    This loses when mixing HP-UX and BSD file systems with NFS.  */
@@ -279,7 +279,7 @@ select_plural (uintmax_t n)
    Ensure that sizeof *(P) is *not* 1.  In that case, it'd be
    better to use X2REALLOC, although not strictly necessary.  */
 #define X2NREALLOC(P, PN) ((void) verify_true (sizeof *(P) != 1), \
-			   x2nrealloc (P, PN, sizeof *(P)))
+                           x2nrealloc (P, PN, sizeof *(P)))
 
 /* Using x2realloc (when appropriate) usually makes your code more
    readable than using x2nrealloc, but it also makes it so your
@@ -419,8 +419,8 @@ enum
 
 #if ! HAVE_FSEEKO && ! defined fseeko
 # define fseeko(s, o, w) ((o) == (long int) (o)		\
-			  ? fseek (s, o, w)		\
-			  : (errno = EOVERFLOW, -1))
+                          ? fseek (s, o, w)		\
+                          : (errno = EOVERFLOW, -1))
 #endif
 
 #if ! HAVE_SYNC

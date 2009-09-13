@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63.240)
 AC_INIT([GNU cppi], m4_esyscmd([build-aux/git-version-gen .tarball-version]),
-	[bug-cppi@gnu.org])
+        [bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -22,7 +22,7 @@ gl_INIT
 
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--enable-gcc-warnings],
-		  [turn on lots of GCC warnings (for developers)])],
+                  [turn on lots of GCC warnings (for developers)])],
   [case $enableval in
      yes|no) ;;
      *)      AC_MSG_ERROR([bad value $enableval for gcc-warnings option]) ;;
