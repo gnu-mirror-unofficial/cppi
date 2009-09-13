@@ -25,7 +25,7 @@ taint-distcheck: $(DIST_ARCHIVES)
 	test -d $(t_taint) && chmod -R 700 $(t_taint) || :
 	-rm -rf $(t_taint) $(fake_home)
 	mkdir -p $(t_prefix) $(t_taint) $(fake_home)
-	GZIP=$(GZIP_ENV) $(AMTAR) -C $(t_taint) -zxf $(distdir).tar.gz
+	$(AMTAR) -C $(t_taint) -Jxf $(distdir).tar.xz
 	mkfifo $(fake_home)/fifo
 	touch $(fake_home)/f
 	mkdir -p $(fake_home)/d/e
@@ -115,7 +115,7 @@ my-distcheck: $(DIST_ARCHIVES) $(local-check)
 	$(MAKE) check
 	-rm -rf $(t)
 	mkdir -p $(t)
-	GZIP=$(GZIP_ENV) $(AMTAR) -C $(t) -zxf $(distdir).tar.gz
+	$(AMTAR) -C $(t) -Jxf $(distdir).tar.xz
 	cd $(t)/$(distdir)				\
 	  && ./configure --enable-gcc-warnings --disable-nls \
 	  && $(MAKE) AM_MAKEFLAGS='$(null_AM_MAKEFLAGS)' \
@@ -125,9 +125,9 @@ my-distcheck: $(DIST_ARCHIVES) $(local-check)
 	  && $(coreutils-path-check)			\
 	  && $(MAKE) distclean
 	(cd $(t) && mv $(distdir) $(distdir).old	\
-	  && $(AMTAR) -zxf - ) < $(distdir).tar.gz
+	  && $(AMTAR) -Jxf - ) < $(distdir).tar.xz
 	diff -ur $(t)/$(distdir).old $(t)/$(distdir)
 	-rm -rf $(t)
 	@echo "========================"; \
-	echo "$(distdir).tar.gz is ready for distribution"; \
+	echo "$(distdir).tar.xz is ready for distribution"; \
 	echo "========================"
