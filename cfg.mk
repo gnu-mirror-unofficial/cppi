@@ -43,4 +43,16 @@ export VERBOSE = yes
 
 old_NEWS_hash = 7fd069e38d3f230172cbeff8ffa0ae90
 
+# Indent only with spaces.
+sc_prohibit_tab_based_indentation:
+	@re='^ *	'						\
+	msg='TAB in indentation; use only spaces'			\
+	  $(_prohibit_regexp)
+
+# Don't use "indent-tabs-mode: nil" anymore.  No longer needed.
+sc_prohibit_emacs__indent_tabs_mode__setting:
+	@re='^( *[*#] *)?indent-tabs-mode:'				\
+	msg='use of emacs indent-tabs-mode: setting'			\
+	  $(_prohibit_regexp)
+
 include $(srcdir)/dist-check.mk
