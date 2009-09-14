@@ -635,14 +635,14 @@ With no FILE, or when FILE is -, read standard input.\n\
   -a, --ansi             when checking, fail if text follows #else or #endif\n\
   -c, --check            set exit code, but don't produce any output\n\
   -l, --list-files-only  don't generate diagnostics about indentation;\n\
-                           print to stdout only the names of files that\n\
-                           are not properly indented\n\
+                         print to stdout only the names of files that\n\
+                         are not properly indented\n\
 "), stdout);
       fputs (_("\
   -m, --max-string-length=LENGTH\n\
                          fail if there is a double-quoted string longer\n\
-                           than LENGTH;  if LENGTH is 0 (the default),\n\
-                           then there is no limit\n\
+                         than LENGTH;  if LENGTH is 0 (the default),\n\
+                         then there is no limit\n\
 "), stdout);
       fputs (HELP_OPTION_DESCRIPTION, stdout);
       fputs (VERSION_OPTION_DESCRIPTION, stdout);
@@ -659,12 +659,12 @@ non-ANSI text following #else and #endif directives.\n\
       fputs (_("\
 \n\
 The exit code will be one of these:\n\
-  0 all directives properly indented\n\
-  1 some cpp directive(s) improperly indented\n\
-  1 if text follows #else/#endif (enabled with --check --ansi)\n\
-  2 #if/#endif mismatch\n\
-  3 file (e.g. read/write) error\n\
-  4 found a double-quoted string longer than the specified maximum\n\
+  0  all directives properly indented\n\
+  1  some cpp directive(s) improperly indented\n\
+  1  if text follows #else/#endif (enabled with --check --ansi)\n\
+  2  #if/#endif mismatch\n\
+  3  file (e.g. read/write) error\n\
+  4  found a double-quoted string longer than the specified maximum\n\
 "), stdout);
       fputs (_("\
 \n\
