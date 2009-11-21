@@ -1,3 +1,4 @@
+*.o
 *~
 .tarball-version
 .version
@@ -18,5 +19,13 @@ configure
 cppi-*.tar.bz2
 cppi-*.tar.gz
 lib/.gitignore
+lib/charset.alias
+lib/configmake.h
+lib/libcppi.a
 m4/.gitignore
+po/.gitignore
+po/LINGUAS
+po/Makevars
 stamp-h1
+tests/*.log
+ChangeLog
