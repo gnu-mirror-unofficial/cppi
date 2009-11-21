@@ -70,6 +70,10 @@ gnulib_modules=
 # Any gnulib files needed that are not in modules.
 gnulib_files=
 
+# A function to be called after everything else in this script.
+# Override it via your own definition in bootstrap.conf.
+bootstrap_epilogue() { :; }
+
 # The command to download all .po files for a specified domain into
 # a specified directory.  Fill in the first %s is the domain name, and
 # the second with the destination directory.  Use rsync's -L and -r
@@ -150,12 +154,18 @@ vc_ignore=auto
 
 # find_tool ENVVAR NAMES...
 # -------------------------
+# Search for a required program.  Use the value of ENVVAR, if set,
+# otherwise find the first of the NAMES that can be run (i.e.,
+# supports --version).  If found, set ENVVAR to the program name,
+# die otherwise.
 find_tool ()
 {
   # Find sha1sum, named gsha1sum on MacPorts.
   find_tool_envvar=$1
   shift
-  if eval test x"\$$find_tool_envvar" = x; then
+  find_tool_names=$@
+  eval "find_tool_res=\$$find_tool_envvar"
+  if test x"$find_tool_res" = x; then
     for i
     do
       if ($i --version </dev/null) >/dev/null 2>&1; then
@@ -163,16 +173,18 @@ find_tool ()
        break
       fi
     done
+  else
+    find_tool_error_prefix="\$$find_tool_envvar: "
   fi
   if test x"$find_tool_res" = x; then
-    echo >&2 "$0: $find_tool_name is required"
+    echo >&2 "$0: one of these is required: $find_tool_names"
     exit 1
   fi
   ($find_tool_res --version </dev/null) >/dev/null 2>&1 || {
-    echo >&2 "$0: cannot run $find_tool_res --version"
+    echo >&2 "$0: ${find_tool_error_prefix}cannot run $find_tool_res --version"
     exit 1
   }
-  eval "$find_tool_envvar=\"$find_tool_res\""
+  eval "$find_tool_envvar=\$find_tool_res"
   eval "export $find_tool_envvar"
 }
 
@@ -405,7 +417,7 @@ case ${GNULIB_SRCDIR--} in
         git_modules_config submodule.gnulib.url >/dev/null; then
     git submodule init
     GNULIB_SRCDIR=`cd $GNULIB_SRCDIR && pwd`
-    git config --replace-all submodule.gnulib.url $GNULIB_SRCDIR
+    git_modules_config --replace-all submodule.gnulib.url $GNULIB_SRCDIR
     echo "$0: getting gnulib files..."
     git submodule update || exit $?
     GNULIB_SRCDIR=gnulib
@@ -721,6 +733,10 @@ find "$m4_base" "$source_base" \
 
 # Reconfigure, getting other files.
 
+# Skip autoheader if it's not needed.
+grep -E '^[	 ]*AC_CONFIG_HEADERS?\>' configure.ac >/dev/null ||
+  AUTOHEADER=true
+
 for command in \
   libtool \
   "${ACLOCAL-aclocal} --force -I m4" \
@@ -788,5 +804,7 @@ if test $with_gettext = yes; then
     (cd po && cp -p Makefile.in.in *-quot *.header *.sed *.sin ../runtime-po)
   fi
 fi
+
+bootstrap_epilogue
 
 echo "$0: done.  Now you can run './configure'."
