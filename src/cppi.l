@@ -68,6 +68,14 @@ struct KL_pair
   unsigned int line_number;
 };
 
+enum
+{
+  EXIT_NOT_PROPERLY_INDENTED = 1,
+  EXIT_STRING_TOO_LONG = 1,
+  EXIT_LEX_ERROR = 2,
+  EXIT_FILE_ERROR = 3
+};
+
 /* A stack of cpp-opener-directive-spec/line-number pairs.
    This lets us report the line numbers of any unmatched #if,
    #ifdef, or #ifndef directives.  */
@@ -329,7 +337,7 @@ emit_indented_cpp (char const *in_file, unsigned int line_number,
       abort ();
     }
 
-  if (*fail == 1)
+  if (*fail == EXIT_NOT_PROPERLY_INDENTED)
     {
       if (!list_files_only)
         error (0, 0, _("%s: line %d: not properly indented"),
@@ -409,7 +417,7 @@ b [^a-zA-Z_\n]
         {
           error (0, 0, _("%s: line %d: EOF in string"),
                  in_file, start_lineno);
-          fail = 1;
+          fail = EXIT_LEX_ERROR;
           break;
         }
 
@@ -438,7 +446,8 @@ b [^a-zA-Z_\n]
       error (0, 0, _("%s: line %d: string (%lu) longer than maximum of %lu"),
              in_file, start_lineno, (unsigned long) string_length,
              (unsigned long) max_string_length);
-      fail = 1;
+      if (fail == 0)
+        lex_fail = EXIT_STRING_TOO_LONG;
     }
 
   if (fail)
@@ -566,7 +575,7 @@ there must be exactly one SPACE character after each\n\
             }
         }
 
-      lex_fail = 2;
+      lex_fail = EXIT_LEX_ERROR;
     }
 
   return lex_fail;
@@ -589,7 +598,7 @@ cpp_indent (const char *in_file)
     {
       if ((in = fopen (in_file, "r")) == NULL)
         {
-          error (3, errno, "%s", in_file);
+          error (EXIT_FILE_ERROR, errno, "%s", in_file);
         }
       yyin = in;
     }
@@ -599,7 +608,7 @@ cpp_indent (const char *in_file)
   obstack_free (&opener_stack, NULL);
 
   if (in && fclose (in) == EOF)
-    error (3, errno, "%s", in_file);
+    error (EXIT_FILE_ERROR, errno, "%s", in_file);
 
   return fail;
 }
@@ -660,11 +669,11 @@ non-ANSI text following #else and #endif directives.\n\
 \n\
 The exit code will be one of these:\n\
   0  all directives properly indented\n\
-  1  some cpp directive(s) improperly indented\n\
-  1  if text follows #else/#endif (enabled with --check --ansi)\n\
-  2  #if/#endif mismatch\n\
-  3  file (e.g. read/write) error\n\
-  4  found a double-quoted string longer than the specified maximum\n\
+  1  some cpp directive(s) improperly indented, or\n\
+     if text follows #else/#endif (enabled with --check --ansi), or\n\
+     found a double-quoted string longer than the specified maximum\n\
+  2  #if/#endif mismatch, EOF in comment or string\n\
+  3  file (e.g. open/read/write) error\n\
 "), stdout);
       fputs (_("\
 \n\
@@ -729,7 +738,8 @@ gobble_c_comment (const char *in_file, unsigned int *line_number)
 
       if (c == EOF)
         {
-          error (2, 0, _("%s: line %d: EOF in comment"), in_file, start_lineno);
+          error (EXIT_LEX_ERROR, 0, _("%s: line %d: EOF in comment"),
+                 in_file, start_lineno);
           break;
         }
     }
@@ -798,18 +808,18 @@ main (int argc, char** argv)
         case_GETOPT_VERSION_CHAR (PROGRAM_NAME, AUTHORS);
 
         default:
-          usage (2);
+          usage (EXIT_LEX_ERROR);
           break;
         }
     }
 
   if (fail)
-    exit (1);
+    exit (EXIT_FAILURE);
 
   if (!inhibit_output && argc - optind > 2)
     {
       error (0, 0, _("too many arguments"));
-      usage (1);
+      usage (EXIT_FAILURE);
     }
 
   file_list = (optind == argc ? default_file_list : argv + optind);
