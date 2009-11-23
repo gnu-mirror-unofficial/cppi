@@ -5,7 +5,7 @@ AC_INIT([GNU cppi], m4_esyscmd([build-aux/git-version-gen .tarball-version]),
 AC_CONFIG_SRCDIR(src/cppi.l)
 
 AC_CONFIG_AUX_DIR([build-aux])
-AM_CONFIG_HEADER([lib/config.h:config.hin])
+AC_CONFIG_HEADERS([lib/config.h:config.hin])
 
 AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
