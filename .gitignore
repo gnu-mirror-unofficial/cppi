@@ -19,6 +19,7 @@ config.status
 configure
 cppi-*.tar.bz2
 cppi-*.tar.gz
+doc
 lib/.gitignore
 lib/charset.alias
 lib/configmake.h
