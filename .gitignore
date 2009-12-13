@@ -4,6 +4,7 @@
 .version
 /maint.mk
 ABOUT-NLS
+ChangeLog
 GNUmakefile
 INSTALL
 Makefile
@@ -28,4 +29,3 @@ po/LINGUAS
 po/Makevars
 stamp-h1
 tests/*.log
-ChangeLog
