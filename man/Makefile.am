@@ -21,7 +21,7 @@ mapped_name = `echo $*|sed 's/install/ginstall/; s/test/[/'`
 # That is necessary to avoid failures for programs that are also shell built-in
 # functions like echo, false, printf, pwd.
 .x.1:
-	@echo "Updating man page $@";				\
+	$(AM_V_GEN)echo "Updating man page $@";			\
 	PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;	\
 	$(HELP2MAN)						\
 	    --include=$(srcdir)/$*.x				\
@@ -38,7 +38,7 @@ ASSORT = LC_ALL=C sort
 # corresponding .1 file in the definition of $(dist_man_MANS) above.
 .PHONY: check-x-vs-1
 check-x-vs-1:
-	PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;		\
+	$(AM_V_GEN)PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;	\
 	t=ls-files.$$$$;						\
 	(cd $(srcdir) && ls -1 *.x) | sed 's/\.x$$//' | $(ASSORT) > $$t;\
 	echo $(dist_man_MANS) | fmt -w1 | sed 's/\.1$$//' | $(ASSORT)	\
@@ -47,12 +47,12 @@ check-x-vs-1:
 
 programs =								\
   echo 'spy:;@echo $$(all_programs)'					\
-    | MAKEFLAGS= $(MAKE) -s -C ../src -f Makefile -f - spy	\
+    | MAKEFLAGS= $(MAKE) -s -C ../src -f Makefile -f - spy		\
     | fmt -1 | $(ASSORT) -u | grep -v '\['
 
 .PHONY: check-programs-vs-x
 check-programs-vs-x:
-	for p in `$(programs)`; do			\
+	$(AM_V_GEN)for p in `$(programs)`; do		\
 	  test $$p = ginstall && p=install || : ;	\
 	  test -f $(srcdir)/$$p.x			\
 	    || { echo missing $$p.x 1>&2; missing=1; };	\
