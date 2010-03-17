@@ -1,4 +1,5 @@
 *.o
+*/.deps
 *~
 .tarball-version
 .version
@@ -21,12 +22,19 @@ cppi-*.tar.bz2
 cppi-*.tar.gz
 doc
 lib/.gitignore
+lib/arg-nonnull.h
+lib/c++defs.h
 lib/charset.alias
 lib/configmake.h
 lib/libcppi.a
+lib/link-warning.h
+lib/warn-on-use.h
 m4/.gitignore
 po/.gitignore
 po/LINGUAS
 po/Makevars
+po/POTFILES
+po/cppi.pot
+po/stamp-po
 stamp-h1
 tests/*.log

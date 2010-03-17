@@ -57,7 +57,7 @@ Once all the builds and tests have passed,
 * Send the gpg-signed announcement mail, e.g.,
 
     To: info-gnu@gnu.org
-    Cc: bug-cppi@gnu.org
+    Cc: bug-cppi@gnu.org, coordinator@translationproject.org
     Subject: cppi-1.14 released [stable]
 
 * Announce it on Savannah, too:
