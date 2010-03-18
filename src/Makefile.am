@@ -21,21 +21,22 @@ GPERF_OPTIONS = \
   -C -N cpp_cond_lookup -n -t -s 6 -k '*' --language=ANSI-C
 
 cpp-cond.c: cpp.gp
-	rm -f $@ $@-tmp
-	$(GPERF) $(GPERF_OPTIONS) $< \
+	$(AM_V_GEN)rm -f $@ $@-tmp
+	$(AM_V_at)$(GPERF) $(GPERF_OPTIONS) $< \
 	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
 	  > $@-tmp
-	chmod a-w $@-tmp
-	mv $@-tmp $@
+	$(AM_V_at)chmod a-w $@-tmp
+	$(AM_V_at)mv $@-tmp $@
 
 localedir = $(datadir)/locale
 BUILT_SOURCES = localedir.h
 DISTCLEANFILES = localedir.h
 localedir.h: Makefile
-	@rm -f $@-t
-	echo '#define LOCALEDIR "$(localedir)"' >$@-t
-	@chmod a-w $@-t
-	cmp $@-t $@ > /dev/null 2>&1 && rm -f $@-t || { rm -f $@; mv $@-t $@; }
+	$(AM_V_GEN)rm -f $@-t
+	$(AM_V_at)echo '#define LOCALEDIR "$(localedir)"' >$@-t
+	$(AM_V_at)chmod a-w $@-t
+	$(AM_V_at)cmp $@-t $@ > /dev/null 2>&1 && rm -f $@-t \
+	  || { rm -f $@; mv $@-t $@; }
 
 # flex_debug = #-d
 flex_debug = # -L # suppress #line directives
@@ -51,14 +52,14 @@ AM_LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
 cppi.c: cppi.l
-	rm -f $@
-	$(LEXCOMPILE) $(srcdir)/cppi.l
-	chmod a-w $(LEX_OUTPUT_ROOT).c
-	mv $(LEX_OUTPUT_ROOT).c $@
+	$(AM_V_GEN)rm -f $@
+	$(AM_V_at)$(LEXCOMPILE) $(srcdir)/cppi.l
+	$(AM_V_at)chmod a-w $(LEX_OUTPUT_ROOT).c
+	$(AM_V_at)mv $(LEX_OUTPUT_ROOT).c $@
 
 cpp.h: cpp.gp Makefile.am
-	@rm -f $@-tmp $@
-	@(								\
+	$(AM_V_GEN)rm -f $@-tmp $@
+	$(AM_V_at)(							\
 	 echo '/* This file is generated automatically from cpp.gp.  */'; \
 	 echo;								\
 	 echo 'enum Eic_type';						\
@@ -74,8 +75,8 @@ cpp.h: cpp.gp Makefile.am
 	 echo '};';							\
 	)								\
 	  > $@-tmp
-	@chmod -w $@-tmp
-	@mv $@-tmp $@
+	$(AM_V_at)chmod -w $@-tmp
+	$(AM_V_at)mv $@-tmp $@
 
 # This is required because we have broken inter-directory dependencies:
 # in order to generate all man pages, require that cppi be built at
