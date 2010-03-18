@@ -77,6 +77,12 @@ cpp.h: cpp.gp Makefile.am
 	@chmod -w $@-tmp
 	@mv $@-tmp $@
 
+# This is required because we have broken inter-directory dependencies:
+# in order to generate all man pages, require that cppi be built at
+# distribution time.
+dist-hook: cppi
+.PHONY: dist-hook
+
 BUILT_SOURCES += cpp-cond.c cpp.h
 
 # The following rule is not designed to be portable,
