@@ -28,7 +28,7 @@ gnulib_dir = /gnulib
 # Now that we have better (check.mk) tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = a71aa4c555337e3267f987181ddd2941
+old_NEWS_hash = 9833a8063f2490351c1e842d44176d29
 
 # Indent only with spaces.
 sc_prohibit_tab_based_indentation:
