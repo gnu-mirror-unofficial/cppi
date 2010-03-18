@@ -42,4 +42,6 @@ sc_prohibit_emacs__indent_tabs_mode__setting:
 	msg='use of emacs indent-tabs-mode: setting'			\
 	  $(_prohibit_regexp)
 
+bootstrap-tools = autoconf,automake,flex,gnulib,gperf,help2man
+
 include $(srcdir)/dist-check.mk
