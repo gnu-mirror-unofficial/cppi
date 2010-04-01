@@ -787,6 +787,9 @@ main (int argc, char** argv)
   int fail = 0;
 
   set_program_name (argv[0]);
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   atexit (close_stdout);
 
