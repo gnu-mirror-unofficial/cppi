@@ -32,15 +32,15 @@ old_NEWS_hash = 33baa6cc170e88d0627ef86668414353
 
 # Indent only with spaces.
 sc_prohibit_tab_based_indentation:
-	@re='^ *	'						\
-	msg='TAB in indentation; use only spaces'			\
-	  $(_prohibit_regexp)
+	@prohibit='^ *	'						\
+	halt='TAB in indentation; use only spaces'			\
+	  $(_sc_search_regexp)
 
 # Don't use "indent-tabs-mode: nil" anymore.  No longer needed.
 sc_prohibit_emacs__indent_tabs_mode__setting:
-	@re='^( *[*#] *)?indent-tabs-mode:'				\
-	msg='use of emacs indent-tabs-mode: setting'			\
-	  $(_prohibit_regexp)
+	@prohibit='^( *[*#] *)?indent-tabs-mode:'			\
+	halt='use of emacs indent-tabs-mode: setting'			\
+	  $(_sc_search_regexp)
 
 bootstrap-tools = autoconf,automake,flex,gnulib,gperf,help2man
 

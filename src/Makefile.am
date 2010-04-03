@@ -7,6 +7,9 @@ cppi_SOURCES = \
 
 AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
 
+# Tell the linker to omit references to unused shared libraries.
+AM_LDFLAGS = $(IGNORE_UNUSED_LIBRARIES_CFLAGS)
+
 EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c
 MAINTAINERCLEANFILES = cpp-cond.c
 CLEANFILES = cpp.h lex.backup
