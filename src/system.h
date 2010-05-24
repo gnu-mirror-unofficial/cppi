@@ -26,60 +26,16 @@ you must include <sys/types.h> before including this file
 
 #include <sys/stat.h>
 
-#if !defined HAVE_MKFIFO
-# define mkfifo(name, mode) mknod (name, (mode) | S_IFIFO, 0)
-#endif
-
 #if HAVE_SYS_PARAM_H
 # include <sys/param.h>
 #endif
 
 #include <unistd.h>
-
 #include <limits.h>
-
-#include "configmake.h"
-
 #include <time.h>
-
-/* Since major is a function on SVR4, we can't use `ifndef major'.  */
-#if MAJOR_IN_MKDEV
-# include <sys/mkdev.h>
-# define HAVE_MAJOR
-#endif
-#if MAJOR_IN_SYSMACROS
-# include <sys/sysmacros.h>
-# define HAVE_MAJOR
-#endif
-#ifdef major			/* Might be defined in sys/types.h.  */
-# define HAVE_MAJOR
-#endif
-
-#ifndef HAVE_MAJOR
-# define major(dev)  (((dev) >> 8) & 0xff)
-# define minor(dev)  ((dev) & 0xff)
-# define makedev(maj, min)  (((maj) << 8) | (min))
-#endif
-#undef HAVE_MAJOR
-
-#if ! defined makedev && defined mkdev
-# define makedev(maj, min)  mkdev (maj, min)
-#endif
-
-/* Don't use bcopy!  Use memmove if source and destination may overlap,
-   memcpy otherwise.  */
-
 #include <string.h>
-
 #include <errno.h>
-
-/* Some systems don't define the following symbols.  */
-#ifndef EISDIR
-# define EISDIR (-1)
-#endif
-#ifndef ENOSYS
-# define ENOSYS (-1)
-#endif
+#include "configmake.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -95,101 +51,6 @@ enum
 
 #include "exitfail.h"
 
-/* Set exit_failure to STATUS if that's not the default already.  */
-static inline void
-initialize_exit_failure (int status)
-{
-  if (status != EXIT_FAILURE)
-    exit_failure = status;
-}
-
-#include <fcntl.h>
-
-#include <dirent.h>
-#ifndef _D_EXACT_NAMLEN
-# define _D_EXACT_NAMLEN(dp) strlen ((dp)->d_name)
-#endif
-
-enum
-{
-  NOT_AN_INODE_NUMBER = 0
-};
-
-#ifdef D_INO_IN_DIRENT
-# define D_INO(dp) (dp)->d_ino
-#else
-/* Some systems don't have inodes, so fake them to avoid lots of ifdefs.  */
-# define D_INO(dp) NOT_AN_INODE_NUMBER
-#endif
-
-/* Get or fake the disk device blocksize.
-   Usually defined by sys/param.h (if at all).  */
-#if !defined DEV_BSIZE && defined BSIZE
-# define DEV_BSIZE BSIZE
-#endif
-#if !defined DEV_BSIZE && defined BBSIZE /* SGI */
-# define DEV_BSIZE BBSIZE
-#endif
-#ifndef DEV_BSIZE
-# define DEV_BSIZE 4096
-#endif
-
-/* Extract or fake data from a `struct stat'.
-   ST_BLKSIZE: Preferred I/O blocksize for the file, in bytes.
-   ST_NBLOCKS: Number of blocks in the file, including indirect blocks.
-   ST_NBLOCKSIZE: Size of blocks used when calculating ST_NBLOCKS.  */
-#ifndef HAVE_STRUCT_STAT_ST_BLOCKS
-# define ST_BLKSIZE(statbuf) DEV_BSIZE
-# if defined _POSIX_SOURCE || !defined BSIZE /* fileblocks.c uses BSIZE.  */
-#  define ST_NBLOCKS(statbuf) \
-  ((statbuf).st_size / ST_NBLOCKSIZE + ((statbuf).st_size % ST_NBLOCKSIZE != 0))
-# else /* !_POSIX_SOURCE && BSIZE */
-#  define ST_NBLOCKS(statbuf) \
-  (S_ISREG ((statbuf).st_mode) \
-   || S_ISDIR ((statbuf).st_mode) \
-   ? st_blocks ((statbuf).st_size) : 0)
-# endif /* !_POSIX_SOURCE && BSIZE */
-#else /* HAVE_STRUCT_STAT_ST_BLOCKS */
-/* Some systems, like Sequents, return st_blksize of 0 on pipes.
-   Also, when running `rsh hpux11-system cat any-file', cat would
-   determine that the output stream had an st_blksize of 2147421096.
-   So here we arbitrarily limit the `optimal' block size to 4MB.
-   If anyone knows of a system for which the legitimate value for
-   st_blksize can exceed 4MB, please report it as a bug in this code.  */
-# define ST_BLKSIZE(statbuf) ((0 < (statbuf).st_blksize \
-                               && (statbuf).st_blksize <= (1 << 22)) /* 4MB */ \
-                              ? (statbuf).st_blksize : DEV_BSIZE)
-# if defined hpux || defined __hpux__ || defined __hpux
-/* HP-UX counts st_blocks in 1024-byte units.
-   This loses when mixing HP-UX and BSD file systems with NFS.  */
-#  define ST_NBLOCKSIZE 1024
-# else /* !hpux */
-#  if defined _AIX && defined _I386
-/* AIX PS/2 counts st_blocks in 4K units.  */
-#   define ST_NBLOCKSIZE (4 * 1024)
-#  else /* not AIX PS/2 */
-#   if defined _CRAY
-#    define ST_NBLOCKS(statbuf) \
-  (S_ISREG ((statbuf).st_mode) \
-   || S_ISDIR ((statbuf).st_mode) \
-   ? (statbuf).st_blocks * ST_BLKSIZE (statbuf) / ST_NBLOCKSIZE : 0)
-#   endif /* _CRAY */
-#  endif /* not AIX PS/2 */
-# endif /* !hpux */
-#endif /* HAVE_STRUCT_STAT_ST_BLOCKS */
-
-#ifndef ST_NBLOCKS
-# define ST_NBLOCKS(statbuf) ((statbuf).st_blocks)
-#endif
-
-#ifndef ST_NBLOCKSIZE
-# ifdef S_BLKSIZE
-#  define ST_NBLOCKSIZE S_BLKSIZE
-# else
-#  define ST_NBLOCKSIZE 512
-# endif
-#endif
-
 /* Redirection and wildcarding when done by the utility itself.
    Generally a noop, but used in particular for native VMS. */
 #ifndef initialize_main
@@ -197,9 +58,7 @@ enum
 #endif
 
 #include "stat-macros.h"
-
 #include <inttypes.h>
-
 #include <ctype.h>
 
 #if ! (defined isblank || HAVE_DECL_ISBLANK)
@@ -235,45 +94,12 @@ static inline unsigned char to_uchar (char ch) { return ch; }
 #define _(msgid) gettext (msgid)
 #define N_(msgid) msgid
 
-/* Return a value that pluralizes the same way that N does, in all
-   languages we know of.  */
-static inline unsigned long int
-select_plural (uintmax_t n)
-{
-  /* Reduce by a power of ten, but keep it away from zero.  The
-     gettext manual says 1000000 should be safe.  */
-  enum { PLURAL_REDUCER = 1000000 };
-  return (n <= ULONG_MAX ? n : n % PLURAL_REDUCER + PLURAL_REDUCER);
-}
-
 #define STREQ(a, b) (strcmp ((a), (b)) == 0)
 
 #include "xalloc.h"
 #include "verify.h"
 
-/* This is simply a shorthand for the common case in which
-   the third argument to x2nrealloc would be `sizeof *(P)'.
-   Ensure that sizeof *(P) is *not* 1.  In that case, it'd be
-   better to use X2REALLOC, although not strictly necessary.  */
-#define X2NREALLOC(P, PN) ((void) verify_true (sizeof *(P) != 1), \
-                           x2nrealloc (P, PN, sizeof *(P)))
-
-/* Using x2realloc (when appropriate) usually makes your code more
-   readable than using x2nrealloc, but it also makes it so your
-   code will malfunction if sizeof *(P) ever becomes 2 or greater.
-   So use this macro instead of using x2realloc directly.  */
-#define X2REALLOC(P, PN) ((void) verify_true (sizeof *(P) == 1), \
-                          x2realloc (P, PN))
-
 #include "unlocked-io.h"
-
-#if SETVBUF_REVERSED
-# define SETVBUF(Stream, Buffer, Type, Size) \
-    setvbuf (Stream, Type, Buffer, Size)
-#else
-# define SETVBUF(Stream, Buffer, Type, Size) \
-    setvbuf (Stream, Buffer, Type, Size)
-#endif
 
 /* Factor out some of the common --help and --version processing code.  */
 
@@ -374,89 +200,3 @@ enum
 #ifndef ATTRIBUTE_UNUSED
 # define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
 #endif
-
-#if defined strdupa
-# define ASSIGN_STRDUPA(DEST, S)		\
-  do { DEST = strdupa (S); } while (0)
-#else
-# define ASSIGN_STRDUPA(DEST, S)		\
-  do						\
-    {						\
-      const char *s_ = (S);			\
-      size_t len_ = strlen (s_) + 1;		\
-      char *tmp_dest_ = alloca (len_);		\
-      DEST = memcpy (tmp_dest_, (s_), len_);	\
-    }						\
-  while (0)
-#endif
-
-#if ! HAVE_FSEEKO && ! defined fseeko
-# define fseeko(s, o, w) ((o) == (long int) (o)		\
-                          ? fseek (s, o, w)		\
-                          : (errno = EOVERFLOW, -1))
-#endif
-
-#if ! HAVE_SYNC
-# define sync() /* empty */
-#endif
-
-/* Compute the greatest common divisor of U and V using Euclid's
-   algorithm.  U and V must be nonzero.  */
-
-static inline size_t
-gcd (size_t u, size_t v)
-{
-  do
-    {
-      size_t t = u % v;
-      u = v;
-      v = t;
-    }
-  while (v);
-
-  return u;
-}
-
-/* Compute the least common multiple of U and V.  U and V must be
-   nonzero.  There is no overflow checking, so callers should not
-   specify outlandish sizes.  */
-
-static inline size_t
-lcm (size_t u, size_t v)
-{
-  return u * (v / gcd (u, v));
-}
-
-/* Return PTR, aligned upward to the next multiple of ALIGNMENT.
-   ALIGNMENT must be nonzero.  The caller must arrange for ((char *)
-   PTR) through ((char *) PTR + ALIGNMENT - 1) to be addressable
-   locations.  */
-
-static inline void *
-ptr_align (void const *ptr, size_t alignment)
-{
-  char const *p0 = ptr;
-  char const *p1 = p0 + alignment - 1;
-  return (void *) (p1 - (size_t) p1 % alignment);
-}
-
-/* If 10*Accum + Digit_val is larger than the maximum value for Type,
-   then don't update Accum and return false to indicate it would
-   overflow.  Otherwise, set Accum to that new value and return true.
-   Verify at compile-time that Type is Accum's type, and that Type is
-   unsigned.  Accum must be an object, so that we can take its
-   address.  Accum and Digit_val may be evaluated multiple times.
-
-   The "Added check" below is not strictly required, but it causes GCC
-   to return a nonzero exit status instead of merely a warning
-   diagnostic, and that is more useful.  */
-
-#define DECIMAL_DIGIT_ACCUMULATE(Accum, Digit_val, Type)		\
-  (									\
-   (void) (&(Accum) == (Type *) NULL),  /* The type matches.  */	\
-   (void) verify_true (! TYPE_SIGNED (Type)), /* The type is unsigned.  */ \
-   (void) verify_true (sizeof (Accum) == sizeof (Type)), /* Added check.  */ \
-   (((Type) -1 / 10 < (Accum)						\
-     || (Type) ((Accum) * 10 + (Digit_val)) < (Accum))			\
-    ? false : (((Accum) = (Accum) * 10 + (Digit_val)), true))		\
-  )
