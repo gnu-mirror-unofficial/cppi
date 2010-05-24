@@ -36,19 +36,6 @@ you must include <sys/types.h> before including this file
 
 #include <unistd.h>
 
-#ifndef STDIN_FILENO
-# define STDIN_FILENO 0
-#endif
-
-#ifndef STDOUT_FILENO
-# define STDOUT_FILENO 1
-#endif
-
-#ifndef STDERR_FILENO
-# define STDERR_FILENO 2
-#endif
-
-
 #include <limits.h>
 
 #include "configmake.h"
@@ -87,9 +74,6 @@ you must include <sys/types.h> before including this file
 #include <errno.h>
 
 /* Some systems don't define the following symbols.  */
-#ifndef EDQUOT
-# define EDQUOT (-1)
-#endif
 #ifndef EISDIR
 # define EISDIR (-1)
 #endif
@@ -120,13 +104,6 @@ initialize_exit_failure (int status)
 }
 
 #include <fcntl.h>
-
-#ifndef F_OK
-# define F_OK 0
-# define X_OK 1
-# define W_OK 2
-# define R_OK 4
-#endif
 
 #include <dirent.h>
 #ifndef _D_EXACT_NAMLEN
@@ -411,10 +388,6 @@ enum
       DEST = memcpy (tmp_dest_, (s_), len_);	\
     }						\
   while (0)
-#endif
-
-#ifndef EOVERFLOW
-# define EOVERFLOW EINVAL
 #endif
 
 #if ! HAVE_FSEEKO && ! defined fseeko
