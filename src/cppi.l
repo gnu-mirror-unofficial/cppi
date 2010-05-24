@@ -686,8 +686,8 @@ non-ANSI text following #else and #endif directives.\n\
 The exit code will be one of these:\n\
   0  all directives properly indented\n\
   1  some cpp directive(s) improperly indented, or\n\
-     if text follows #else/#endif (enabled with --check --ansi), or\n\
-     found a double-quoted string longer than the specified maximum\n\
+     text follows #else/#endif (enabled with --check --ansi), or\n\
+     a double-quoted string is longer than the specified maximum\n\
   2  #if/#endif mismatch, EOF in comment or string\n\
   3  file (e.g. open/read/write) error\n\
 "), stdout);
