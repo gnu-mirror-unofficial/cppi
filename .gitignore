@@ -13,6 +13,7 @@ Makefile.in
 aclocal.m4
 autom4te.cache
 build-aux
+config.cache
 config.h
 config.hin
 config.log
@@ -31,6 +32,9 @@ lib/link-warning.h
 lib/warn-on-use.h
 m4/.gitignore
 po/.gitignore
+po/.reference
+po/??.gmo
+po/??.po
 po/LINGUAS
 po/Makevars
 po/POTFILES
