@@ -38,6 +38,7 @@ if test "$gl_gcc_warnings" = yes; then
   # Add many warnings, except some...
   nw="$nw -Wdeclaration-after-statement" # too useful to forbid
   nw="$nw -Waggregate-return"       # anachronistic
+  nw="$nw -Wlong-long"              # C90 is anachronistic
   nw="$nw -Wc++-compat"             # We don't care about C++ compilers
   nw="$nw -Wundef"                  # Warns on '#if GNULIB_FOO' etc in gnulib
   nw="$nw -Wtraditional"            # Warns on #elif which we use often
