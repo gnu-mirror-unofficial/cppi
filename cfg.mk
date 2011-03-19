@@ -1,5 +1,5 @@
 # Customize maint.mk                           -*- makefile -*-
-# Copyright (C) 2003-2010 Free Software Foundation, Inc.
+# Copyright (C) 2003-2011 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,6 +45,10 @@ sc_prohibit_emacs__indent_tabs_mode__setting:
 bootstrap-tools = autoconf,automake,flex,gnulib,gperf,help2man
 
 include $(srcdir)/dist-check.mk
+
+update-copyright-env = \
+  UPDATE_COPYRIGHT_USE_INTERVALS=1 \
+  UPDATE_COPYRIGHT_MAX_LINE_LENGTH=79
 
 exclude_file_name_regexp--sc_prohibit_stat_st_blocks = ^src/system\.h$$
 exclude_file_name_regexp--sc_prohibit_tab_based_indentation = \
