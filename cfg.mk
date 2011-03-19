@@ -45,3 +45,7 @@ sc_prohibit_emacs__indent_tabs_mode__setting:
 bootstrap-tools = autoconf,automake,flex,gnulib,gperf,help2man
 
 include $(srcdir)/dist-check.mk
+
+exclude_file_name_regexp--sc_prohibit_stat_st_blocks = ^src/system\.h$$
+exclude_file_name_regexp--sc_prohibit_tab_based_indentation = \
+  (Makefile(\.am)?|\.mk)$$

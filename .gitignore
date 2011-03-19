@@ -3,6 +3,7 @@
 *~
 .tarball-version
 .version
+/ABOUT-NLS
 /maint.mk
 ABOUT-NLS
 ChangeLog

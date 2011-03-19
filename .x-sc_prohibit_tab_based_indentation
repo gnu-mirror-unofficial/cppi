@@ -1,5 +1,0 @@
-^GNUMakefile$
-Makefile\.am$
-\.mk$
-ChangeLog.*
-^man/help2man$
