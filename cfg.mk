@@ -44,7 +44,7 @@ sc_prohibit_emacs__indent_tabs_mode__setting:
 
 bootstrap-tools = autoconf,automake,flex,gnulib,gperf,help2man
 
-include $(srcdir)/dist-check.mk
+-include $(srcdir)/dist-check.mk
 
 update-copyright-env = \
   UPDATE_COPYRIGHT_USE_INTERVALS=1 \
@@ -53,3 +53,7 @@ update-copyright-env = \
 exclude_file_name_regexp--sc_prohibit_stat_st_blocks = ^src/system\.h$$
 exclude_file_name_regexp--sc_prohibit_tab_based_indentation = \
   (Makefile(\.am)?|\.mk)$$
+
+# Tell the tight_scope rule that yacc-related yy* names are extern.
+export _gl_TS_unmarked_extern_functions = main usage yy.*
+export _gl_TS_unmarked_extern_vars = yy.*
