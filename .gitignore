@@ -4,6 +4,7 @@
 .tarball-version
 .version
 /ABOUT-NLS
+/README-release
 /maint.mk
 ABOUT-NLS
 ChangeLog
@@ -20,8 +21,7 @@ config.hin
 config.log
 config.status
 configure
-cppi-*.tar.bz2
-cppi-*.tar.gz
+cppi-*.tar.xz
 doc
 lib/.gitignore
 lib/arg-nonnull.h
