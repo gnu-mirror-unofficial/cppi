@@ -136,7 +136,7 @@ static struct option const long_options[] =
   {NULL, 0, NULL, 0}
 };
 
-static void gobble_define (unsigned int*);
+static void gobble_define (unsigned int *);
 static void gobble_c_comment (const char *, unsigned int *);
 static void gobble_line (unsigned int *);
 
@@ -778,7 +778,7 @@ gobble_line (unsigned int *line_number)
 }
 
 int
-main (int argc, char** argv)
+main (int argc, char **argv)
 {
   int i;
   int max_err;
