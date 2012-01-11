@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in.
 
-SUBDIRS = lib po src tests man
+AUTOMAKE_OPTIONS = subdir-objects
+SUBDIRS = po . tests man
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -27,3 +28,19 @@ BUILT_SOURCES = .version
 
 distcheck-hook:
 	$(MAKE) my-distcheck
+
+###############################################
+# Initialization before completion by local.mk's.
+AM_CFLAGS = $(WARNING_CFLAGS) $(WERROR_CFLAGS)
+AM_CPPFLAGS =
+CLEANFILES =
+DISTCLEANFILES =
+MAINTAINERCLEANFILES =
+MOSTLYCLEANFILES =
+noinst_LIBRARIES =
+SUFFIXES =
+
+include lib/local.mk
+include src/local.mk
+# FIXME include man/local.mk
+# FIXME include tests/local.mk

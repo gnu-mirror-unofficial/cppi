@@ -1,30 +1,30 @@
-## Process this file with automake to produce Makefile.in -*-Makefile-*-
-
-bin_PROGRAMS = cppi
-cppi_SOURCES = \
-  cppi.l \
-  system.h
-noinst_HEADERS = cpp.h
-
-AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
+bin_PROGRAMS = src/cppi
+src_cppi_SOURCES = \
+  src/cppi.l \
+  src/system.h
 
 # Tell the linker to omit references to unused shared libraries.
 AM_LDFLAGS = $(IGNORE_UNUSED_LIBRARIES_CFLAGS)
 
-EXTRA_DIST = cpp.gp cpp-indent.pl cppi.l cpp-cond.c
-MAINTAINERCLEANFILES = cpp-cond.c
-DISTCLEANFILES = cpp.h lex.backup
+EXTRA_DIST +=		\
+  src/cpp.gp		\
+  src/cpp-indent.pl	\
+  src/cppi.l		\
+  src/cpp-cond.c
+
+MAINTAINERCLEANFILES += src/cpp-cond.c
+DISTCLEANFILES += src/cpp.h src/lex.backup
 
 GPERF = gperf
 
-AM_CPPFLAGS = -I$(top_srcdir)/lib
+AM_CPPFLAGS += -I$(top_srcdir)/lib -Isrc
 
-LDADD = ../lib/libcppi.a $(LIBINTL) ../lib/libcppi.a
+LDADD = $(top_builddir)/lib/libcppi.a $(LIBINTL) $(top_builddir)/lib/libcppi.a
 
 GPERF_OPTIONS = \
   -C -N cpp_cond_lookup -n -t -s 6 -k '*' --language=ANSI-C
 
-cpp-cond.c: cpp.gp
+src/cpp-cond.c: src/cpp.gp
 	$(AM_V_GEN)rm -f $@ $@-tmp
 	$(AM_V_at)$(GPERF) $(GPERF_OPTIONS) $< \
 	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
@@ -33,9 +33,9 @@ cpp-cond.c: cpp.gp
 	$(AM_V_at)mv $@-tmp $@
 
 localedir = $(datadir)/locale
-BUILT_SOURCES = localedir.h
-DISTCLEANFILES = localedir.h
-localedir.h: Makefile
+BUILT_SOURCES += src/localedir.h
+DISTCLEANFILES += src/localedir.h
+src/localedir.h: src/local.mk
 	$(AM_V_GEN)rm -f $@-t
 	$(AM_V_at)echo '#define LOCALEDIR "$(localedir)"' >$@-t
 	$(AM_V_at)chmod a-w $@-t
@@ -55,26 +55,26 @@ AM_LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
 
 # Don't use automake's default .l.c rule.
 # I prefer to make generated .c files unwritable.
-cppi.c: cppi.l
+src/cppi.c: src/cppi.l
 	$(AM_V_GEN)rm -f $@
-	$(AM_V_at)$(LEXCOMPILE) $(srcdir)/cppi.l
+	$(AM_V_at)$(LEXCOMPILE) $(top_srcdir)/src/cppi.l
 	$(AM_V_at)chmod a-w $(LEX_OUTPUT_ROOT).c
 	$(AM_V_at)mv $(LEX_OUTPUT_ROOT).c $@
 
-cpp.h: cpp.gp Makefile.am
+src/cpp.h: src/cpp.gp src/local.mk
 	$(AM_V_GEN)rm -f $@-tmp $@
 	$(AM_V_at)(							\
 	 echo '/* This file is generated automatically from cpp.gp.  */'; \
 	 echo;								\
 	 echo 'enum Eic_type';						\
 	 echo '{';							\
-	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $(srcdir)/cpp.gp;		\
+	 sed -n '/.*, /{s///;s/.*/  &,/;p;};' $(srcdir)/src/cpp.gp;	\
 	 echo '  EIC_OTHER';						\
 	 echo '};';							\
 	 echo;								\
 	 echo 'static char const *const directive[] =';			\
 	 echo '{';							\
-	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $(srcdir)/cpp.gp;	\
+	 sed -n '/,.*/{s///;s/.*/  "&",/;p;};' $(srcdir)/src/cpp.gp;	\
 	 echo '  ""';							\
 	 echo '};';							\
 	)								\
@@ -85,7 +85,7 @@ cpp.h: cpp.gp Makefile.am
 # This is required because we have broken inter-directory dependencies:
 # in order to generate all man pages, require that cppi be built at
 # distribution time.
-dist-hook: cppi
+dist-hook: src/cppi
 .PHONY: dist-hook
 
-BUILT_SOURCES += cpp-cond.c cpp.h
+BUILT_SOURCES += src/cpp-cond.c src/cpp.h

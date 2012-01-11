@@ -1,11 +1,16 @@
 *.o
-*/.deps
 *~
+.deps
+.dirstamp
 .tarball-version
 .version
 /ABOUT-NLS
 /README-release
+/lib/glthread
+/m4
 /maint.mk
+/tests/*.log
+/tests/*.trs
 ABOUT-NLS
 ChangeLog
 GNUmakefile
@@ -42,4 +47,3 @@ po/POTFILES
 po/cppi.pot
 po/stamp-po
 stamp-h1
-tests/*.log

@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
 
 AM_MISSING_PROG([HELP2MAN], [help2man])
-AC_PROG_CC
+AM_PROG_CC_C_O
 gl_EARLY
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -85,9 +85,7 @@ AM_GNU_GETTEXT_VERSION([0.17])
 
 AC_CONFIG_FILES(
   Makefile
-  lib/Makefile
   po/Makefile.in
-  src/Makefile
   tests/Makefile
   man/Makefile)
 
