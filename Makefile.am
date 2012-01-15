@@ -8,11 +8,8 @@ EXTRA_DIST = cfg.mk maint.mk .prev-version .version dist-check.mk
 
 # Arrange so that .tarball-version appears only in the distribution
 # tarball, and never in a checked-out repository.
-# The perl substitution is to change some key uses of "rm" to "/bin/rm".
-# See the rm_subst comment for details.
 dist-hook: gen-ChangeLog
 	echo $(VERSION) > $(distdir)/.tarball-version
-	perl -pi -e '$(rm_subst)' $(distdir)/src/Makefile.in
 
 gen_start_date = 2008-01-03
 .PHONY: gen-ChangeLog
