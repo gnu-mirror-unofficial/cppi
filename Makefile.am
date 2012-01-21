@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in.
 
 AUTOMAKE_OPTIONS = subdir-objects
-SUBDIRS = po . tests man
+SUBDIRS = po . tests
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -42,5 +42,6 @@ SUFFIXES =
 
 include lib/local.mk
 include src/local.mk
-# FIXME include man/local.mk
+include man/local.mk
+
 # FIXME include tests/local.mk

@@ -86,7 +86,6 @@ AM_GNU_GETTEXT_VERSION([0.17])
 AC_CONFIG_FILES(
   Makefile
   po/Makefile.in
-  tests/Makefile
-  man/Makefile)
+  tests/Makefile)
 
 AC_OUTPUT
