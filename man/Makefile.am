@@ -12,14 +12,6 @@ cppi.1:	$(common_dep)	$(srcdir)/cppi.x	../src/cppi.c
 
 SUFFIXES = .x .1
 
-# Ensure that help2man runs the ../src/ginstall binary as
-# `install' when creating install.1.
-# Similarly, ensure that it uses the ../src/[ binary to create test.1.
-t = $*.td
-mapped_name = `echo $*|sed 's/install/ginstall/; s/test/[/'`
-
-# That is necessary to avoid failures for programs that are also shell built-in
-# functions like echo, false, printf, pwd.
 .x.1:
 	$(AM_V_GEN)echo "Updating man page $@";			\
 	PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;	\
@@ -48,12 +40,11 @@ check-x-vs-1:
 programs =								\
   echo 'spy:;@echo $$(all_programs)'					\
     | MAKEFLAGS= $(MAKE) -s -C .. -f Makefile -f - spy			\
-    | fmt -1 | $(ASSORT) -u | grep -v '\['
+    | fmt -1 | $(ASSORT) -u
 
 .PHONY: check-programs-vs-x
 check-programs-vs-x:
 	$(AM_V_GEN)for p in `$(programs)`; do		\
-	  test $$p = ginstall && p=install || : ;	\
 	  test -f $(srcdir)/$$p.x			\
 	    || { echo missing $$p.x 1>&2; missing=1; };	\
 	done;						\
