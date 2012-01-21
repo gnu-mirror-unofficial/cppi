@@ -22,4 +22,4 @@ EOF
 options=-c
 expected_status=1
 
-. $srcdir/test-common
+. $top_srcdir/tests/test-common

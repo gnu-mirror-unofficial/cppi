@@ -27,4 +27,4 @@ redirect_stdin=no
 options="-l $t.I2"
 expected_status=1
 
-. $srcdir/test-common
+. $top_srcdir/tests/test-common

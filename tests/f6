@@ -16,4 +16,4 @@ redirect_stdin=no
 options='-C dir'
 expected_status=0
 
-. $srcdir/test-common
+. $top_srcdir/tests/test-common

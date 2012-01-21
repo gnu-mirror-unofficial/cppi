@@ -54,6 +54,8 @@ update-copyright-env = \
   UPDATE_COPYRIGHT_USE_INTERVALS=1 \
   UPDATE_COPYRIGHT_MAX_LINE_LENGTH=79
 
+_hv_regex_strong ?= ^ *\. "\$${top_srcdir=\.}/tests/init\.sh"
+
 exclude_file_name_regexp--sc_prohibit_stat_st_blocks = ^src/system\.h$$
 exclude_file_name_regexp--sc_prohibit_tab_based_indentation = \
   (Makefile(\.am)?|\.mk)$$
