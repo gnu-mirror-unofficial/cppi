@@ -1,5 +1,6 @@
 ## Process this file with automake to produce Makefile.in -*-Makefile-*-
 TESTS = \
+  help-version \
   version-check \
   d1 d2 d3 d4 d5 \
   e1 e2 e3 e4 e5 e6 e7 e8 e9 \
@@ -8,8 +9,10 @@ TESTS = \
   8-bit ansi-1 ansi-2 ansi-3 ansi-4 ansi-5 ansi-6 ansi-7 ansi-8 \
   cxx-1 cxx-2 cxx-3
 
-EXTRA_DIST = test-common $(TESTS)
-TESTS_ENVIRONMENT = \
-  srcdir=$(srcdir) \
-  PACKAGE_VERSION=$(PACKAGE_VERSION) \
-  PATH=../src$(PATH_SEPARATOR)$$PATH
+EXTRA_DIST = test-common init.sh $(TESTS)
+TESTS_ENVIRONMENT =				\
+  export srcdir=$(srcdir)			\
+  built_programs=cppi				\
+  VERSION='$(VERSION)'                          \
+  PATH=../src$(PATH_SEPARATOR)$$PATH		\
+  ; 9>&2
