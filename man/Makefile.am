@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in -*-Makefile-*-
-dist_man_MANS = cppi.1
+dist_man1_MANS = cppi.1
 
-man_aux = $(dist_man_MANS:.1=.x)
+man_aux = $(dist_man1_MANS:.1=.x)
 EXTRA_DIST = $(man_aux)
-MAINTAINERCLEANFILES = $(man_MANS)
+MAINTAINERCLEANFILES = $(dist_man1_MANS)
 
 # Depend on .version to get version number changes.
 common_dep = $(top_srcdir)/.version
@@ -27,13 +27,12 @@ check-local: check-x-vs-1 check-programs-vs-x
 ASSORT = LC_ALL=C sort
 
 # Ensure that for each .x file in this directory, there is a
-# corresponding .1 file in the definition of $(dist_man_MANS) above.
+# corresponding .1 file in the definition of $(dist_man1_MANS) above.
 .PHONY: check-x-vs-1
 check-x-vs-1:
-	$(AM_V_GEN)PATH=../src$(PATH_SEPARATOR)$$PATH; export PATH;	\
-	t=ls-files.$$$$;						\
+	$(AM_V_GEN)t=ls-files.$$$$;					\
 	(cd $(srcdir) && ls -1 *.x) | sed 's/\.x$$//' | $(ASSORT) > $$t;\
-	echo $(dist_man_MANS) | fmt -w1 | sed 's/\.1$$//' | $(ASSORT)	\
+	echo $(dist_man1_MANS) | fmt -w1 | sed 's/\.1$$//' | $(ASSORT)	\
 	  | diff - $$t || { rm $$t; exit 1; };				\
 	rm $$t
 
