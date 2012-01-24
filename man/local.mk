@@ -16,8 +16,7 @@ SUFFIXES += .x .1
 # Also, use a %.1: man/%.x pattern rule and remove the mkdir (required for
 # non-srcdir builds).
 .x.1:
-	$(AM_V_GEN)echo "Updating man page $@";			\
-	mkdir -p man;						\
+	$(AM_V_GEN)mkdir -p man;				\
 	PATH=src$(PATH_SEPARATOR)$$PATH; export PATH;		\
 	prog=`basename $*`;					\
 	$(HELP2MAN)						\
