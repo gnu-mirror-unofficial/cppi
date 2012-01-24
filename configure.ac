@@ -83,6 +83,20 @@ AC_HEADER_ASSERT
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.17])
 
-AC_CONFIG_FILES([Makefile po/Makefile.in])
+# This is copied from bison.  FIXME: keep it in sync!
+# We use gnulib, but from lib/local.mk instead of lib/Makefile.am.
+# So prefix paths with lib/.  See also etc/prefix-gnulib-mk.
+gl_LIBOBJS=`echo "$gl_LIBOBJS" | sed -e 's, , lib/,g'`
+# Listing the names of the variables to prefix is error-prone.
+# Rather, adjust all the AC_SUBST variables whose name ends in '_H',
+# and whose content ends in '.h'.
+for ac_var in $ac_subst_vars
+do
+  eval "ac_val=\$$ac_var"
+  case $ac_var=$ac_val in
+    (*_H=*.h) eval "$ac_var=lib/\$$ac_var";;
+  esac
+done
 
+AC_CONFIG_FILES([Makefile po/Makefile.in])
 AC_OUTPUT
