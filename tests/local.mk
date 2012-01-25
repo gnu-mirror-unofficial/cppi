@@ -48,6 +48,7 @@ TESTS_ENVIRONMENT =				\
   export					\
   srcdir=$(srcdir)				\
   top_srcdir=$(top_srcdir)			\
+  EXEEXT=$(EXEEXT)				\
   built_programs="`basename $(bin_PROGRAMS)`"	\
   VERSION='$(VERSION)'				\
   PACKAGE_BUGREPORT='$(PACKAGE_BUGREPORT)'	\
