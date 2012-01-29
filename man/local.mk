@@ -36,14 +36,14 @@ ASSORT = LC_ALL=C sort
 check-x-vs-1:
 	$(AM_V_GEN)t=ls-files.$$$$;					\
 	(cd $(srcdir)/man && ls -1 *.x) | sed 's/\.x$$//' | $(ASSORT) > $$t;\
-	echo $(dist_man1_MANS) | tr -s ' ' '\015' | sed 's,man/,,;s/\.1$$//' \
+	echo $(dist_man1_MANS) | tr -s ' ' '\012' | sed 's,man/,,;s/\.1$$//' \
           | $(ASSORT) -u | diff - $$t || { rm $$t; exit 1; };		\
 	rm $$t
 
 programs =								\
   echo 'spy:;@echo $$(PROGRAMS)'					\
     | MAKEFLAGS= $(MAKE) -s -f Makefile -f - spy			\
-    | tr -s ' ' '\015' | sed 's,.*/,,' | $(ASSORT) -u
+    | tr -s ' ' '\012' | sed 's,.*/,,' | $(ASSORT) -u
 
 .PHONY: check-programs-vs-x
 check-programs-vs-x:
