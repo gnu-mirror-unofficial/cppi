@@ -48,6 +48,7 @@ programs =								\
 .PHONY: check-programs-vs-x
 check-programs-vs-x:
 	$(AM_V_GEN)for p in `$(programs)`; do		\
+	  p=$$(echo $$p|sed 's/$(EXEEXT)$$//');		\
 	  test -f $(srcdir)/man/$$p.x			\
 	    || { echo missing $$p.x 1>&2; missing=1; };	\
 	done;						\
