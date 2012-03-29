@@ -17,7 +17,7 @@ DISTCLEANFILES += src/cpp.h src/lex.backup
 
 GPERF = gperf
 
-AM_CPPFLAGS += -I$(top_srcdir)/lib -Isrc
+AM_CPPFLAGS += -I$(top_srcdir)/lib -Isrc -I$(top_srcdir)/src
 
 LDADD = $(top_builddir)/lib/libcppi.a $(LIBINTL) $(top_builddir)/lib/libcppi.a
 
