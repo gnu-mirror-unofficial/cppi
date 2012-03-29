@@ -22,7 +22,7 @@
 #include "system.h"
 }
 
-%{ /* -*- C -*- */
+%{
 
 /* When output is inhibited, exit with status:
    0 if all's ok
@@ -858,3 +858,9 @@ main (int argc, char **argv)
 
   exit (max_err);
 }
+
+/*
+  Local Variables:
+  mode: c
+  End:
+*/
