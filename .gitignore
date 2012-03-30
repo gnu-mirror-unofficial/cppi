@@ -1,3 +1,4 @@
+!/po/POTFILES.in
 *~
 .deps
 .dirstamp
@@ -30,6 +31,7 @@
 /lib/config.h
 /lib/configmake.h
 /lib/glthread
+/lib/gnulib.mk.bak
 /lib/libcppi.a
 /lib/link-warning.h
 /lib/stamp-h1
@@ -37,17 +39,7 @@
 /m4
 /m4/.gitignore
 /maint.mk
-/po/.gitignore
-/po/.reference
-/po/??.gmo
-/po/??.po
-/po/LINGUAS
-/po/Makefile
-/po/Makefile.in
-/po/Makevars
-/po/POTFILES
-/po/cppi.pot
-/po/stamp-po
+/po/
 /test-suite.log
 /tests/*.log
 /tests/*.trs
