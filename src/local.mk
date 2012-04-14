@@ -13,7 +13,8 @@ EXTRA_DIST +=		\
   src/cpp-cond.c
 
 MAINTAINERCLEANFILES += src/cpp-cond.c
-DISTCLEANFILES += src/cpp.h src/lex.backup
+CLEANFILES += lex.backup
+DISTCLEANFILES += src/cpp.h
 
 GPERF = gperf
 
