@@ -11,8 +11,8 @@ pfx=$(t)/i
 
 built_programs =						\
   $$(echo 'spy:;@echo $$(PROGRAMS)'				\
-    | MAKEFLAGS= $(MAKE) -s -C src -f Makefile -f - spy		\
-    | fmt -1 | sed 's,$(EXEEXT)$$,,' | sort -u)
+    | MAKEFLAGS= $(MAKE) -s -f Makefile -f - spy		\
+    | fmt -1 | sed 's,src/,,;s,$(EXEEXT)$$,,' | sort -u)
 
 # More than once, tainted build and source directory names would
 # have caused at least one "make check" test to apply "chmod 700"
