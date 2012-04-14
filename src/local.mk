@@ -26,12 +26,12 @@ GPERF_OPTIONS = \
   -C -N cpp_cond_lookup -n -t -s 6 -k '*' --language=ANSI-C
 
 src/cpp-cond.c: src/cpp.gp
-	$(AM_V_GEN)rm -f $@ $@-tmp
+	$(AM_V_GEN)rm -f $@ $@-t
 	$(AM_V_at)$(GPERF) $(GPERF_OPTIONS) $< \
 	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
-	  > $@-tmp
-	$(AM_V_at)chmod a-w $@-tmp
-	$(AM_V_at)mv $@-tmp $@
+	  > $@-t
+	$(AM_V_at)chmod a-w $@-t
+	$(AM_V_at)mv $@-t $@
 
 localedir = $(datadir)/locale
 BUILT_SOURCES += src/localedir.h
@@ -65,7 +65,7 @@ src/cppi.c: src/cppi.l
 	$(AM_V_at)mv $(LEX_OUTPUT_ROOT).c $@
 
 src/cpp.h: src/cpp.gp src/local.mk
-	$(AM_V_GEN)rm -f $@-tmp $@
+	$(AM_V_GEN)rm -f $@-t $@
 	$(AM_V_at)mkdir -p src
 	$(AM_V_at)(							\
 	 echo '/* This file is generated automatically from cpp.gp.  */'; \
@@ -82,8 +82,8 @@ src/cpp.h: src/cpp.gp src/local.mk
 	 echo '  ""';							\
 	 echo '};';							\
 	)								\
-	  > $@-tmp
-	$(AM_V_at)chmod -w $@-tmp
-	$(AM_V_at)mv $@-tmp $@
+	  > $@-t
+	$(AM_V_at)chmod -w $@-t
+	$(AM_V_at)mv $@-t $@
 
 BUILT_SOURCES += src/cpp-cond.c src/cpp.h
