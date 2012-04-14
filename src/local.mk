@@ -86,10 +86,4 @@ src/cpp.h: src/cpp.gp src/local.mk
 	$(AM_V_at)chmod -w $@-tmp
 	$(AM_V_at)mv $@-tmp $@
 
-# This is required because we have broken inter-directory dependencies:
-# in order to generate all man pages, require that cppi be built at
-# distribution time.
-dist-hook: src/cppi
-.PHONY: dist-hook
-
 BUILT_SOURCES += src/cpp-cond.c src/cpp.h
