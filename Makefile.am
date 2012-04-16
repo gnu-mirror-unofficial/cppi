@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in.
 
 AUTOMAKE_OPTIONS = subdir-objects
-SUBDIRS = po .
+SUBDIRS = po
 
 ACLOCAL_AMFLAGS = -I m4
 
