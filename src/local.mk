@@ -38,7 +38,6 @@ BUILT_SOURCES += src/localedir.h
 DISTCLEANFILES += src/localedir.h
 src/localedir.h: src/local.mk
 	$(AM_V_GEN)rm -f $@-t
-	$(AM_V_at)mkdir -p src
 	$(AM_V_at)echo '#define LOCALEDIR "$(localedir)"' >$@-t
 	$(AM_V_at)chmod a-w $@-t
 	$(AM_V_at)cmp $@-t $@ > /dev/null 2>&1 && rm -f $@-t \
@@ -59,14 +58,12 @@ AM_LFLAGS = $(flex_debug) $(flex_optimize) $(flex_8_bit)
 # I prefer to make generated .c files unwritable.
 src/cppi.c: src/cppi.l
 	$(AM_V_GEN)rm -f $@
-	$(AM_V_at)mkdir -p src
 	$(AM_V_at)$(LEXCOMPILE) $(top_srcdir)/src/cppi.l
 	$(AM_V_at)chmod a-w $(LEX_OUTPUT_ROOT).c
 	$(AM_V_at)mv $(LEX_OUTPUT_ROOT).c $@
 
 src/cpp.h: src/cpp.gp src/local.mk
 	$(AM_V_GEN)rm -f $@-t $@
-	$(AM_V_at)mkdir -p src
 	$(AM_V_at)(							\
 	 echo '/* This file is generated automatically from cpp.gp.  */'; \
 	 echo;								\

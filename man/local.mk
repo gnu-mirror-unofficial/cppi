@@ -13,10 +13,9 @@ man/cppi.1: $(common_dep) $(srcdir)/man/cppi.x src/cppi
 SUFFIXES += .x .1
 
 # FIXME: when we depend on GNU make, remove $$prog; use $(*F) in its place
-# Also, use a %.1: man/%.x pattern rule and remove the mkdir (required for
-# non-srcdir builds).
+# Also, use a %.1: man/%.x pattern rule.
 .x.1:
-	$(AM_V_GEN)mkdir -p man;				\
+	$(AM_V_GEN):;						\
 	PATH=src$(PATH_SEPARATOR)$$PATH; export PATH;		\
 	prog=`basename $*`;					\
 	$(HELP2MAN)						\

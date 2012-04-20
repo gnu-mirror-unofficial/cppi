@@ -98,5 +98,10 @@ do
   esac
 done
 
+# Now that configure no longer creates src/ or man/, create them here.
+# Doing it this way is more maintainable that adding to each individual
+# Makefile rule that creates a file in one of those sub-directories.
+$MKDIR_P man src
+
 AC_CONFIG_FILES([Makefile po/Makefile.in])
 AC_OUTPUT
