@@ -81,7 +81,7 @@ AC_HEADER_DIRENT
 AC_HEADER_ASSERT
 
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 
 # This is copied from bison.  FIXME: keep it in sync!
 # We use gnulib, but from lib/local.mk instead of lib/Makefile.am.
