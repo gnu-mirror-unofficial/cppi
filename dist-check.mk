@@ -157,7 +157,8 @@ my-distcheck: $(DIST_ARCHIVES) $(local-check)
 	  $(install-transform-check);			\
 	  $(my-instcheck);				\
 	  $(coreutils-path-check);			\
-	  $(MAKE) distclean				\
+	  $(MAKE) distclean;				\
+	  find . -type d -empty -delete			\
 	)
 	(cd $(t) && mv $(distdir) $(distdir).old	\
 	  && $(amtar_extract_) - ) < $(preferred_tarball_)
