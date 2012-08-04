@@ -21,7 +21,7 @@ url_dir_list = http://ftp.gnu.org/gnu/$(PACKAGE)
 # Now that we have better (check.mk) tests, make this the default.
 export VERBOSE = yes
 
-old_NEWS_hash = 88391704693d1371df8a029f3b233e63
+old_NEWS_hash = 7d2070f92444533a7030a2c8895380d1
 
 # Indent only with spaces.
 sc_prohibit_tab_based_indentation:
