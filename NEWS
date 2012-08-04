@@ -2,6 +2,24 @@ GNU cppi NEWS                                               -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Improvements
+
+  Diagnostics have been translated to the following languages:
+    Croatian.
+    Esperanto
+    Finnish
+    French
+    German
+    Italian
+    Japanese
+    Polish
+    Serbian
+    Swedish
+    Ukrainian
+    Vietnamese
+
+  Gnulib infrastructure updates.
+
 
 * Noteworthy changes in release 1.16 (2012-01-25) [stable]
 
