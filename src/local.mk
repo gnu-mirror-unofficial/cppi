@@ -28,7 +28,8 @@ GPERF_OPTIONS = \
 src/cpp-cond.c: src/cpp.gp
 	$(AM_V_GEN)rm -f $@ $@-t
 	$(AM_V_at)$(GPERF) $(GPERF_OPTIONS) $< \
-	  | perl -ne '/__GNUC_STDC_INLINE__/ and print "static\n"; print' \
+	  | perl -0777 -p \
+	     -e 's/const struct KW \*\ncpp_cond_lookup/static\n$$&/' \
 	  > $@-t
 	$(AM_V_at)chmod a-w $@-t
 	$(AM_V_at)mv $@-t $@
