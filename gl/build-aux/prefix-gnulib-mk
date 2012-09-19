@@ -66,7 +66,8 @@ sub prefix_word ($)
 {
   local ($_) = @_;
   $_ = $prefix . $_
-    unless /^-/ || m{^\$\(\w+\)} || $_ eq "Makefile" || $_ eq '\\';
+    unless (/^-/ || m{^\$\(\w+\)} || $_ eq "Makefile" || $_ eq '\\'
+            || $_ eq '@ALLOCA@');
   return $_;
 }
 
@@ -90,7 +91,14 @@ sub prefix_assignment ($$)
 
   # Some variables are initialized by gnulib.mk, and we don't want
   # that.  Change '=' to '+='.
-  if ($lhs_and_assign_op =~ /^(SUBDIRS|EXTRA_DIST|BUILT_SOURCES|SUFFIXES|MOSTLYCLEANFILES|CLEANFILES|DISTCLEANFILES|MAINTAINERCLEANFILES|AM_CFLAGS|AM_CPPFLAGS|AM_GNU_GETTEXT) =/)
+  if ($lhs_and_assign_op =~ /^GPERF =$/)
+    {
+      # Do not change the RHS, which specifies the GPERF program.
+    }
+  elsif ($lhs_and_assign_op =~
+      /^(SUBDIRS|EXTRA_DIST|BUILT_SOURCES|SUFFIXES|MOSTLYCLEANFILES
+         |CLEANFILES|DISTCLEANFILES|MAINTAINERCLEANFILES|AM_CFLAGS
+         |AM_CPPFLAGS|AM_GNU_GETTEXT)\ =/x)
     {
       $lhs_and_assign_op =~ s/=/+=/;
     }
@@ -99,9 +107,10 @@ sub prefix_assignment ($$)
     {
       $lhs_and_assign_op =~ s/^/# /;
     }
-  # Don't touch suffixes.
   elsif ($lhs_and_assign_op =~ /^SUFFIXES /)
     {
+      # Elide any SUFFIXES assignment or concatenation.
+      $lhs_and_assign_op =~ s/^/# /;
     }
   # The words are (probably) paths to files in lib/: prefix them.
   else
@@ -142,8 +151,20 @@ sub prefix ($)
   # Unfortunately, as a result we sometimes have lib/lib.
   s{($prefix){2}}{$1}g;
 
-  # $(srcdir) is actually $(top_srcdir)/lib.
-  s{\$\(srcdir\)}{\$(top_srcdir)/lib}g;
+  # lib_libcoreutils_a_SOURCES += \
+  #   imaxtostr.c \
+  #   inttostr.c \
+  #   offtostr.c \
+  #   uinttostr.c \
+  #   umaxtostr.c
+  # The above are not handled since they're on continued lines, so
+  # deal with them manually:
+  s{^  ((?:[ui]max|u?int|off)tostr\.c(:? \\)?)$}{  $prefix$1}gm;
+
+  # $(srcdir)/ is actually $(top_srcdir)/$prefix/.
+  # The trailing slash is required to avoid matching this rule:
+  #   test '$(srcdir)' = . || rm -f $(top_builddir)/GNUmakefile
+  s{\$\(srcdir\)/}{\$(top_srcdir)/$prefix}g;
 
   # Sometimes, t-$@ is used instead of $@-t, which, of course, does
   # not work when we have a $@ with a directory in it.
