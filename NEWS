@@ -2,6 +2,13 @@ GNU cppi NEWS                                               -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Build- and infrastructure-related
+
+  Gnulib infrastructure updates.
+
+  Regenerate Makefile.in files using a version of automake that
+  is not susceptible to CVE-2009-4029 or CVE-2012-3386.
+
 
 * Noteworthy changes in release 1.17 (2012-08-04) [stable]
 
