@@ -207,7 +207,7 @@ pop (void)
 {
   int pair_size = sizeof (struct KL_pair);
   assert (OPENER_STACK_HEIGHT > 0);
-  obstack_blank (&opener_stack, -pair_size);
+  obstack_blank_fast (&opener_stack, -pair_size);
 }
 
 static inline void
