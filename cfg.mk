@@ -16,7 +16,7 @@
 
 # Use the direct link.  This is guaranteed to work immediately, while
 # it can take a while for the faster mirror links to become usable.
-url_dir_list = http://ftp.gnu.org/gnu/$(PACKAGE)
+url_dir_list = https://ftp.gnu.org/gnu/$(PACKAGE)
 
 # Now that we have better (check.mk) tests, make this the default.
 export VERBOSE = yes
