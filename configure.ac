@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.63.240)
+AC_PREREQ([2.64])
 AC_INIT([GNU cppi], m4_esyscmd([build-aux/git-version-gen .tarball-version]),
         [bug-cppi@gnu.org])
 AC_CONFIG_SRCDIR(src/cppi.l)
