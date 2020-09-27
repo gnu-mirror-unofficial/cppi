@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz color-tests parallel-tests])
 AM_SILENT_RULES([yes]) # make --enable-silent-rules the default.
 
 AM_MISSING_PROG([HELP2MAN], [help2man])
-AM_PROG_CC_C_O
+AC_PROG_CC
 gl_EARLY
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -90,7 +90,7 @@ AC_HEADER_DIRENT
 AC_HEADER_ASSERT
 
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.18.2])
 
 # Now that configure no longer creates src/ or man/, create them here.
 # Doing it this way is more maintainable that adding to each individual

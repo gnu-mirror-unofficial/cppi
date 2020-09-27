@@ -7,6 +7,5 @@ lib/obstack.c
 lib/quotearg.c
 lib/version-etc.c
 lib/xalloc-die.c
-lib/xstrtol-error.c
 src/cppi.l
 src/system.h
